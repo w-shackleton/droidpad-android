@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="aps"></string>
+    <string name="hello">DroidPad</string>
+    <string name="app_name">DroidPad</string>
+<string name="app_name_buttons">Buttons</string><string name="PCVersion">1.0.0.0</string><string name="NotificationTitle">DroidPad</string>
+<string name="NotificationTitle2">DroidPad is Running</string><string name="NotificationText">DroidPad is Running.</string>
+
+
+
+
+<string name="Wifi">Wifi settings</string>
+<string name="WifiShort">Wifi</string>
+<string name="About">About</string>
+<string name="Website">Website</string>
+<string name="Settings">Settings</string>
+<string name="Calibrate">Calibrate</string>
+<string name="OK">OK</string>
+<string name="Cancel">Cancel</string>
+
+
+
+
+
+<string-array name="ButtonChoice">
+<item>Mouse Mode</item>
+<item>Slideshow Presenter</item>
+<item>1 Axis, 1 Slider,\n6 buttons (3 toggle)</item>
+<item>1 Axis, \n8 buttons</item>
+<item>1 Axis, \n8 buttons (3 toggle)</item>
+<item>1 axis, 4 sliders,\n8 buttons (2 toggle)</item>
+</string-array>
+<string-array name="ButtonChoiceVals">
+<item>mouse</item>
+<item>slide</item>
+<item>1</item>
+<item>2</item>
+<item>2b</item>
+<item>3</item>
+</string-array>
+
+
+</resources>

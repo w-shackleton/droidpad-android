@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<RelativeLayout android:id="@+id/RelativeLayout01" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+<Button android:layout_centerInParent="true" android:layout_width="100px" android:layout_height="fill_parent" android:id="@+id/pButton01" android:text="Scroll" android:focusable="false"></Button>
+
+<Button android:layout_width="fill_parent" android:layout_centerVertical="true" android:layout_height="fill_parent" android:id="@+id/pButton03" android:layout_toRightOf="@id/pButton01" android:text="Right" android:focusable="false"></Button>
+
+<Button android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_toLeftOf="@id/pButton01" android:id="@+id/pButton02" android:text="Left" android:focusable="false"></Button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</RelativeLayout>

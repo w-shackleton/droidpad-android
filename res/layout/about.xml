@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView android:id="@+id/ScrollView01" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"><RelativeLayout android:id="@+id/RelativeLayout01" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"><ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/iconlarge" android:layout_alignParentRight="true" android:layout_margin="6dip" android:id="@+id/AboutTitleImage"></ImageView>
+<TextView android:layout_height="wrap_content" android:layout_width="fill_parent" android:text="DroidPad" android:textSize="40dip" android:layout_margin="6dip" android:id="@+id/AboutTitle" android:layout_toLeftOf="@+id/AboutTitleImage"></TextView>
+<TextView android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/AboutSubtitle" android:layout_margin="6dip" android:layout_toLeftOf="@+id/AboutTitleImage" android:layout_below="@+id/AboutTitle" android:text="DroidPad lets you use your phone as a joystick for Windows." android:textSize="16dip"></TextView><TextView android:layout_below="@+id/AboutTitleImage" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_margin="6dip" android:id="@+id/Details" android:text="Once you have downloaded &amp; set up DroidPad on your computer, you can either enable Wifi on your phone, or enable USB mode on your computer."></TextView>
+
+<TextView android:layout_below="@+id/Details" android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/Details2" android:layout_margin="6dip" android:text="Once connected, you are ready to go!"></TextView>
+<TextView android:layout_below="@+id/Details2" android:layout_height="wrap_content" android:layout_margin="6dip" android:layout_width="fill_parent" android:id="@+id/Details3" android:text="Just enter the game &amp; use your phone to tilt control it!"></TextView>
+
+
+
+<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/GoIntroButton" android:layout_alignParentRight="true" android:layout_below="@+id/Details3" android:text="More Help..."></Button></RelativeLayout>
+</ScrollView>

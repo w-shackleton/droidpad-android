@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android" android:title="@string/Settings">
+
+    <PreferenceCategory android:title="@string/pModesCat">
+
+        <ListPreference android:key="layout" android:dialogIcon="@drawable/icon" android:enabled="true" android:selectable="true" android:positiveButtonText="@string/OK" android:negativeButtonText="@string/Cancel" android:entries="@array/ButtonChoice" android:entryValues="@array/ButtonChoiceVals" android:persistent="true" android:summary="@string/layoutSummary" android:title="@string/layoutTitle" android:dialogTitle="@string/layoutTitle"></ListPreference><CheckBoxPreference
+                android:persistent="true" android:key="reverse-x" android:summary="@string/revXSummary" android:title="@string/revXTitle"/><CheckBoxPreference
+                android:persistent="true" android:key="reverse-y" android:summary="@string/revYSummary" android:title="@string/revYTitle"/>
+                
+
+    
+
+</PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pOtherCat">
+    <CheckBoxPreference android:summaryOff="@string/screenBrightOff" android:summaryOn="@string/screenBrightOn" android:title="@string/screenBright" android:enabled="true" android:key="dimscreen" android:persistent="true"></CheckBoxPreference>
+<CheckBoxPreference android:summaryOff="@string/orientationOff" android:summaryOn="@string/orientationOn" android:title="@string/orientationTitle" android:key="orientation" android:persistent="true"></CheckBoxPreference>
+</PreferenceCategory><PreferenceCategory android:title="@string/pAdvancedCat">
+
+        <EditTextPreference
+                android:key="portnumber" android:persistent="true" android:defaultValue="3141" android:dialogIcon="@drawable/icon" android:summary="@string/PortSummary" android:title="@string/PortTitle" android:dialogTitle="@string/PortTitle" android:dialogMessage="@string/PortMessage"/><EditTextPreference
+                android:persistent="true" android:dialogIcon="@drawable/icon" android:key="updateinterval" android:defaultValue="20" android:summary="@string/updateSummary" android:dialogTitle="@string/updateTitle" android:dialogMessage="@string/updateMessage" android:title="@string/updateTitle"/>
+        
+
+        
+
+    
+</PreferenceCategory>
+
+    
+
+    
+
+
+
+</PreferenceScreen>

@@ -1,0 +1,301 @@
+package uk.digitalsquid.droidpad;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
+
+import uk.digitalsquid.droidpad.ButtonView.layout;
+import android.os.Bundle;
+import android.os.Message;
+import android.util.Log;
+
+public class DroidPadConn implements Runnable {
+	private ServerSocket ss;
+	private Socket s;
+	private OutputStream os;
+	private InputStream is;
+	private InputStreamReader isr;
+	
+	private int port = 0;
+	private long interval = 50;
+	private String mode;
+	private DroidPadServer parent;
+	private boolean stopping = false;
+	private DroidPad ap;
+	
+	private int fb = 1;
+	private String fbs = "";
+	
+	private boolean invX = false, invY = false;
+	// NORMAL THREAD
+	public DroidPadConn(DroidPadServer droidPadServer, int Port, int interval2, String Mode, boolean invX, boolean invY)
+	{
+		parent = droidPadServer;
+		port = Port;
+		interval = (long) (float) ((1 / (float) interval2) * 1000);
+		
+		this.invX = invX;
+		this.invY = invY;
+		
+		mode = Mode;
+		//Toast.makeText(parent, String.valueOf(interval), Toast.LENGTH_SHORT).show();
+		Log.v("DroidPad", "DPC: Infos recieved (initiated)");
+	}
+	@Override
+	public void run() {
+		Log.d("DroidPad", "DPC: Thread started. Waiting for connection...");
+		server();
+		Log.d("DroidPad", "DPC: Someone has connected!");
+		
+		
+		float[] AVals;
+		String str = "";
+		int i;
+		layout buttons;
+		while(!stopping)
+		{
+			if(s != null)
+			{
+				try
+				{
+					AVals = parent.getAVals();
+					str = "[{" + (invX ? AVals[0] : -AVals[0]) + "," + (invY ? AVals[1] : -AVals[1]) + "," + AVals[2] + "}";
+					buttons = parent.getButtons();
+					if(buttons != null)
+					{
+						for(i = 0; i < buttons.items.length; i++)
+						{
+							str += ";";
+							if(
+									buttons.items[i].item == ButtonView.itemType.button ||
+									buttons.items[i].item == ButtonView.itemType.toggle
+									)
+								str += buttons.items[i].pressed ? "1" : "0";
+							else if(
+									buttons.items[i].item == ButtonView.itemType.axis
+									)
+								str += "{A" + buttons.items[i].axisX + "," + -buttons.items[i].axisY + "}";
+							else if(
+									buttons.items[i].item == ButtonView.itemType.sliderX
+									)
+								str += "{S" + buttons.items[i].axisX + "}";
+							else if(
+									buttons.items[i].item == ButtonView.itemType.sliderY
+									)
+								str += "{S" + -buttons.items[i].axisY + "}";
+						}
+					}
+					str += "]\n"; // [] for easy string view
+					
+					os.write(str.getBytes());
+					os.flush();
+					try {
+						Thread.sleep(interval);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					if(isr.ready())
+					{
+						char[] ch = new char[1024];
+						isr.read(ch);
+						String st = new String(ch);
+						if(st.startsWith("<STOP>"))
+						{
+							//if(ap != null)
+							//{
+							//	ap.test(5);
+							//}
+							setConnectedStatus(false,"0.0.0.0");
+							server();
+						}
+					}
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					if(!stopping)
+					{
+						Log.d("DroidPad", "DPC: Waiting for connection...");
+						server();
+						Log.d("DroidPad", "DPC: Someone else has connected!");
+					}
+				}
+			}
+		}
+	}
+	//END NORMAL THREAD
+	
+	//SETUP
+	public final synchronized void killThread()
+	{
+		Log.d("DroidPad", "DPC: Thread dying...");
+		if(!stopping)
+		{
+			stopping = true;
+			if(isr != null)
+			{
+				try {
+					isr.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+			if(is != null)
+			{
+				try {
+					is.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+			if(os != null)
+			{
+				try {
+					os.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+			if(s != null)
+			{
+				try {
+					s.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+			if(ss != null)
+			{
+				try {
+					ss.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		Log.d("DroidPad", "DPC: Thread dead!");
+	}
+	//END SETUP
+	
+	//MAIN WINDOW NOTIFY
+	public final synchronized void changeParentWindow(DroidPad a)
+	{
+		ap = a;
+		if(ap == null)
+		{
+			//Toast.makeText(parent, "Parent Disconnected", Toast.LENGTH_SHORT).show();
+		}
+		else
+		{
+			//Toast.makeText(parent, "Parent Connected", Toast.LENGTH_SHORT).show();
+			if(s != null)
+			{
+				if(s.isConnected())
+				{
+					setConnectedStatus(true, s.getInetAddress().getHostAddress());
+				}
+			}
+		}
+	}
+	private void setConnectedStatus(boolean activated,String ip)
+	{
+		Message msg = new Message();
+		Bundle b = new Bundle();
+		b.putString("ip", ip);
+		msg.arg1 = activated ? 1 : 0;
+		msg.setData(b);
+		ap.isConnectedCallback.sendMessage(msg);
+	}
+	//END MAIN WINDOW NOTIFY
+	
+	//SERVER METHODS
+	private void server()
+	{
+		serverInit();
+		serverMainLoop();
+		if(!stopping)
+		{
+			try {
+				s.setTcpNoDelay(true);
+			}
+			catch (SocketException e) {
+				e.printStackTrace();
+			}
+			try {
+				s.setKeepAlive(true);
+			} catch (SocketException e) {
+				e.printStackTrace();
+			}
+			serverSetup();
+			setConnectedStatus(true, s.getInetAddress().getHostAddress());
+		}
+	}
+	private void serverInit()
+	{
+		if(!stopping)
+		{
+			try {
+				ss = new ServerSocket(port);
+			} catch (IOException e) {
+				e.printStackTrace();
+				Log.e("DroidPad", "DPC: Couldn't initiate ServerSocket");
+			}
+			try
+			{
+				ss.setSoTimeout(2000);
+			} catch (SocketException e)
+			{
+				e.printStackTrace();
+				Log.w("DroidPad", "DPC: Couldn't set timeout");
+			}
+		}
+	}
+	private void serverMainLoop()
+	{
+		try {
+			s = ss.accept();
+		} catch (IOException e) {
+			fbs = String.valueOf(fb);
+			if(fb % 15 == 0)
+				fbs = "FIZZBUZZ";
+			else
+			{
+				if(fb % 5 == 0)
+					fbs = "BUZZ";
+				if(fb % 3 == 0)
+					fbs = "FIZZ";
+			}
+			Log.v("DroidPad", "DPC: Timed out, retrying... (" + fbs + " retries)");
+			fb++;
+			if(!stopping)
+			{
+				serverMainLoop();
+			}
+		}
+	}
+	private void serverSetup()
+	{
+		try {
+			os = s.getOutputStream();
+		} catch (IOException e) {
+			e.printStackTrace();
+			Log.e("DroidPad", "DPC: Couldn't create output stream");
+		}
+		try {
+			is = s.getInputStream();
+		} catch (IOException e) {
+			e.printStackTrace();
+			Log.e("DroidPad", "DPC: Couldn't create input stream");
+		}
+		isr = new InputStreamReader(is);
+		try {
+			os.write(("<MODE>" + mode + "</MODE>\n").getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+			Log.e("DroidPad", "DPC: Error sending info to PC");
+		}
+	}
+}

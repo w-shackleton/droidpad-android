@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout android:id="@+id/RelativeLayout01" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+<ToggleButton android:id="@+id/ppBlackToggle" android:textOff="Go to black" android:textOn="Black" android:layout_width="90px" android:layout_alignParentRight="true" android:layout_height="120px" android:focusable="false"></ToggleButton><ToggleButton android:id="@+id/ppWhiteToggle" android:textOff="Go to white" android:textOn="White" android:layout_width="90px" android:layout_toLeftOf="@id/ppBlackToggle" android:layout_height="120px" android:focusable="false"></ToggleButton><Button android:layout_height="wrap_content" android:id="@+id/ppToBeginning" android:text="Go to beggining" android:layout_alignParentLeft="true" android:layout_width="fill_parent" android:layout_toLeftOf="@id/ppWhiteToggle" android:focusable="false"></Button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<Button android:layout_below="@+id/ppToBeginning" android:layout_height="wrap_content" android:text="Go to end" android:id="@+id/ppToEnd" android:layout_toLeftOf="@id/ppWhiteToggle" android:layout_width="fill_parent" android:focusable="false"></Button><Button android:text="Previous Slide" android:id="@+id/ppPrev" android:layout_centerHorizontal="true" android:layout_width="120px" android:layout_below="@id/ppWhiteToggle" android:layout_height="130px" android:focusable="false"></Button><Button android:text="End Show" android:id="@+id/ppEnd" android:layout_toLeftOf="@id/ppPrev" android:layout_below="@id/ppWhiteToggle" android:layout_width="fill_parent" android:layout_height="130px" android:focusable="false"></Button><Button android:id="@+id/ppStart" android:text="Start Show" android:layout_toRightOf="@id/ppPrev" android:layout_below="@id/ppWhiteToggle" android:layout_width="fill_parent" android:layout_height="130px" android:focusable="false"></Button><Button android:focusable="false" android:layout_width="fill_parent" android:text="Next Slide" android:id="@+id/ppNext" android:layout_height="fill_parent" android:layout_below="@id/ppPrev"></Button>
+</RelativeLayout>

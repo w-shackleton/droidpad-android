@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<item android:title="@string/Wifi" android:titleCondensed="@string/WifiShort" android:alphabeticShortcut="w" android:id="@+id/wifi"></item>
+<item android:id="@+id/settings" android:title="@string/Settings" android:titleCondensed="@string/Settings" android:alphabeticShortcut="s">
+</item><item android:id="@+id/calibrate" android:title="@string/Calibrate" android:enabled="false" android:alphabeticShortcut="c"></item><item android:title="@string/About" android:id="@+id/about" android:alphabeticShortcut="a"></item>
+<item android:title="@string/Website" android:titleCondensed="@string/Website" android:id="@+id/website" android:alphabeticShortcut="i"></item>
+
+
+</menu>

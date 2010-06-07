@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:id="@+id/ScrollView01" xmlns:android="http://schemas.android.com/apk/res/android" android:layout_height="fill_parent" android:layout_width="fill_parent">
+<RelativeLayout android:layout_width="fill_parent" android:layout_height="fill_parent">
+<TextView android:layout_height="wrap_content" android:text="@string/hello" android:id="@+id/Title" android:typeface="normal" android:layout_centerHorizontal="true" android:layout_width="wrap_content" android:textSize="40dip"/>
+<Button android:id="@+id/Startit"
+	android:text="Start" android:layout_below="@+id/Title" android:layout_alignParentRight="true" android:textStyle="bold" android:layout_height="60dip" android:layout_width="100dip">
+</Button>
+
+
+
+
+
+
+<TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/Context" android:text="Not Connected" android:layout_below="@+id/Title" android:layout_toLeftOf="@+id/Startit" android:textSize="18dip"></TextView>
+<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/Ontext" android:text="Status: Off" android:layout_below="@+id/Context" android:textSize="18dip"></TextView>
+<!--
+<TableLayout android:id="@+id/TableLayout01" android:layout_height="wrap_content" android:layout_width="wrap_content" android:padding="4px" android:longClickable="true" android:layout_below="@+id/Ontext" android:layout_marginTop="20px"><TextView android:id="@+id/TextView04" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Settings" android:textSize="20px" android:layout_gravity="center_horizontal"></TextView><TableRow android:id="@+id/TableRow01" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_below="@+id/TableLayout01" android:padding="4px"><TextView android:layout_width="wrap_content" android:layout_below="@+id/Onbox" android:id="@+id/TextView01" android:layout_height="wrap_content" android:text="Mouse Mode"></TextView>
+<ImageView android:src="@drawable/red" android:layout_width="20px" android:layout_height="20px" android:id="@+id/MouseModeStat"></ImageView>
+</TableRow><TableRow android:id="@+id/TableRow02" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_below="@+id/TableLayout01" android:padding="4px"><TextView android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pointer Mode"></TextView><ImageView android:id="@+id/PointerModeStat" android:src="@drawable/red" android:layout_width="20px" android:layout_height="20px"></ImageView>
+</TableRow><TableRow android:id="@+id/TableRow03" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_below="@+id/Onbox" android:padding="4px"><TextView android:id="@+id/TextView03" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Backwards"></TextView><ImageView android:src="@drawable/red" android:layout_width="20px" android:layout_height="20px" android:id="@+id/BackwardsModeStat"></ImageView></TableRow><TableRow android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_below="@+id/Onbox" android:padding="4px" android:id="@+id/TableRow04"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/TextView04" android:text="Slideshow"></TextView><ImageView android:src="@drawable/red" android:layout_width="20px" android:layout_height="20px" android:id="@+id/PresenterStat"></ImageView></TableRow>
+
+
+</TableLayout>-->
+
+
+
+
+
+
+
+
+<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_below="@+id/Ontext" android:id="@+id/PrefButton" android:text="Change Preferences"></Button><Button android:layout_height="wrap_content" android:id="@+id/LaunchButtons" android:layout_width="wrap_content" android:layout_below="@+id/Startit" android:layout_alignParentRight="true" android:text="Go To Buttons"></Button>
+
+
+
+
+
+
+
+
+
+<TextView android:layout_width="wrap_content" android:layout_below="@+id/LaunchButtons" android:layout_height="wrap_content" android:id="@+id/LocalWifiText" android:layout_alignParentRight="true" android:text="Wifi: Disabled" android:layout_marginLeft="6dip" android:layout_marginRight="6dip" android:layout_marginTop="6dip" android:textSize="16dip"></TextView><TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/LocalIPText" android:layout_alignParentRight="true" android:layout_below="@+id/LocalWifiText" android:layout_marginBottom="6dip" android:layout_marginLeft="6dip" android:layout_marginRight="6dip" android:textSize="18dip"></TextView><Button android:layout_width="wrap_content" android:layout_below="@+id/LocalWifiText" android:layout_height="wrap_content" android:layout_alignParentRight="true" android:text="Enable Wifi" android:id="@+id/EnableWifi" android:layout_margin="6dip"></Button><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/IPText" android:layout_toRightOf="@+id/Calibrate" android:layout_alignParentRight="true" android:layout_margin="6dip" android:textSize="18dip" android:layout_below="@+id/LocalIPText"></TextView><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_toRightOf="@+id/Calibrate" android:layout_alignParentRight="true" android:textSize="18dip" android:layout_below="@+id/EnableWifi" android:layout_marginLeft="6dip" android:layout_marginRight="6dip" android:id="@+id/NWifiIPText"></TextView><Button android:layout_width="wrap_content" android:layout_below="@+id/IPText" android:layout_height="wrap_content" android:layout_toRightOf="@+id/Calibrate" android:layout_alignParentRight="true" android:layout_margin="6dip" android:text="Disable Wifi" android:id="@+id/DisableWifi" android:visibility="invisible"></Button>
+
+
+
+
+</RelativeLayout>
+
+</ScrollView>

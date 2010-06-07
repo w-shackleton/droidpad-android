@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+<RelativeLayout android:id="@+id/helpWindow" android:layout_width="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android" android:layout_height="fill_parent">
+
+
+
+
+
+
+
+
+
+
+
+<RelativeLayout android:layout_height="wrap_content" android:layout_alignParentBottom="true" android:id="@+id/helpBaseBar" android:layout_width="fill_parent">
+
+
+<ImageButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/backbutton" android:id="@+id/introBackButton" android:layout_marginBottom="6px" android:layout_marginLeft="6px" android:layout_marginTop="6px"></ImageButton>
+
+<ImageButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/forwardbutton" android:id="@+id/introForwardButton" android:layout_toRightOf="@+id/introBackButton" android:layout_marginBottom="6px" android:layout_marginRight="6px" android:layout_marginTop="6px"></ImageButton><Button android:layout_width="wrap_content" android:layout_alignParentRight="true" android:id="@+id/helpDoneButton" android:text="Done" android:layout_margin="6px" android:layout_height="wrap_content" android:padding="20px" android:textStyle="bold">
+</Button>
+</RelativeLayout>
+
+<WebView 
+        android:id="@+id/helpWebview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" android:layout_above="@+id/helpBaseBar"></WebView>
+
+
+</RelativeLayout>
