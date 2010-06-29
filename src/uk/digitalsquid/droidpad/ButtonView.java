@@ -26,6 +26,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+
+// TODO: Neaten up this code!
 public class ButtonView extends View
 {
 	private DroidPadButtons parent;
@@ -472,8 +474,17 @@ public class ButtonView extends View
 			origButton = -1;
 			origWasAxis = false;
 		}
-		
 		prevButton = currButton;
 		return true;
+	}
+	
+	Thread slideThread;
+	
+	class slideThreadC implements Runnable
+	{
+		@Override
+		public void run()
+		{
+		}
 	}
 }

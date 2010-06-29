@@ -28,4 +28,8 @@
 <string name="orientationTitle">Horizontal Layout</string>
 <string name="orientationOn">Buttons will appear horizontal</string>
 <string name="orientationOff">Buttons will not appear horizontal</string>
+
+<string name="axesfloatTitle">Return axes to center</string>
+<string name="axesfloatOn">On-screen axes will float back to the centre</string>
+<string name="axesfloatOff">On-screen axes will not float back to the centre</string>
 </resources>

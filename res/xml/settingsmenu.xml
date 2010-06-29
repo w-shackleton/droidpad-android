@@ -18,6 +18,7 @@
     <PreferenceCategory android:title="@string/pOtherCat">
     <CheckBoxPreference android:summaryOff="@string/screenBrightOff" android:summaryOn="@string/screenBrightOn" android:title="@string/screenBright" android:enabled="true" android:key="dimscreen" android:persistent="true"></CheckBoxPreference>
 <CheckBoxPreference android:summaryOff="@string/orientationOff" android:summaryOn="@string/orientationOn" android:title="@string/orientationTitle" android:key="orientation" android:persistent="true"></CheckBoxPreference>
+<!-- <CheckBoxPreference android:key="axesfloat" android:summaryOff="@string/axesfloatOff" android:title="@string/axesfloatTitle" android:summaryOn="@string/axesfloatOn" android:persistent="true"></CheckBoxPreference>-->
 </PreferenceCategory><PreferenceCategory android:title="@string/pAdvancedCat">
 
         <EditTextPreference
