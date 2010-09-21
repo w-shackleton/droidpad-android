@@ -55,6 +55,8 @@ public class DroidPadServer extends Service {
 	public float x = 0,y = 0,z = 0;
 	public float calibX = 0, calibY = 0;
 	
+	protected boolean landscape = false;
+	
 	private WifiLock wL;
 	
 	private SharedPreferences prefs;
@@ -70,6 +72,8 @@ public class DroidPadServer extends Service {
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		
 		mode = prefs.getString("layout", "1");
+		
+		landscape = prefs.getBoolean("orientation", false);
 
 		sm = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		if(mode != "slide")
@@ -215,9 +219,18 @@ public class DroidPadServer extends Service {
 
 		@Override
 		public void onSensorChanged(SensorEvent event) {
-			x = event.values[0];
-			y = event.values[1];
-			z = event.values[2];
+			if(landscape)
+			{
+				x = -event.values[1];
+				y = -event.values[0];
+				z = event.values[2];
+			}
+			else
+			{
+				x = event.values[0];
+				y = event.values[1];
+				z = event.values[2];
+			}
 		}
     };
     

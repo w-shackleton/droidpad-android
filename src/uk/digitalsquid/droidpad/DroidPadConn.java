@@ -231,6 +231,7 @@ public class DroidPadConn implements Runnable {
 	private void server()
 	{
 		serverInit();
+		if(stopping) return; // Escape method
 		serverMainLoop();
 		if(!stopping)
 		{
@@ -253,11 +254,22 @@ public class DroidPadConn implements Runnable {
 	{
 		if(!stopping)
 		{
-			try {
-				ss = new ServerSocket(port);
-			} catch (IOException e) {
-				e.printStackTrace();
-				Log.e("DroidPad", "DPC: Couldn't initiate ServerSocket");
+			while(ss == null)
+			{
+				try {
+					ss = new ServerSocket(port);
+				} catch (IOException e) {
+					e.printStackTrace();
+					Log.e("DroidPad", "DPC: Couldn't initiate ServerSocket, perhaps not connected to network...");
+					try
+					{
+						Thread.sleep(500);
+					} catch (InterruptedException e1)
+					{
+						e1.printStackTrace();
+					}
+				}
+				if(stopping) return;
 			}
 			try
 			{

@@ -25,18 +25,26 @@
 <string-array name="ButtonChoice">
 <item>Mouse Mode</item>
 <item>Slideshow Presenter</item>
-<item>1 Axis, 1 Slider,\n6 buttons (3 toggle)</item>
+<item>2 Buttons</item><item>3 Buttons</item><item>4 Buttons</item><item>5 Buttons</item><item>1 Axis, 1 Slider,\n6 buttons (3 toggle)</item>
 <item>1 Axis, \n8 buttons</item>
 <item>1 Axis, \n8 buttons (3 toggle)</item>
 <item>1 axis, 4 sliders,\n8 buttons (2 toggle)</item>
+
+
+
+
 </string-array>
 <string-array name="ButtonChoiceVals">
 <item>mouse</item>
 <item>slide</item>
-<item>1</item>
+<item>1s1</item><item>1s2</item><item>1s3</item><item>1s4</item><item>1</item>
 <item>2</item>
 <item>2b</item>
 <item>3</item>
+
+
+
+
 </string-array>
 
 

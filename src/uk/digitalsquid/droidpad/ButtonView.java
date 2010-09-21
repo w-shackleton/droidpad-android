@@ -104,6 +104,28 @@ public class ButtonView extends View
 				new layoutItem(0, 0, 2, 1, "Beginning", itemType.button, 0),
 				new layoutItem(0, 1, 2, 1, "End", itemType.button, 0),
 		}),
+		new layout("1s1", new layoutItem[] {
+				new layoutItem(0, 0, 4, 3, "1", itemType.button, 30),
+				new layoutItem(0, 3, 4, 2, "2", itemType.button, 30),
+		}),
+		new layout("1s2", new layoutItem[] {
+				new layoutItem(0, 0, 4, 2, "1", itemType.button, 30),
+				new layoutItem(0, 2, 2, 3, "2", itemType.button, 30),
+				new layoutItem(2, 2, 2, 3, "3", itemType.button, 30),
+		}),
+		new layout("1s3", new layoutItem[] {
+				new layoutItem(0, 0, 2, 2, "1", itemType.button, 30),
+				new layoutItem(2, 0, 2, 2, "2", itemType.button, 30),
+				new layoutItem(0, 2, 2, 3, "3", itemType.button, 30),
+				new layoutItem(2, 2, 2, 3, "4", itemType.button, 30),
+		}),
+		new layout("1s4", new layoutItem[] {
+				new layoutItem(0, 0, 2, 2, "1", itemType.button, 30),
+				new layoutItem(2, 0, 2, 2, "2", itemType.button, 30),
+				new layoutItem(0, 2, 2, 3, "3", itemType.button, 30),
+				new layoutItem(2, 2, 2, 2, "4", itemType.button, 30),
+				new layoutItem(2, 4, 2, 1, "5", itemType.button, 30),
+		}),
 		new layout("1", new layoutItem[] {
 				new layoutItem(1, 0, 2, 1, "1", itemType.button, 30),
 				new layoutItem(1, 1, 2, 2, "", itemType.axis, 0),
