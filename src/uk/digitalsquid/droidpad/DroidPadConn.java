@@ -41,7 +41,6 @@ public class DroidPadConn implements Runnable {
 	private String mode;
 	private DroidPadServer parent;
 	private boolean stopping = false;
-	private DroidPad ap;
 	
 	private int fb = 1;
 	private String fbs = "";
@@ -197,10 +196,9 @@ public class DroidPadConn implements Runnable {
 	//END SETUP
 	
 	//MAIN WINDOW NOTIFY
-	public final synchronized void changeParentWindow(DroidPad a)
+	public final synchronized void notifyOfParent()
 	{
-		ap = a;
-		if(ap == null)
+		if(parent.isWinAvailable())
 		{
 			//Toast.makeText(parent, "Parent Disconnected", Toast.LENGTH_SHORT).show();
 		}
@@ -223,7 +221,8 @@ public class DroidPadConn implements Runnable {
 		b.putString("ip", ip);
 		msg.arg1 = activated ? 1 : 0;
 		msg.setData(b);
-		ap.isConnectedCallback.sendMessage(msg);
+		if(parent.isWinAvailable())
+			parent.getWin().isConnectedCallback.sendMessage(msg);
 	}
 	//END MAIN WINDOW NOTIFY
 	
@@ -283,24 +282,24 @@ public class DroidPadConn implements Runnable {
 	}
 	private void serverMainLoop()
 	{
-		try {
-			s = ss.accept();
-		} catch (IOException e) {
-			fbs = String.valueOf(fb);
-			if(fb % 15 == 0)
-				fbs = "FIZZBUZZ";
-			else
-			{
-				if(fb % 5 == 0)
-					fbs = "BUZZ";
-				if(fb % 3 == 0)
-					fbs = "FIZZ";
-			}
-			Log.v("DroidPad", "DPC: Timed out, retrying... (" + fbs + " retries)");
-			fb++;
-			if(!stopping)
-			{
-				serverMainLoop();
+		while(!stopping)
+		{
+			try {
+				s = ss.accept();
+				return;
+			} catch (IOException e) {
+				fbs = String.valueOf(fb);
+				if(fb % 15 == 0)
+					fbs = "FIZZBUZZ";
+				else
+				{
+					if(fb % 5 == 0)
+						fbs = "BUZZ";
+					if(fb % 3 == 0)
+						fbs = "FIZZ";
+				}
+				Log.v("DroidPad", "DPC: Timed out, retrying... (" + fbs + " retries)");
+				fb++;
 			}
 		}
 	}

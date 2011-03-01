@@ -43,6 +43,7 @@ public class DroidPadServer extends Service {
 	private PendingIntent contentIntent;
 	private Boolean setup = false;
 	private DroidPadConn apc;
+	private DroidPad win;
 	private Thread th;
 	public int port;
 	public int interval;
@@ -207,9 +208,9 @@ public class DroidPadServer extends Service {
     // END BIND
     
     //PARENT CALLBACK
-    public void sendParentObject(DroidPad a)
+    public void setParentObject(DroidPad a)
     {
-    	apc.changeParentWindow(a);
+    	setWin(a);
     }
     //END PARENT CALLBACK
     private SensorEventListener asl = new SensorEventListener() {
@@ -242,4 +243,17 @@ public class DroidPadServer extends Service {
     {
     	return buttons;
     }
+    
+	private void setWin(DroidPad win) {
+		this.win = win;
+		apc.notifyOfParent();
+	}
+	
+	public DroidPad getWin() {
+		return win;
+	}
+	
+	public boolean isWinAvailable() {
+		return win != null;
+	}
 }

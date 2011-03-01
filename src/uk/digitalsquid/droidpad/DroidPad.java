@@ -538,7 +538,7 @@ public class DroidPad extends Activity /* implements SharedPreferences.OnSharedP
 
     	if(apsbound != null)
     	{
-    		apsbound.sendParentObject(this);
+    		apsbound.setParentObject(this);
     	}
     	//unbind();
     }
@@ -547,7 +547,7 @@ public class DroidPad extends Activity /* implements SharedPreferences.OnSharedP
     	//bind();
     	if(apsbound != null)
     	{
-    		apsbound.sendParentObject(null);
+    		apsbound.setParentObject(null);
     	}
     	//unbind();
     }
