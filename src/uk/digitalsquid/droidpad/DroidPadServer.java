@@ -16,7 +16,7 @@
 
 package uk.digitalsquid.droidpad;
 
-import uk.digitalsquid.droidpad.ButtonView.layout;
+import uk.digitalsquid.droidpad.buttons.Layout;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -50,7 +50,7 @@ public class DroidPadServer extends Service {
 	
 	public String mode = "1";
 	public boolean invX, invY;
-	public ButtonView.layout buttons;
+	public Layout buttons;
 	
 	private SensorManager sm;
 	public float x = 0,y = 0,z = 0;
@@ -239,7 +239,8 @@ public class DroidPadServer extends Service {
     {
     	return new float[] {x - calibX, y - calibY, z};
     }
-    public synchronized layout getButtons()
+    
+    public synchronized Layout getButtons()
     {
     	return buttons;
     }
