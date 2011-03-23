@@ -24,7 +24,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
-import uk.digitalsquid.droidpad.ButtonView.layout;
+import uk.digitalsquid.droidpad.buttons.Item;
+import uk.digitalsquid.droidpad.buttons.Layout;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
@@ -69,8 +70,7 @@ public class DroidPadConn implements Runnable {
 		
 		float[] AVals;
 		String str = "";
-		int i;
-		layout buttons;
+		Layout buttons;
 		while(!stopping)
 		{
 			if(s != null)
@@ -82,26 +82,10 @@ public class DroidPadConn implements Runnable {
 					buttons = parent.getButtons();
 					if(buttons != null)
 					{
-						for(i = 0; i < buttons.items.length; i++)
+						for(Item item : buttons)
 						{
 							str += ";";
-							if(
-									buttons.items[i].item == ButtonView.itemType.button ||
-									buttons.items[i].item == ButtonView.itemType.toggle
-									)
-								str += buttons.items[i].pressed ? "1" : "0";
-							else if(
-									buttons.items[i].item == ButtonView.itemType.axis
-									)
-								str += "{A" + buttons.items[i].axisX + "," + -buttons.items[i].axisY + "}";
-							else if(
-									buttons.items[i].item == ButtonView.itemType.sliderX
-									)
-								str += "{S" + buttons.items[i].axisX + "}";
-							else if(
-									buttons.items[i].item == ButtonView.itemType.sliderY
-									)
-								str += "{S" + -buttons.items[i].axisY + "}";
+							str += item.getOutputString();
 						}
 					}
 					str += "]\n"; // [] for easy string view

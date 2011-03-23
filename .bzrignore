@@ -2,3 +2,6 @@ bin/classes.dex
 bin/droidpad-android.apk
 bin/resources.ap_
 bin/uk
+bin/droidpad-android.mt.apk
+bin
+bin/droidpad-android.multitouch.apk

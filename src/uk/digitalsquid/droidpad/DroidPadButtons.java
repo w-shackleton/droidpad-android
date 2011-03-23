@@ -18,6 +18,7 @@ package uk.digitalsquid.droidpad;
 
 import java.util.List;
 
+import uk.digitalsquid.droidpad.buttons.Layout;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.ComponentName;
@@ -119,7 +120,7 @@ public class DroidPadButtons extends Activity
     	super.onDestroy();
     }
     
-    public void sendEvent(ButtonView.layout layout)
+    public void sendEvent(Layout layout)
     {
     	apsbound.buttons = layout;
     }
