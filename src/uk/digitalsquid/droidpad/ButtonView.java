@@ -29,7 +29,6 @@ import android.view.View;
 
 public class ButtonView extends View
 {
-	private DroidPadButtons parent;
 	private boolean landscape;
 	
 	public static final int BUTTONS_X = 4;
@@ -40,7 +39,6 @@ public class ButtonView extends View
 	public ButtonView(DroidPadButtons parent, String type)
 	{
 		super(parent);
-		this.parent = parent;
 		
 		Log.v("DroidPad", "Type: \"" + type + "\"");
 		
@@ -73,11 +71,6 @@ public class ButtonView extends View
 		}
 	}
 
-	private int prevButton = -1;
-	private int currButton = -1;
-	private int origButton = -1;
-	private boolean origWasAxis = false;
-	
 	private void processPoint(float x, float y) {
 		processPoint(x, y, false);
 	}
@@ -115,7 +108,6 @@ public class ButtonView extends View
 	public boolean onTouchEvent(MotionEvent event)
 	{
 		super.onTouchEvent(event);
-		dumpEvent(event);
 		
 		int actionCode = event.getAction() & MotionEvent.ACTION_MASK;
 		if(actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_POINTER_DOWN) {
@@ -159,145 +151,6 @@ public class ButtonView extends View
 		
 		invalidate();
 
-		/* currButton = -1;
-		if(event.getAction() != MotionEvent.ACTION_UP && !origWasAxis)
-		{
-			for(int i = 0; i < currLayout.items.length; i++)
-			{
-				posX1 =  currLayout.items[i].XPos							   * widthIter  + BUTTON_GAP;
-				posY1 =  currLayout.items[i].YPos							   * heightIter + BUTTON_GAP;
-				posX2 = (currLayout.items[i].XPos + currLayout.items[i].XSize) * widthIter  - BUTTON_GAP;
-				posY2 = (currLayout.items[i].YPos + currLayout.items[i].YSize) * heightIter - BUTTON_GAP;
-				
-				if(
-						event.getX() > posX1 &&
-						event.getX() < posX2 &&
-						event.getY() > posY1 &&
-						event.getY() < posY2
-						)
-				{
-					// Work out pressed button
-					currButton = i;
-				}
-			}
-		}
-		if(origWasAxis)
-		{
-			posX1 =  currLayout.items[origButton].XPos							   * widthIter  + BUTTON_GAP;
-			posY1 =  currLayout.items[origButton].YPos							   * heightIter + BUTTON_GAP;
-			posX2 = (currLayout.items[origButton].XPos + currLayout.items[origButton].XSize) * widthIter  - BUTTON_GAP;
-			posY2 = (currLayout.items[origButton].YPos + currLayout.items[origButton].YSize) * heightIter - BUTTON_GAP;
-			
-			posXm = (posX1 + posX2) / 2;
-			posYm = (posY1 + posY2) / 2;
-			
-			tempXw = posX2 - posX1 - (2 * SLIDER_GAP);
-			tempYw = posY2 - posY1 - (2 * SLIDER_GAP);
-			
-			if(
-					currLayout.items[origButton].item == itemType.sliderX ||
-					currLayout.items[origButton].item == itemType.axis
-					)
-			{
-				tempPosX = (event.getX() - posXm) / tempXw * 2 * SLIDER_TOT;
-				if(tempPosX < -SLIDER_TOT)
-					currLayout.items[origButton].axisX = -SLIDER_TOT;
-				else if(tempPosX > SLIDER_TOT)
-					currLayout.items[origButton].axisX = SLIDER_TOT;
-				else
-					currLayout.items[origButton].axisX = tempPosX;
-			}
-			if(
-					currLayout.items[origButton].item == itemType.sliderY ||
-					currLayout.items[origButton].item == itemType.axis
-					)
-			{
-				tempPosY = (event.getY() - posYm) / tempYw * 2 * SLIDER_TOT;
-				if(tempPosY < -SLIDER_TOT)
-					currLayout.items[origButton].axisY = -SLIDER_TOT;
-				else if(tempPosY > SLIDER_TOT)
-					currLayout.items[origButton].axisY = SLIDER_TOT;
-				else
-					currLayout.items[origButton].axisY = tempPosY;
-			}
-			parent.sendEvent(currLayout);
-			invalidate();
-		}
-		
-		if(currButton != prevButton)
-		{
-			// If button was actually let go, or just slid off.
-			if((event.getAction() == MotionEvent.ACTION_UP) && (prevButton != -1))
-			{
-				if(currLayout.items[prevButton].item == itemType.toggle)
-				{
-					// Switch toggle button
-					if(currLayout.items[prevButton].pressed)
-						currLayout.items[prevButton].pressed = false;
-					else if(!currLayout.items[prevButton].pressed)
-						currLayout.items[prevButton].pressed = true;
-				}
-			}
-			if(currButton != -1)
-			{
-				if(currLayout.items[currButton].item == itemType.button)
-				{
-					currLayout.items[currButton].pressed = true;
-				}
-			}
-			else
-			{
-				if(currLayout.items[prevButton].item == itemType.button)
-				{
-					currLayout.items[prevButton].pressed = false;
-				}
-			}
-			parent.sendEvent(currLayout);
-			invalidate();
-		}
-		if(event.getAction() == MotionEvent.ACTION_DOWN)
-		{
-			origButton = currButton;
-			if(origButton != -1)
-				origWasAxis = (
-						currLayout.items[origButton].item == itemType.sliderX ||
-						currLayout.items[origButton].item == itemType.sliderY ||
-						currLayout.items[origButton].item == itemType.axis);
-		}
-		else if(event.getAction() == MotionEvent.ACTION_UP)
-		{
-			origButton = -1;
-			origWasAxis = false;
-		}
-		prevButton = currButton; */
-		// prevEvent = event;
 		return true;
-	}
-	
-	/** Show an event in the LogCat view, for debugging */
-	private void dumpEvent(MotionEvent event) {
-	   String names[] = { "DOWN" , "UP" , "MOVE" , "CANCEL" , "OUTSIDE" ,
-	      "POINTER_DOWN" , "POINTER_UP" , "7?" , "8?" , "9?" };
-	   StringBuilder sb = new StringBuilder();
-	   int action = event.getAction();
-	   int actionCode = action & MotionEvent.ACTION_MASK;
-	   sb.append("event ACTION_" ).append(names[actionCode]);
-	   if (actionCode == MotionEvent.ACTION_POINTER_DOWN
-	         || actionCode == MotionEvent.ACTION_POINTER_UP) {
-	      sb.append("(pid " ).append(
-	      action >> MotionEvent.ACTION_POINTER_ID_SHIFT);
-	      sb.append(")" );
-	   }
-	   sb.append("[" );
-	   for (int i = 0; i < event.getPointerCount(); i++) {
-	      sb.append("#" ).append(i);
-	      sb.append("(pid " ).append(event.getPointerId(i));
-	      sb.append(")=" ).append((int) event.getX(i));
-	      sb.append("," ).append((int) event.getY(i));
-	      if (i + 1 < event.getPointerCount())
-	         sb.append(";" );
-	   }
-	   sb.append("]" );
-	   Log.d("DroidPad", sb.toString());
 	}
 }

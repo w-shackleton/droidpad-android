@@ -8,7 +8,7 @@ public class Button extends Item {
 	public final String text;
 	public final int textSize;
 	
-	private boolean tmpSelected = false;
+	protected boolean tmpSelected = false;
 
 	public Button(int x, int y, int sx, int sy, String text) {
 		this(x, y, sx, sy, text, TEXT_SIZE);
