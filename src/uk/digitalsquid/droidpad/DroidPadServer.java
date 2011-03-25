@@ -72,7 +72,7 @@ public class DroidPadServer extends Service {
         showNotification();
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		
-		mode = prefs.getString("layout", "1");
+		mode = prefs.getString("layout", "1s4");
 		
 		landscape = prefs.getBoolean("orientation", false);
 
