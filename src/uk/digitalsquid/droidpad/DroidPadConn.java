@@ -24,8 +24,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
+import uk.digitalsquid.droidpad.buttons.Button;
 import uk.digitalsquid.droidpad.buttons.Item;
 import uk.digitalsquid.droidpad.buttons.Layout;
+import uk.digitalsquid.droidpad.buttons.Slider;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
@@ -61,12 +63,25 @@ public class DroidPadConn implements Runnable {
 		//Toast.makeText(parent, String.valueOf(interval), Toast.LENGTH_SHORT).show();
 		Log.v("DroidPad", "DPC: Infos recieved (initiated)");
 	}
+	
+	Layout initialButtons;
+	
 	@Override
 	public void run() {
 		Log.d("DroidPad", "DPC: Thread started. Waiting for connection...");
-		server();
+		server(false);
+		// Wait for fist button data to come through
+		while(!stopping) {
+			if((initialButtons = parent.getButtons()) != null)
+				break;
+			try {
+				Thread.sleep(30);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		serverSetup();
 		Log.d("DroidPad", "DPC: Someone has connected!");
-		
 		
 		float[] AVals;
 		String str = "";
@@ -211,7 +226,8 @@ public class DroidPadConn implements Runnable {
 	//END MAIN WINDOW NOTIFY
 	
 	//SERVER METHODS
-	private void server()
+	private void server() { server(true); }
+	private void server(boolean autoSetup)
 	{
 		serverInit();
 		if(stopping) return; // Escape method
@@ -229,7 +245,7 @@ public class DroidPadConn implements Runnable {
 			} catch (SocketException e) {
 				e.printStackTrace();
 			}
-			serverSetup();
+			if(autoSetup)serverSetup();
 			setConnectedStatus(true, s.getInetAddress().getHostAddress());
 		}
 	}
@@ -302,8 +318,29 @@ public class DroidPadConn implements Runnable {
 			Log.e("DroidPad", "DPC: Couldn't create input stream");
 		}
 		isr = new InputStreamReader(is);
+		
+		
+		int numRawDevs = 1;
+		int numAxes = 0;
+		int numButtons = 0;
+		for(Item item : initialButtons) {
+			if(item instanceof Slider) {
+				Slider s = (Slider)item;
+				switch(s.type) {
+				case X:
+				case Y:
+					numAxes += 1;
+					break;
+				case Both:
+					numAxes += 2;
+					break;
+				}
+			} else if(item instanceof Button) {
+				numButtons++;
+			}
+		}
 		try {
-			os.write(("<MODE>" + mode + "</MODE>\n").getBytes());
+			os.write(("<MODE>" + mode + "</MODE><MODESPEC>" + numRawDevs + "," + numAxes + "," + numButtons + "</MODESPEC>\n").getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
 			Log.e("DroidPad", "DPC: Error sending info to PC");
