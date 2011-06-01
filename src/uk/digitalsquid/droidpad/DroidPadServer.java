@@ -62,6 +62,8 @@ public class DroidPadServer extends Service {
 	
 	private SharedPreferences prefs;
 	
+	private MDNSBroadcaster mdns;
+	
 	// NORMAL SERVICE
 	@Override
 	public void onCreate() {
@@ -75,7 +77,7 @@ public class DroidPadServer extends Service {
 		mode = prefs.getString("layout", "1s4");
 		
 		landscape = prefs.getBoolean("orientation", false);
-
+		
 		sm = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		if(mode != "slide")
 		{
@@ -151,6 +153,10 @@ public class DroidPadServer extends Service {
 				Log.v("DroidPad", "DPS: DroidPad connection thread initiated");
 		        th.start();
 				Log.v("DroidPad", "DPS: DroidPad connection thread started!");
+				
+				Log.v("DroidPad", "DPS: Starting mDNS broadcaster");
+				mdns = new MDNSBroadcaster("DEVICE NAME", port);
+				mdns.start();
 			}
 			else
 			{
@@ -180,6 +186,8 @@ public class DroidPadServer extends Service {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		mdns.stopRunning();
+		// Let it die out by itself.
 		Log.v("DroidPad", "DPS: DPC thread down!");
 		wL.release();
 		Log.d("DroidPad", "DPS: Wifi unlocked");

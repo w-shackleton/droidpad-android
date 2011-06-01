@@ -80,7 +80,7 @@ public class DroidPadConn implements Runnable {
 				e.printStackTrace();
 			}
 		}
-		serverSetup();
+		if(!stopping) serverSetup();
 		Log.d("DroidPad", "DPC: Someone has connected!");
 		
 		float[] AVals;
