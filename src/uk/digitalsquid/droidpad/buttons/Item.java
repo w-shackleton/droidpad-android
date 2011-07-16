@@ -17,35 +17,37 @@ public abstract class Item {
 	protected static final Paint pTextS = new Paint();
     protected static final Paint pThinBorder = new Paint();
     protected static final Paint pGrayBG = new Paint();
+    
+    private static final boolean ANTIALIAS = false;
 	
     static {
-		bp.setAntiAlias(true);
+		bp.setAntiAlias(ANTIALIAS);
         bp.setColor(0xffffffff);
         bp.setStrokeWidth(5);
         bp.setStyle(Style.STROKE);
         
-        pText.setAntiAlias(true);
+        pText.setAntiAlias(ANTIALIAS);
         pText.setColor(0xffffffff);
         pText.setTextSize(TEXT_SIZE);
         pText.setTextAlign(Align.CENTER);
 		
-		bpS.setAntiAlias(true);
+		bpS.setAntiAlias(ANTIALIAS);
         bpS.setColor(0xffffffff);
         bpS.setStrokeWidth(5);
         bpS.setStyle(Style.FILL_AND_STROKE);
         
-        pTextS.setAntiAlias(true);
+        pTextS.setAntiAlias(ANTIALIAS);
         pTextS.setColor(0xff000000);
         pTextS.setTextSize(TEXT_SIZE);
         pTextS.setTextAlign(Align.CENTER);
         
-        pThinBorder.setAntiAlias(true);
+        pThinBorder.setAntiAlias(ANTIALIAS);
         pThinBorder.setColor(0xffffffff);
         pThinBorder.setTextAlign(Align.CENTER);
         pThinBorder.setStrokeWidth(2);
         pThinBorder.setStyle(Style.STROKE);
 
-        pGrayBG.setAntiAlias(true);
+        pGrayBG.setAntiAlias(ANTIALIAS);
         pGrayBG.setColor(0xff444444);
         pGrayBG.setStyle(Style.FILL);
         pGrayBG.setStrokeWidth(2);

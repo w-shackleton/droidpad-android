@@ -31,9 +31,6 @@ public class ButtonView extends View
 {
 	private boolean landscape;
 	
-	public static final int BUTTONS_X = 4;
-	public static final int BUTTONS_Y = 5;
-	
 	private final Layout currLayout;
 	
 	public ButtonView(DroidPadButtons parent, String type)
@@ -63,8 +60,8 @@ public class ButtonView extends View
 		height = canvas.getHeight();
 		
 		canvas.drawRect(0, 0, width, height, new Paint(0xFF000000));
-		widthIter = width / BUTTONS_X;
-		heightIter = height / BUTTONS_Y;
+		widthIter = width / currLayout.width;
+		heightIter = height / currLayout.height;
 		
 		for(Item item : currLayout) {
 			item.draw(canvas, widthIter, heightIter, landscape);

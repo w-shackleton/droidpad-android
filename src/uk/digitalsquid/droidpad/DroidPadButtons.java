@@ -51,9 +51,7 @@ public class DroidPadButtons extends Activity
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,   
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        // Replaced by manual text-rotate, easier to code
-        /* if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("orientation", false))
-        	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); */
+        
         i = new Intent(DroidPadButtons.this,DroidPadServer.class);
         am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         wakelock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,"DroidPad");
