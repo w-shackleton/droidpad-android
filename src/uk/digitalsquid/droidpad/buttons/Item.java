@@ -18,7 +18,7 @@ public abstract class Item {
     protected static final Paint pThinBorder = new Paint();
     protected static final Paint pGrayBG = new Paint();
     
-    private static final boolean ANTIALIAS = false;
+    private static final boolean ANTIALIAS = true;
 	
     static {
 		bp.setAntiAlias(ANTIALIAS);
