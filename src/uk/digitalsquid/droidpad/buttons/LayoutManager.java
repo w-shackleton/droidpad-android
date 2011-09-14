@@ -52,7 +52,7 @@ public final class LayoutManager {
 				return getLayoutAt(i);
 			}
 		}
-		return null;
+		return getLayoutAt(0);
 	}
 	
 	private static final Layout createLayoutAt(int pos) {
