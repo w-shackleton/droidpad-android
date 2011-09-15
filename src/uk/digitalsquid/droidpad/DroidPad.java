@@ -48,6 +48,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -479,7 +480,7 @@ public class DroidPad extends Activity /* implements SharedPreferences.OnSharedP
         	
         	if(ip != 0)
         		
-        		localiptext.setText("IP: " + ipTextFromByte(ipFromInt(ip)));
+        		localiptext.setText("IP: " + ipFromInt(ip));
         	else
         		localiptext.setText("Connecting");
             
@@ -621,19 +622,11 @@ public class DroidPad extends Activity /* implements SharedPreferences.OnSharedP
 		Log.i("DroidPad", "DP: Bye bye!");
     	super.onDestroy();
     }
-    public static final int[] ipFromInt(int value)
+    public static final String ipFromInt(int value)
     {
-    	int[] b = new int[4];
-    	b[0] = (value & 0xFF000000) >> 24;
-    	b[1] = (value & 0x00FF0000) >> 16;
-    	b[2] = (value & 0x0000FF00) >> 8;
-    	b[3] = (value & 0x000000FF);
-        return b;
+        return Formatter.formatIpAddress(value);
     }
-    public static final String ipTextFromByte(int[] ip)
-    {
-    	return String.valueOf(ip[3]) + "." + String.valueOf(ip[2]) + "." + String.valueOf(ip[1]) + "." + String.valueOf(ip[0]);
-    }
+    
     private void copyfiles() throws IOException
     {
     	String dataDir = getFileStreamPath("").getAbsolutePath() + "/";
