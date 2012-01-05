@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="aps"></string>
     <string name="hello">DroidPad</string>
     <string name="app_name">DroidPad</string>
 <string name="app_name_buttons">Buttons</string><string name="PCVersion">1.0.0.0</string><string name="NotificationTitle">DroidPad</string>
@@ -47,6 +46,8 @@
 
 </string-array>
 <string name="new_app_name">DroidPad - New UI</string>
+<string name="generic_layout_description">%1$d buttons, %2$d sliders, %3$d trackpads.</string>
+<string name="generic_layout_title">%1$s layout %2$d</string>
 
 
 </resources>
