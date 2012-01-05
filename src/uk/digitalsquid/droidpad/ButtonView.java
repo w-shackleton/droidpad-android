@@ -28,7 +28,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 
-public class ButtonView extends View
+public class ButtonView extends View implements LogTag
 {
 	private boolean landscape;
 	
@@ -38,7 +38,7 @@ public class ButtonView extends View
 	{
 		super(parent);
 		
-		Log.v("DroidPad", "Type: \"" + type + "\"");
+		Log.v(TAG, "Type: \"" + type + "\"");
 		
         landscape = PreferenceManager.getDefaultSharedPreferences(parent).getBoolean("orientation", false);
         

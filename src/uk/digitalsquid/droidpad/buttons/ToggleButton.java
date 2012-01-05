@@ -1,11 +1,12 @@
 package uk.digitalsquid.droidpad.buttons;
 
+import uk.digitalsquid.droidpad.LogTag;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.Log;
 
-public class ToggleButton extends Button {
+public class ToggleButton extends Button implements LogTag {
 
 	public ToggleButton(int x, int y, int sx, int sy, String text) {
 		super(x, y, sx, sy, text);
@@ -32,7 +33,7 @@ public class ToggleButton extends Button {
 		super.onMouseOff();
 		tmpSelected = !tmpSelected;
 		selected = !selected;
-		Log.v("DroidPad", "Released");
+		Log.v(TAG, "Released");
 	}
 	
 	@Override

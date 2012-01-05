@@ -37,7 +37,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
-public class DroidPadServer extends Service {
+public class DroidPadServer extends Service implements LogTag {
 	private NotificationManager NM;
 	private Notification notification;
 	private PendingIntent contentIntent;
@@ -68,7 +68,7 @@ public class DroidPadServer extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		Log.d("DroidPad", "DPS: Service Created");
+		Log.d(TAG, "DPS: Service Created");
         NM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         // Display a notification about us starting.  We put an icon in the status bar.
         showNotification();
@@ -90,28 +90,28 @@ public class DroidPadServer extends Service {
 				Toast.makeText(this, "ERROR: Accelerometer not found!", Toast.LENGTH_SHORT).show();
 			}
 			
-			Log.v("DroidPad", "DPS: Sensors initiated.");
+			Log.v(TAG, "DPS: Sensors initiated.");
 		}
 		calibX = prefs.getFloat("calibX", 0);
 		calibY = prefs.getFloat("calibY", 0);
-		Log.v("DroidPad", "DPS: Calibration " + String.valueOf(calibX) + ", " + String.valueOf(calibY) + " found.");
+		Log.v(TAG, "DPS: Calibration " + String.valueOf(calibX) + ", " + String.valueOf(calibY) + " found.");
 		
 		WifiManager wm = null;
         
 		try{ wm = (WifiManager) getSystemService(Context.WIFI_SERVICE); }
 		catch(Exception e)
 		{
-			Log.w("DroidPad", "DPS: Could not get wifi manager");
+			Log.w(TAG, "DPS: Could not get wifi manager");
 		}
 		if(wm != null)
 		{
-			try{ wL = wm.createWifiLock(WifiManager.WIFI_MODE_FULL, "DroidPad"); }
+			try{ wL = wm.createWifiLock(WifiManager.WIFI_MODE_FULL, TAG); }
 			catch (Exception e)
 			{
-				Log.w("DroidPad", "DPS: Could not create wifi lock");
+				Log.w(TAG, "DPS: Could not create wifi lock");
 			}
 		}
-		Log.v("DroidPad", "DPS: Wifi lock sorted...");
+		Log.v(TAG, "DPS: Wifi lock sorted...");
         
 	}
 	private void showNotification() {
@@ -123,13 +123,13 @@ public class DroidPadServer extends Service {
 				getText(R.string.NotificationText), contentIntent);
 		notification.flags |= Notification.FLAG_ONGOING_EVENT;
 		NM.notify(R.string.NotificationTitle, notification);
-		Log.v("DroidPad", "DPS: Notification");
+		Log.v(TAG, "DPS: Notification");
 	}
 	@Override
 	public void onStart(Intent intent, int startId)
 	{
 		super.onStart(intent, startId);
-		Log.d("DroidPad", "DPS: Service Started");
+		Log.d(TAG, "DPS: Service Started");
 		switch(intent.getExtras().getInt("purpose"))
 		{
 		case DroidPad.PURPOSE_SETUP:
@@ -141,35 +141,35 @@ public class DroidPadServer extends Service {
 				if(wL != null)
 				{
 					wL.acquire();
-					Log.d("DroidPad", "DPS: Wifi Locked");
+					Log.d(TAG, "DPS: Wifi Locked");
 				}
 		        //Toast.makeText(this, "Locking Wifi.", Toast.LENGTH_SHORT).show();
 				interval = intent.getExtras().getInt("interval", 20);
 				port = intent.getExtras().getInt("port", 3141);
 
 		        apc = new DroidPadConn(this, port, interval, mode, prefs.getBoolean("reverse-x", false), prefs.getBoolean("reverse-y", false));
-				Log.v("DroidPad", "DPS: DroidPad connection initiated");
+				Log.v(TAG, "DPS: DroidPad connection initiated");
 		        th = new Thread(apc);
-				Log.v("DroidPad", "DPS: DroidPad connection thread initiated");
+				Log.v(TAG, "DPS: DroidPad connection thread initiated");
 		        th.start();
-				Log.v("DroidPad", "DPS: DroidPad connection thread started!");
+				Log.v(TAG, "DPS: DroidPad connection thread started!");
 				
-				Log.v("DroidPad", "DPS: Starting mDNS broadcaster");
+				Log.v(TAG, "DPS: Starting mDNS broadcaster");
 				mdns = new MDNSBroadcaster("DEVICE NAME", port);
 				mdns.start();
 			}
 			else
 			{
-				Log.w("DroidPad", "DPS: Service started but already set up (this shouldn't happen)");
+				Log.w(TAG, "DPS: Service started but already set up (this shouldn't happen)");
 			}
 			break;
 		case DroidPad.PURPOSE_CALIBRATE:
 			calibX = x;
 			calibY = y;
-			Log.v("DroidPad", "DPS: Calibrated");
+			Log.v(TAG, "DPS: Calibrated");
 			break;
 		case 0:
-			Log.i("DroidPad", "DPS: Unknown purpose, killing...");
+			Log.i(TAG, "DPS: Unknown purpose, killing...");
 			stopSelf();
 			break;
 		}
@@ -179,7 +179,7 @@ public class DroidPadServer extends Service {
 		NM.cancel(R.string.NotificationTitle);
 		if(asl != null)
 			sm.unregisterListener(asl);
-		Log.v("DroidPad", "DPS: Stopping DPC thread...");
+		Log.v(TAG, "DPS: Stopping DPC thread...");
 		apc.killThread();
 		try {
 			th.join();
@@ -188,15 +188,15 @@ public class DroidPadServer extends Service {
 		}
 		mdns.stopRunning();
 		// Let it die out by itself.
-		Log.v("DroidPad", "DPS: DPC thread down!");
+		Log.v(TAG, "DPS: DPC thread down!");
 		wL.release();
-		Log.d("DroidPad", "DPS: Wifi unlocked");
+		Log.d(TAG, "DPS: Wifi unlocked");
 		Editor prefEd = PreferenceManager.getDefaultSharedPreferences(this).edit();
 		prefEd.putFloat("calibX", calibX);
 		prefEd.putFloat("calibY", calibY);
 		prefEd.commit();
         //Toast.makeText(this, "Unlocking Wifi.", Toast.LENGTH_SHORT).show();
-		Log.d("DroidPad", "DPS: Service destroyed & prefs saved.");
+		Log.d(TAG, "DPS: Service destroyed & prefs saved.");
 		super.onDestroy();
 	}
 	// END NORMAL SERVICE

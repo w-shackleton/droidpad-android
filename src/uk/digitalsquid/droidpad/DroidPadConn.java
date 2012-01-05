@@ -32,7 +32,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 
-public class DroidPadConn implements Runnable {
+public class DroidPadConn implements Runnable, LogTag {
 	private ServerSocket ss;
 	private Socket s;
 	private OutputStream os;
@@ -61,14 +61,14 @@ public class DroidPadConn implements Runnable {
 		
 		mode = Mode;
 		//Toast.makeText(parent, String.valueOf(interval), Toast.LENGTH_SHORT).show();
-		Log.v("DroidPad", "DPC: Infos recieved (initiated)");
+		Log.v(TAG, "DPC: Infos recieved (initiated)");
 	}
 	
 	Layout initialButtons;
 	
 	@Override
 	public void run() {
-		Log.d("DroidPad", "DPC: Thread started. Waiting for connection...");
+		Log.d(TAG, "DPC: Thread started. Waiting for connection...");
 		server(false);
 		// Wait for fist button data to come through
 		while(!stopping) {
@@ -81,7 +81,7 @@ public class DroidPadConn implements Runnable {
 			}
 		}
 		if(!stopping) serverSetup();
-		Log.d("DroidPad", "DPC: Someone has connected!");
+		Log.d(TAG, "DPC: Someone has connected!");
 		
 		float[] AVals;
 		String str = "";
@@ -132,9 +132,9 @@ public class DroidPadConn implements Runnable {
 				} catch (IOException e) {
 					if(!stopping)
 					{
-						Log.d("DroidPad", "DPC: Waiting for connection...");
+						Log.d(TAG, "DPC: Waiting for connection...");
 						server();
-						Log.d("DroidPad", "DPC: Someone else has connected!");
+						Log.d(TAG, "DPC: Someone else has connected!");
 					}
 				}
 			}
@@ -145,7 +145,7 @@ public class DroidPadConn implements Runnable {
 	//SETUP
 	public final synchronized void killThread()
 	{
-		Log.d("DroidPad", "DPC: Thread dying...");
+		Log.d(TAG, "DPC: Thread dying...");
 		if(!stopping)
 		{
 			stopping = true;
@@ -190,7 +190,7 @@ public class DroidPadConn implements Runnable {
 				}
 			}
 		}
-		Log.d("DroidPad", "DPC: Thread dead!");
+		Log.d(TAG, "DPC: Thread dead!");
 	}
 	//END SETUP
 	
@@ -259,7 +259,7 @@ public class DroidPadConn implements Runnable {
 					ss = new ServerSocket(port);
 				} catch (IOException e) {
 					e.printStackTrace();
-					Log.e("DroidPad", "DPC: Couldn't initiate ServerSocket, perhaps not connected to network...");
+					Log.e(TAG, "DPC: Couldn't initiate ServerSocket, perhaps not connected to network...");
 					try
 					{
 						Thread.sleep(500);
@@ -276,7 +276,7 @@ public class DroidPadConn implements Runnable {
 			} catch (SocketException e)
 			{
 				e.printStackTrace();
-				Log.w("DroidPad", "DPC: Couldn't set timeout");
+				Log.w(TAG, "DPC: Couldn't set timeout");
 			}
 		}
 	}
@@ -298,7 +298,7 @@ public class DroidPadConn implements Runnable {
 					if(fb % 3 == 0)
 						fbs = "FIZZ";
 				}
-				Log.v("DroidPad", "DPC: Timed out, retrying... (" + fbs + " retries)");
+				Log.v(TAG, "DPC: Timed out, retrying... (" + fbs + " retries)");
 				fb++;
 			}
 		}
@@ -309,13 +309,13 @@ public class DroidPadConn implements Runnable {
 			os = s.getOutputStream();
 		} catch (IOException e) {
 			e.printStackTrace();
-			Log.e("DroidPad", "DPC: Couldn't create output stream");
+			Log.e(TAG, "DPC: Couldn't create output stream");
 		}
 		try {
 			is = s.getInputStream();
 		} catch (IOException e) {
 			e.printStackTrace();
-			Log.e("DroidPad", "DPC: Couldn't create input stream");
+			Log.e(TAG, "DPC: Couldn't create input stream");
 		}
 		isr = new InputStreamReader(is);
 		
@@ -343,7 +343,7 @@ public class DroidPadConn implements Runnable {
 			os.write(("<MODE>" + mode + "</MODE><MODESPEC>" + numRawDevs + "," + numAxes + "," + numButtons + "</MODESPEC>\n").getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
-			Log.e("DroidPad", "DPC: Error sending info to PC");
+			Log.e(TAG, "DPC: Error sending info to PC");
 		}
 	}
 }

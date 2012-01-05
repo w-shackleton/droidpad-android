@@ -59,7 +59,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class DroidPad extends Activity /* implements SharedPreferences.OnSharedPreferenceChangeListener */ {
+public class DroidPad extends Activity implements LogTag /* implements SharedPreferences.OnSharedPreferenceChangeListener */ {
 	private Button startit, startb, enablewifi, disablewifi, changePref;
 	private Intent i, j;
 	/*private ImageView pmStat, mmStat, bmStat, ppStat;*/
@@ -85,7 +85,7 @@ public class DroidPad extends Activity /* implements SharedPreferences.OnSharedP
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("DroidPad", "DP: Hello!");
+        Log.i(TAG, "DP: Hello!");
         setContentView(R.layout.main);
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         try {
@@ -97,8 +97,8 @@ public class DroidPad extends Activity /* implements SharedPreferences.OnSharedP
 		if(prefs.getInt("firstRun", 1) == 1)
 		{
 			prefs.edit().putInt("firstRun", 0).commit();
-			Log.v("DroidPad", "DP: First time, go to manual page");
-			Log.v("DroidPad", "DP: ");
+			Log.v(TAG, "DP: First time, go to manual page");
+			Log.v(TAG, "DP: ");
 			startActivity(new Intent(this, DroidPadIntro.class));
 		}
         
@@ -139,11 +139,11 @@ public class DroidPad extends Activity /* implements SharedPreferences.OnSharedP
         {
         	showDialog(DIALOG_ID_NO_ACCEL);
         	startit.setEnabled(false);
-			Log.i("DroidPad", "DP: No accelerometer!");
+			Log.i(TAG, "DP: No accelerometer!");
         }
         if(isRunning("DroidPadServer"))
         {
-			Log.v("DroidPad", "DP: DPS already running");
+			Log.v(TAG, "DP: DPS already running");
         	startit.setText("Stop");
 	        ontext.setText("Status: On");
 			startb.setEnabled(true);
@@ -157,7 +157,7 @@ public class DroidPad extends Activity /* implements SharedPreferences.OnSharedP
         }
 
         wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        wL = wm.createWifiLock(WifiManager.WIFI_MODE_FULL, "DroidPad");
+        wL = wm.createWifiLock(WifiManager.WIFI_MODE_FULL, TAG);
 		wL.acquire();
 		//Toast.makeText(getBaseContext(), "Locking Wifi", Toast.LENGTH_SHORT).show();
 		
@@ -201,7 +201,7 @@ public class DroidPad extends Activity /* implements SharedPreferences.OnSharedP
 			case R.id.Startit:
 				if(!running)
 				{
-					Log.i("DroidPad", "DP: Starting DroidPad");
+					Log.i(TAG, "DP: Starting DroidPad");
 					i = new Intent(DroidPad.this, DroidPadServer.class);
 					i.putExtra("purpose", PURPOSE_SETUP);
 					try
@@ -211,7 +211,7 @@ public class DroidPad extends Activity /* implements SharedPreferences.OnSharedP
 					catch (NumberFormatException e)
 					{
 						Toast.makeText(getBaseContext(), "In Preferences, \"Update Interval\" is not a number!", Toast.LENGTH_LONG).show();
-						Log.w("DroidPad", "DP: Number format error");
+						Log.w(TAG, "DP: Number format error");
 						return;
 					}
 					
@@ -222,17 +222,17 @@ public class DroidPad extends Activity /* implements SharedPreferences.OnSharedP
 					catch (NumberFormatException e)
 					{
 						Toast.makeText(getBaseContext(), "In Preferences, \"Port\" is not a number!", Toast.LENGTH_LONG).show();
-						Log.w("DroidPad", "DP: Number format error");
+						Log.w(TAG, "DP: Number format error");
 						return;
 					}
-					Log.v("DroidPad", "DP: Starting DPS service");
+					Log.v(TAG, "DP: Starting DPS service");
 					startService(i);
-					Log.v("DroidPad", "DP: DPS service started! (will start when loop is free)");
+					Log.v(TAG, "DP: DPS service started! (will start when loop is free)");
 					startit.setText("Stop");
 					startb.setEnabled(true);
 					ontext.setText("Status: On");
 					bind();
-					Log.v("DroidPad", "DP: Bound to service");
+					Log.v(TAG, "DP: Bound to service");
 					running = true;
 					if(mainMenu != null)
 					{
@@ -242,12 +242,12 @@ public class DroidPad extends Activity /* implements SharedPreferences.OnSharedP
 				}
 		        else
 		        {
-					Log.i("DroidPad", "DP: Stopping DroidPad");
+					Log.i(TAG, "DP: Stopping DroidPad");
 		        	sendParentKill();
 		        	unbind();
 		        	i = new Intent(DroidPad.this, DroidPadServer.class);
 		        	stopService(i);
-					Log.v("DroidPad", "DP: Sucessfully killed DPS");
+					Log.v(TAG, "DP: Sucessfully killed DPS");
 		        	startit.setText("Start");
 					startb.setEnabled(false);
 		        	ontext.setText("Status: Off");
@@ -352,7 +352,7 @@ public class DroidPad extends Activity /* implements SharedPreferences.OnSharedP
             { 
                 public void onClick(DialogInterface dialog, int which)
                 {
-					Log.v("DroidPad", "DP: Bye bye!");
+					Log.v(TAG, "DP: Bye bye!");
                 	finish();
                 }
             }
@@ -608,7 +608,7 @@ public class DroidPad extends Activity /* implements SharedPreferences.OnSharedP
         		updateIPT(wm.getWifiState() == WifiManager.WIFI_STATE_ENABLED);
 		        
     		}
-			Log.v("DroidPad", "DP: IP text set");
+			Log.v(TAG, "DP: IP text set");
     	}
     };
     //END BINDER
@@ -619,7 +619,7 @@ public class DroidPad extends Activity /* implements SharedPreferences.OnSharedP
         
         wL.release();
 		//Toast.makeText(getBaseContext(), "Unlocking Wifi", Toast.LENGTH_SHORT).show();
-		Log.i("DroidPad", "DP: Bye bye!");
+		Log.i(TAG, "DP: Bye bye!");
     	super.onDestroy();
     }
     public static final String ipFromInt(int value)
@@ -640,7 +640,7 @@ public class DroidPad extends Activity /* implements SharedPreferences.OnSharedP
     	{
     		//Toast.makeText(this, "Help out of date", Toast.LENGTH_LONG).show();
     		prefs.edit().putInt("currentHelpVer", curVer).commit();
-    		Log.i("DroidPad", "DP: First time (or newer), so copying help files");
+    		Log.i(TAG, "DP: First time (or newer), so copying help files");
     	}
     	else return;
 		copyfile(dataDir + "iconlarge.png", R.raw.iconlarge);
@@ -660,7 +660,7 @@ public class DroidPad extends Activity /* implements SharedPreferences.OnSharedP
 	    }
 	    os.close();
 	    is.close();
-		Log.v("DroidPad", "DP: Copied " + fullPath);
+		Log.v(TAG, "DP: Copied " + fullPath);
     }
     
     private void updateIPT(boolean wifiOn)

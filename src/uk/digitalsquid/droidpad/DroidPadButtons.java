@@ -34,7 +34,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ToggleButton;
 
-public class DroidPadButtons extends Activity
+public class DroidPadButtons extends Activity implements LogTag
 {
 	private DroidPadServer apsbound = null;
 	private Intent i;
@@ -54,7 +54,7 @@ public class DroidPadButtons extends Activity
         
         i = new Intent(DroidPadButtons.this,DroidPadServer.class);
         am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-        wakelock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,"DroidPad");
+        wakelock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,TAG);
         wakelock.acquire();
         
         if(!isRunning("DroidPadServer"))
@@ -86,7 +86,7 @@ public class DroidPadButtons extends Activity
             apsbound = ((DroidPadServer.LocalBinder)service).getService();
             
             bview = new ButtonView(DroidPadButtons.this, apsbound.mode);
-            Log.v("DroidPad", "DPB: Using mode " + apsbound.mode);
+            Log.v(TAG, "DPB: Using mode " + apsbound.mode);
             DroidPadButtons.this.setContentView(bview);
         }
 

@@ -8,7 +8,7 @@ import javax.jmdns.ServiceInfo;
 import uk.digitalsquid.ext.Base64;
 import android.util.Log;
 
-public class MDNSBroadcaster extends Thread {
+public class MDNSBroadcaster extends Thread implements LogTag {
 	public final static String REMOTE_TYPE = "_droidpad._tcp.local.";
 	
 	private JmDNS jmdns;
@@ -31,7 +31,7 @@ public class MDNSBroadcaster extends Thread {
 	        try {
 				jmdns = JmDNS.create();
 			} catch (IOException e) {
-				Log.e("DroidPad", "Couldn't start JmDNS! Will try again soon.");
+				Log.e(TAG, "Couldn't start JmDNS! Will try again soon.");
 				e.printStackTrace();
 				try {
 					Thread.sleep(2000);
@@ -58,7 +58,7 @@ public class MDNSBroadcaster extends Thread {
 				jmdns.registerService(dpAnnounce);
 				registered = true;
 			} catch (IOException e) {
-				Log.e("DroidPad", "Couldn't register JmDNS! Will try again soon.");
+				Log.e(TAG, "Couldn't register JmDNS! Will try again soon.");
 				e.printStackTrace();
 				try {
 					Thread.sleep(2000);
