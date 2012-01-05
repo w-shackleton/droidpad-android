@@ -19,6 +19,7 @@ package uk.digitalsquid.droidpad;
 import uk.digitalsquid.droidpad.buttons.Item;
 import uk.digitalsquid.droidpad.buttons.Layout;
 import uk.digitalsquid.droidpad.buttons.LayoutManager;
+import uk.digitalsquid.droidpad.buttons.Slider;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.preference.PreferenceManager;
@@ -41,8 +42,15 @@ public class ButtonView extends View
 		
         landscape = PreferenceManager.getDefaultSharedPreferences(parent).getBoolean("orientation", false);
         
+        boolean floatingAxes = !PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("axesfloat", false);
+        
         //type="2";
         currLayout = LayoutManager.getLayoutByName(type);
+        for(Item item : currLayout) {
+        	if(item instanceof Slider) {
+        		((Slider)item).setAxesFloat(floatingAxes);
+        	}
+        }
 		
 		parent.sendEvent(currLayout);
 	}

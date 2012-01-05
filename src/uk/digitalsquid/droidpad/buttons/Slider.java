@@ -65,11 +65,23 @@ public class Slider extends Item {
 			return "{A" + ax + "," + ay + "}";
 		}
 	}
+	
+	private boolean axesFloat = false;
+	
+	/**
+	 * When axes are floating, they don't reset when let go of
+	 * @param axesFloat If true, axes will float.
+	 */
+	public void setAxesFloat(boolean axesFloat) {
+		this.axesFloat = axesFloat;
+	}
 
 	@Override
 	public void resetStickyLock() {
-		tmpAx = 0;
-		tmpAy = 0;
+		if(!axesFloat) {
+			tmpAx = 0;
+			tmpAy = 0;
+		}
 	}
 
 	@Override
