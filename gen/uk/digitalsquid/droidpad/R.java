@@ -50,14 +50,18 @@ public final class R {
         public static final int ScrollView01=0x7f0a0000;
         public static final int Startit=0x7f0a0024;
         public static final int Title=0x7f0a0023;
-        public static final int about=0x7f0a0033;
-        public static final int calibrate=0x7f0a0032;
+        public static final int about=0x7f0a0038;
+        public static final int calibrate=0x7f0a0037;
         public static final int helpBaseBar=0x7f0a001e;
         public static final int helpDoneButton=0x7f0a0021;
         public static final int helpWebview=0x7f0a0022;
         public static final int helpWindow=0x7f0a001d;
         public static final int introBackButton=0x7f0a001f;
         public static final int introForwardButton=0x7f0a0020;
+        public static final int jsList=0x7f0a0032;
+        public static final int jsTab=0x7f0a0031;
+        public static final int linearLayout1=0x7f0a0030;
+        public static final int mouseTab=0x7f0a0033;
         public static final int nButton01=0x7f0a0009;
         public static final int nButton02=0x7f0a000a;
         public static final int nButton03=0x7f0a000b;
@@ -78,9 +82,10 @@ public final class R {
         public static final int ppToBeginning=0x7f0a0017;
         public static final int ppToEnd=0x7f0a0018;
         public static final int ppWhiteToggle=0x7f0a0016;
-        public static final int settings=0x7f0a0031;
-        public static final int website=0x7f0a0034;
-        public static final int wifi=0x7f0a0030;
+        public static final int settings=0x7f0a0036;
+        public static final int slideTab=0x7f0a0034;
+        public static final int website=0x7f0a0039;
+        public static final int wifi=0x7f0a0035;
     }
     public static final class layout {
         public static final int about=0x7f030000;
@@ -89,6 +94,7 @@ public final class R {
         public static final int buttonsp=0x7f030003;
         public static final int intro=0x7f030004;
         public static final int main=0x7f030005;
+        public static final int main2=0x7f030006;
     }
     public static final class menu {
         public static final int menu=0x7f090000;
@@ -125,6 +131,7 @@ public final class R {
         public static final int layoutPrefTitle=0x7f070004;
         public static final int layoutSummary=0x7f070005;
         public static final int layoutTitle=0x7f070003;
+        public static final int new_app_name=0x7f070029;
         public static final int orientationOff=0x7f070015;
         public static final int orientationOn=0x7f070014;
         public static final int orientationTitle=0x7f070013;

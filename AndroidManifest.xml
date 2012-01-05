@@ -21,6 +21,13 @@
 <activity android:name="uk.digitalsquid.droidpad.SettingsMenu" android:icon="@drawable/icon" android:launchMode="singleTop" android:label="Settings"></activity>
 <activity android:name="DroidPadAbout" android:icon="@drawable/icon" android:label="About DroidPad"></activity>
 <activity android:name="DroidPadIntro" android:icon="@drawable/icon" android:label="DroidPad Help"></activity>
+<activity android:theme="@android:style/Theme.NoTitleBar" android:name="MainScreen" android:label="@string/new_app_name">
+    <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+    </intent-filter>
+</activity>
+<activity android:name=".optiontabs.JSTab"></activity>
 </application>
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="7"/>
 
