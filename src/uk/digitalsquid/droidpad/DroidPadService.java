@@ -37,16 +37,19 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
-public class DroidPadServer extends Service {
+public class DroidPadService extends Service {
 	private NotificationManager NM;
 	private Notification notification;
 	private PendingIntent contentIntent;
 	private Boolean setup = false;
-	private DroidPadConn apc;
+	private Connection apc;
 	private DroidPad win;
 	private Thread th;
 	public int port;
 	public int interval;
+	
+	public static final int PURPOSE_SETUP = 1;
+	public static final int PURPOSE_CALIBRATE = 2;
 	
 	public String mode = "1";
 	public boolean invX, invY;
@@ -147,7 +150,7 @@ public class DroidPadServer extends Service {
 				interval = intent.getExtras().getInt("interval", 20);
 				port = intent.getExtras().getInt("port", 3141);
 
-		        apc = new DroidPadConn(this, port, interval, mode, prefs.getBoolean("reverse-x", false), prefs.getBoolean("reverse-y", false));
+		        apc = new Connection(this, port, interval, mode, prefs.getBoolean("reverse-x", false), prefs.getBoolean("reverse-y", false));
 				Log.v("DroidPad", "DPS: DroidPad connection initiated");
 		        th = new Thread(apc);
 				Log.v("DroidPad", "DPS: DroidPad connection thread initiated");
@@ -208,8 +211,8 @@ public class DroidPadServer extends Service {
 	}
 	
     public class LocalBinder extends Binder {
-        DroidPadServer getService() {
-            return DroidPadServer.this;
+        DroidPadService getService() {
+            return DroidPadService.this;
         }
     }
     private final IBinder mBinder = new LocalBinder();
@@ -243,6 +246,10 @@ public class DroidPadServer extends Service {
 		}
     };
     
+    /**
+     * Returns the analogue JS values from the accelerometer reports.
+     * @return
+     */
     public synchronized float[] getAVals()
     {
     	return new float[] {x - calibX, y - calibY, z};

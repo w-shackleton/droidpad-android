@@ -27,7 +27,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageButton;
 
-public class DroidPadIntro extends Activity implements OnClickListener {
+public class IntroActivity extends Activity implements OnClickListener {
 	
 	WebView web;
 	Button doneB;

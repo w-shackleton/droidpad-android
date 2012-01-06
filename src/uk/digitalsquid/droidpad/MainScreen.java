@@ -4,9 +4,16 @@ import java.util.List;
 
 import uk.digitalsquid.droidpad.buttons.Layout;
 import android.app.TabActivity;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -17,6 +24,7 @@ import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * This is the new, much improved main UI for DroidPad.
@@ -136,4 +144,58 @@ public class MainScreen extends TabActivity implements OnClickListener, OnItemCl
 			type = App.LAYOUTS_SLIDE;
 		Log.v(TAG, "Using layout type " + type + ", \"" + layout.getTitle() + "\".");
 	}
+	
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+    	MenuInflater inflater = getMenuInflater();
+    	inflater.inflate(R.menu.menu, menu);
+		return true;
+    	
+    }
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+    	if (!item.hasSubMenu())
+    	{
+    		Intent i;
+    		switch (item.getItemId())
+    		{
+    		case R.id.wifi:
+    			i = new Intent(Settings.ACTION_WIFI_SETTINGS);
+    			try
+    			{
+    				startActivity(i);
+    			}
+    			catch (ActivityNotFoundException a)
+    			{
+    				Toast.makeText(getBaseContext(), "Could not launch Wifi settings.", Toast.LENGTH_SHORT).show();
+    			}
+    			break;
+    		case R.id.website:
+    			i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://digitalsquid.co.uk/droidpad/"));
+    			try
+    			{
+    				startActivity(i);
+    			}
+    			catch (ActivityNotFoundException a)
+    			{
+    				Toast.makeText(getBaseContext(), "Could not launch Browser.", Toast.LENGTH_SHORT).show();
+    			}
+    			break;
+    		case R.id.settings:
+    			i = new Intent(this, SettingsMenu.class);
+    			startActivity(i);
+    			break;
+    		case R.id.about:
+    			i = new Intent(this, AboutActivity.class);
+    			startActivity(i);
+    			break;
+    		case R.id.calibrate:
+    			i = new Intent(this, DroidPadService.class);
+				i.putExtra("purpose", DroidPadService.PURPOSE_CALIBRATE);
+				startService(i);
+				break;
+    		}
+    	}
+		return true;
+    }
 }

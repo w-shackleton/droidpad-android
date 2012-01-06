@@ -18,47 +18,49 @@ package uk.digitalsquid.droidpad;
 
 import uk.digitalsquid.droidpad.buttons.Item;
 import uk.digitalsquid.droidpad.buttons.Layout;
-import uk.digitalsquid.droidpad.buttons.LayoutManager;
 import uk.digitalsquid.droidpad.buttons.Slider;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 
+/**
+ * Shows the buttons onscreen.
+ * @author william
+ *
+ */
 public class ButtonView extends View
 {
 	private boolean landscape;
 	
-	private final Layout currLayout;
+	private final Layout layout;
 	
-	public ButtonView(DroidPadButtons parent, String type)
-	{
+	public ButtonView(Buttons parent, Layout layout) {
 		super(parent);
-		
-		Log.v("DroidPad", "Type: \"" + type + "\"");
 		
         landscape = PreferenceManager.getDefaultSharedPreferences(parent).getBoolean("orientation", false);
         
         boolean floatingAxes = !PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("axesfloat", false);
         
         //type="2";
-        currLayout = LayoutManager.getLayoutByName(type);
-        for(Item item : currLayout) {
+        this.layout = layout;
+        for(Item item : layout) {
         	if(item instanceof Slider) {
         		((Slider)item).setAxesFloat(floatingAxes);
         	}
         }
 		
-		parent.sendEvent(currLayout);
+		parent.sendEvent(layout);
 	}
 
 	private int widthIter;
 	private int heightIter;
 	
 	private int width, height;
+	
+	private static final Paint P_BLACK = new Paint(0xFF000000);
 	
 	@Override
 	public void onDraw(Canvas canvas)
@@ -67,11 +69,11 @@ public class ButtonView extends View
 		width = canvas.getWidth();
 		height = canvas.getHeight();
 		
-		canvas.drawRect(0, 0, width, height, new Paint(0xFF000000));
-		widthIter = width / currLayout.width;
-		heightIter = height / currLayout.height;
+		canvas.drawRect(0, 0, width, height, P_BLACK);
+		widthIter = width / layout.width;
+		heightIter = height / layout.height;
 		
-		for(Item item : currLayout) {
+		for(Item item : layout) {
 			item.draw(canvas, widthIter, heightIter, landscape);
 		}
 	}
@@ -80,7 +82,7 @@ public class ButtonView extends View
 		processPoint(x, y, false);
 	}
 	private void processPoint(float x, float y, boolean up) {
-		for(Item item : currLayout) {
+		for(Item item : layout) {
 			if(item.pointIsInArea(x, y)) {
 				if(!up)
 					item.onMouseOn(x, y);
@@ -96,7 +98,7 @@ public class ButtonView extends View
 	 * Removes the sticky lock from each button indicating that at least 1 thing is pressing it.
 	 */
 	private void resetItemSticky() {
-		for(Item item : currLayout) {
+		for(Item item : layout) {
 			item.resetStickyLock();
 		}
 	}
@@ -105,7 +107,7 @@ public class ButtonView extends View
 	 * Sets the sticky lock from each button indicating that at least 1 thing is pressing it.
 	 */
 	private void finaliseItemState() {
-		for(Item item : currLayout) {
+		for(Item item : layout) {
 			item.finaliseState();
 		}
 	}

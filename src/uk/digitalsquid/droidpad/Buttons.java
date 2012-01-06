@@ -34,17 +34,15 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ToggleButton;
 
-public class DroidPadButtons extends Activity
+public class Buttons extends Activity
 {
-	private DroidPadServer apsbound = null;
-	private Intent i;
+	private DroidPadService boundService = null;
+	private Intent intent;
 	private ActivityManager am;
 	WakeLock wakelock;
-	ToggleButton tbutton;
 	
 	ButtonView bview;
 	
-    /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,12 +50,14 @@ public class DroidPadButtons extends Activity
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,   
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         
-        i = new Intent(DroidPadButtons.this,DroidPadServer.class);
+        intent = new Intent(Buttons.this,DroidPadService.class);
         am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         wakelock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,"DroidPad");
         wakelock.acquire();
         
-        if(!isRunning("DroidPadServer"))
+        // We will now start the service to get DroidPad running.
+        
+        if(!isRunning("DroidPadService"))
         {
         	finish();
         }
@@ -83,26 +83,26 @@ public class DroidPadButtons extends Activity
     {
         public void onServiceConnected(ComponentName className, IBinder service)
         {
-            apsbound = ((DroidPadServer.LocalBinder)service).getService();
+            boundService = ((DroidPadService.LocalBinder)service).getService();
             
-            bview = new ButtonView(DroidPadButtons.this, apsbound.mode);
-            Log.v("DroidPad", "DPB: Using mode " + apsbound.mode);
-            DroidPadButtons.this.setContentView(bview);
+            bview = new ButtonView(Buttons.this, boundService.mode);
+            Log.v("DroidPad", "DPB: Using mode " + boundService.mode);
+            Buttons.this.setContentView(bview);
         }
 
         public void onServiceDisconnected(ComponentName className) {
-            apsbound = null;
+            boundService = null;
         }
     };
 
     private void bind()
     {
-		Intent j = i;
+		Intent j = intent;
         bindService(j,mConnection,0);
     }
     private void unbind()
     {
-    	if(apsbound != null)
+    	if(boundService != null)
     	{
     		unbindService(mConnection);
     	}
@@ -110,7 +110,7 @@ public class DroidPadButtons extends Activity
     @Override
     public void onDestroy()
     {
-        if(isRunning("DroidPadServer"))
+        if(isRunning("DroidPadService"))
         {
         	unbind();
         }
@@ -120,6 +120,6 @@ public class DroidPadButtons extends Activity
     
     public void sendEvent(Layout layout)
     {
-    	apsbound.buttons = layout;
+    	boundService.buttons = layout;
     }
 }
