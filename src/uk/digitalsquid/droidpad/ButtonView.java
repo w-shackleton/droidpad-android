@@ -20,9 +20,11 @@ import uk.digitalsquid.droidpad.buttons.Item;
 import uk.digitalsquid.droidpad.buttons.Layout;
 import uk.digitalsquid.droidpad.buttons.ModeSpec;
 import uk.digitalsquid.droidpad.buttons.Slider;
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.preference.PreferenceManager;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -36,16 +38,33 @@ public class ButtonView extends View implements LogTag
 {
 	private boolean landscape;
 	
-	private final Layout layout;
+	private Layout layout;
 	
-	public ButtonView(Buttons parent, ModeSpec mode) {
-		super(parent);
+	Buttons parent;
+	
+	public ButtonView(Context context, AttributeSet attrib) {
+		super(context, attrib);
+		if(isInEditMode()) return;
+        landscape = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("orientation", false);
+	}
+	
+	public ButtonView(Context context) {
+		super(context);
+		if(isInEditMode()) return;
+        landscape = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("orientation", false);
+	}
+	
+	/**
+	 * Sets the current mode spec. Should only be called once, when the view is created.
+	 * This is delayed as the class is instantiated through XML
+	 * @param mode
+	 */
+	public void setModeSpec(Buttons parent, ModeSpec mode) {
+        boolean floatingAxes = !PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("axesfloat", false);
+		
+		this.parent = parent;
 		
 		layout = mode.getLayout(); // No need to keep type?
-		
-        landscape = PreferenceManager.getDefaultSharedPreferences(parent).getBoolean("orientation", false);
-        
-        boolean floatingAxes = !PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("axesfloat", false);
         
         for(Item item : layout) {
         	if(item instanceof Slider) {
@@ -71,6 +90,7 @@ public class ButtonView extends View implements LogTag
 		height = canvas.getHeight();
 		
 		canvas.drawRect(0, 0, width, height, P_BLACK);
+		if(isInEditMode()) return;
 		widthIter = width / layout.width;
 		heightIter = height / layout.height;
 		
@@ -155,6 +175,9 @@ public class ButtonView extends View implements LogTag
 				processPoint(event.getX(i), event.getY(i));
 			}
 		}
+		
+		parent.sendEvent(layout); // Make sure always latest - eg service restart
+		
 		finaliseItemState();
 		
 		invalidate();

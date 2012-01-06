@@ -1,40 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/RelativeLayout01"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uk.digitalsquid.droidpad.ButtonView
+        android:id="@+id/buttonView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" />
 
+    <LinearLayout
+        android:id="@+id/connectionContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="3dip"
+        android:background="@color/statusBg"
+        android:orientation="vertical"
+        android:padding="5dip" >
 
+        <TextView
+            android:id="@+id/connectionIp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal" />
+            <!-- android:text="TextView" -->
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent" >
+        <ProgressBar
+            android:id="@+id/connectionStatusProgress"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
+        <TextView
+            android:id="@+id/connectionStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dip"
+            android:text="@string/connectWaiting" />
 
+        </LinearLayout>
 
-
-
-
-
-
-
-
-
-<RelativeLayout android:id="@+id/RelativeLayout01" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
-<Button android:id="@+id/nButton01" android:layout_centerInParent="true" android:layout_width="100px" android:layout_height="150px" android:textSize="30px" android:text="1" android:focusable="false"></Button>
-<Button android:layout_above="@id/nButton01" android:id="@+id/nButton02" android:layout_height="fill_parent" android:layout_centerHorizontal="true" android:layout_width="100px" android:textSize="30px" android:text="2" android:focusable="false"></Button>
-<Button android:id="@+id/nButton03" android:layout_toRightOf="@id/nButton01" android:layout_width="fill_parent" android:layout_centerVertical="true" android:layout_height="150px" android:textSize="30px" android:text="3" android:focusable="false"></Button>
-<Button android:layout_below="@id/nButton01" android:id="@+id/nButton04" android:layout_height="fill_parent" android:layout_width="100px" android:layout_centerHorizontal="true" android:textSize="30px" android:text="4" android:focusable="false"></Button>
-<Button android:layout_toLeftOf="@id/nButton01" android:id="@+id/nButton05" android:layout_width="fill_parent" android:layout_centerVertical="true" android:layout_height="150px" android:textSize="30px" android:text="5" android:focusable="false"></Button>
-<Button android:layout_above="@id/nButton05" android:id="@+id/nButton06" android:layout_toLeftOf="@id/nButton02" android:layout_width="fill_parent" android:layout_height="fill_parent" android:text="6" android:textSize="30px" android:focusable="false"></Button>
-<Button android:layout_above="@id/nButton03" android:id="@+id/nButton07" android:layout_toRightOf="@id/nButton02" android:layout_width="fill_parent" android:layout_height="fill_parent" android:textSize="30px" android:text="7" android:focusable="false"></Button>
-<Button android:layout_below="@id/nButton03" android:id="@+id/nButton08" android:layout_toRightOf="@id/nButton04" android:layout_width="fill_parent" android:layout_height="fill_parent" android:textSize="30px" android:text="8" android:focusable="false"></Button>
-<Button android:layout_below="@id/nButton05" android:id="@+id/nButton09" android:layout_toLeftOf="@id/nButton04" android:layout_height="fill_parent" android:layout_width="fill_parent" android:textSize="30px" android:text="9" android:focusable="false"></Button>
-
-
-
-
-
-
-
-
-
-
-
-
+    </LinearLayout>
 
 </RelativeLayout>

@@ -44,6 +44,7 @@ public class DroidPadService extends Service implements LogTag {
 	public static final String INTENT_EXTRA_IP = "uk.digitalsquid.droidpad.DroidPadService.Status.Ip";
 	public static final int STATE_CONNECTED = 1;
 	public static final int STATE_WAITING = 2;
+	public static final int STATE_CONNECTION_LOST = 3;
 	
 	private Boolean setup = false;
 	private Connection connection;
@@ -79,10 +80,15 @@ public class DroidPadService extends Service implements LogTag {
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		
 		try {
-		interval = prefs.getInt("updateinterval", 20);
-		port = prefs.getInt("portnumber", 3141);
-		landscape = prefs.getBoolean("orientation", false);
+			interval = Integer.valueOf(prefs.getString("updateinterval", "20")); // Using string as for some reason Android won't
+			port = Integer.valueOf(prefs.getString("portnumber", "3141")); // do conversion in some cases.
+			landscape = prefs.getBoolean("orientation", false);
 		} catch (ClassCastException e) {
+			Log.e(TAG, "ERROR: Invalid preference", e);
+			Toast.makeText(this, "Incorrect preferences set, please check", Toast.LENGTH_LONG).show();
+			stopSelf();
+			return;
+		} catch (NumberFormatException e) {
 			Log.e(TAG, "ERROR: Invalid preference", e);
 			Toast.makeText(this, "Incorrect preferences set, please check", Toast.LENGTH_LONG).show();
 			stopSelf();
@@ -154,11 +160,12 @@ public class DroidPadService extends Service implements LogTag {
 			stopSelf();
 			break;
 		}
-		return START_STICKY;
+		return START_STICKY_COMPATIBILITY;
 	}
 	@Override
 	public void onDestroy() {
-		if(sensorEvents != null)
+		// Making sure here to check each object, as service instance may try to destroy after killing and remaking process, and other weird stuff.
+		if(sensorEvents != null && sm != null)
 			sm.unregisterListener(sensorEvents);
 		Log.v(TAG, "DPS: Stopping DPC thread...");
 		connection.killThread();
@@ -170,7 +177,7 @@ public class DroidPadService extends Service implements LogTag {
 		mdns.stopRunning();
 		// Let it die out by itself.
 		Log.v(TAG, "DPS: DPC thread down!");
-		wL.release();
+		if(wL != null) wL.release();
 		Log.d(TAG, "DPS: Wifi unlocked");
 		Editor prefEd = PreferenceManager.getDefaultSharedPreferences(this).edit();
 		prefEd.putFloat("calibX", calibX);

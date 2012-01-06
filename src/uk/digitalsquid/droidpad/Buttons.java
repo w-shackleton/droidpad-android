@@ -16,20 +16,33 @@
 
 package uk.digitalsquid.droidpad;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import uk.digitalsquid.droidpad.buttons.Layout;
 import uk.digitalsquid.droidpad.buttons.ModeSpec;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.net.wifi.WifiManager;
+import android.net.wifi.WifiManager.WifiLock;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 public class Buttons extends Activity implements LogTag
 {
@@ -37,7 +50,16 @@ public class Buttons extends Activity implements LogTag
 	private Intent serviceIntent;
 	WakeLock wakelock;
 	
+	WifiManager wm;
+	WifiLock wL;
+	
 	public static final String MODE_SPEC = "uk.digitalsquid.droidpad.Buttons.ModeSpec";
+	
+	LinearLayout connectionContainer;
+	ProgressBar connectionStatusProgress;
+	TextView connectionStatus, connectionIp;
+	
+	Animation fadeIn, fadeOut;
 	
 	ButtonView bview;
 	
@@ -53,6 +75,8 @@ public class Buttons extends Activity implements LogTag
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,   
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         
+        setContentView(R.layout.buttons);
+        
         mode = (ModeSpec) getIntent().getSerializableExtra(MODE_SPEC);
         if(mode == null) {
         	Log.w(TAG, "Activity not started with mode specification");
@@ -60,8 +84,35 @@ public class Buttons extends Activity implements LogTag
         	return;
         }
         
-        bview = new ButtonView(Buttons.this, mode);
-        setContentView(bview);
+        fadeIn = AnimationUtils.loadAnimation(this, R.anim.fadein);
+        fadeOut = AnimationUtils.loadAnimation(this, R.anim.fadeout_delay);
+        
+        // Set up broadcast listening
+        statusFilter = new IntentFilter();
+        statusFilter.addAction(DroidPadService.INTENT_STATUSUPDATE);
+        
+        bview = (ButtonView) findViewById(R.id.buttonView);
+        bview.setModeSpec(this, mode);
+        
+        connectionContainer = (LinearLayout) findViewById(R.id.connectionContainer);
+        connectionStatus = (TextView) findViewById(R.id.connectionStatus);
+        connectionIp = (TextView) findViewById(R.id.connectionIp);
+        connectionStatusProgress = (ProgressBar) findViewById(R.id.connectionStatusProgress);
+        
+        connectionStatus.setText(R.string.connectWaiting);
+        
+        // Wifi management etc.
+        wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        wL = wm.createWifiLock(WifiManager.WIFI_MODE_FULL, "DroidPad");
+		wL.acquire();
+		
+        wifiFilter = new IntentFilter();
+        wifiFilter.addAction(WifiManager.NETWORK_IDS_CHANGED_ACTION);
+        wifiFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        wifiFilter.addAction(WifiManager.RSSI_CHANGED_ACTION);
+        wifiFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
+        wifiFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
+        wifiFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
         
         serviceIntent = new Intent(Buttons.this,DroidPadService.class);
         wakelock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,TAG);
@@ -84,6 +135,113 @@ public class Buttons extends Activity implements LogTag
             boundService = null;
         }
     };
+    
+	private IntentFilter statusFilter;
+	private final BroadcastReceiver statusReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			switch(intent.getIntExtra(DroidPadService.INTENT_EXTRA_STATE, DroidPadService.STATE_WAITING)) {
+			case DroidPadService.STATE_WAITING:
+				if(connectionContainer.getVisibility() != View.VISIBLE) { // Anim in
+					connectionContainer.startAnimation(fadeIn);
+				}
+				connectionStatusProgress.setVisibility(View.VISIBLE);
+				connectionContainer.setVisibility(View.VISIBLE);
+				
+				connectionStatus.setText(R.string.connectWaiting);
+				break;
+			case DroidPadService.STATE_CONNECTION_LOST:
+				if(connectionContainer.getVisibility() != View.VISIBLE) { // Anim in
+					connectionContainer.startAnimation(fadeIn);
+				}
+				connectionStatusProgress.setVisibility(View.VISIBLE);
+				connectionContainer.setVisibility(View.VISIBLE);
+				
+				connectionStatus.setText(R.string.connectFailed);
+				break;
+			case DroidPadService.STATE_CONNECTED:
+				connectionStatusProgress.setVisibility(View.GONE);
+				connectionContainer.setVisibility(View.GONE); // But is being animated
+				connectionContainer.startAnimation(fadeOut);
+				
+				connectionStatus.setText(R.string.connected);
+				break;
+			}
+		}
+	};
+	
+	private IntentFilter wifiFilter;
+	private final BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			connectionIp.setText(getWifiStateText());
+		}
+	};
+	
+	/**
+	 * Returns the resource ID of the text to display as the wifi state.
+	 * @return
+	 */
+    private String getWifiStateText() {
+    	int stringId = -1;
+        switch (wm.getWifiState())
+        {
+        case WifiManager.WIFI_STATE_UNKNOWN:
+        case WifiManager.WIFI_STATE_DISABLED:
+        	stringId = R.string.wifi_disabled;
+        	break;
+        case WifiManager.WIFI_STATE_DISABLING:
+        	stringId = R.string.wifi_disabling;
+        	break;
+        case WifiManager.WIFI_STATE_ENABLED:
+        	// Ask the supplicant how the connection is
+	        switch (wm.getConnectionInfo().getSupplicantState())
+	        {
+	        case ASSOCIATED:
+	        case ASSOCIATING:
+	        case FOUR_WAY_HANDSHAKE:
+	        case GROUP_HANDSHAKE:
+	        	stringId = R.string.wifi_connecting;
+	        	break;
+	        case COMPLETED:
+	            // All authentication completed. 
+	            // Trying to associate with a BSS/SSID.
+	        	int ip = wm.getConnectionInfo().getIpAddress();
+	        	return getResources().getString(R.string.wifi_connectToPhone, intToInetAddress(ip).getHostAddress());
+	        case DISCONNECTED:
+	        case DORMANT:
+	        case INACTIVE:
+	        case INVALID:
+	        case UNINITIALIZED:
+	        	stringId = R.string.wifi_disconnected;
+	        	break;
+	        case SCANNING:
+	        	stringId = R.string.wifi_scanning;
+	        	break;
+	        }
+        case WifiManager.WIFI_STATE_ENABLING:
+        	stringId = R.string.wifi_enabling;
+        	break;
+        }
+        // If got through, return string resource
+        return getResources().getString(stringId);
+    }
+
+	public static InetAddress intToInetAddress(int hostAddress) {
+	    InetAddress inetAddress;
+	    byte[] addressBytes = { (byte)(0xff & hostAddress),
+	                            (byte)(0xff & (hostAddress >> 8)),
+	                            (byte)(0xff & (hostAddress >> 16)),
+	                            (byte)(0xff & (hostAddress >> 24)) };
+	
+	    try {
+	       inetAddress = InetAddress.getByAddress(addressBytes);
+	    } catch(UnknownHostException e) {
+	       return null;
+	    }
+	    return inetAddress;
+	}
 
     /**
      * Binds to the DroidPad service, to communicate with it.
@@ -100,12 +258,16 @@ public class Buttons extends Activity implements LogTag
     @Override
     public void onResume() {
     	super.onResume();
+		registerReceiver(statusReceiver, statusFilter);
+        registerReceiver(wifiReceiver, wifiFilter);
     	bind();
     }
     
     @Override
     public void onPause() {
     	super.onPause();
+		unregisterReceiver(wifiReceiver);
+		unregisterReceiver(statusReceiver);
     	unbind();
     }
     

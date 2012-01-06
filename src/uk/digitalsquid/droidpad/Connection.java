@@ -72,22 +72,10 @@ public class Connection implements Runnable, LogTag {
 		Log.v(TAG, "DPC: Infos recieved (initiated)");
 	}
 	
-	Layout initialButtons;
-	
 	@Override
 	public void run() {
 		Log.d(TAG, "DPC: Thread started. Waiting for connection...");
 		server(false);
-		// Wait for fist button data to come through
-		while(!stopping) {
-			if((initialButtons = parent.getButtons()) != null)
-				break;
-			try {
-				Thread.sleep(30);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
 		if(!stopping) serverSetup();
 		Log.d(TAG, "DPC: Someone has connected!");
 		
@@ -136,9 +124,10 @@ public class Connection implements Runnable, LogTag {
 				} catch (IOException e) {
 					if(!stopping)
 					{
-						Log.d(TAG, "DPC: Waiting for connection...");
+						Log.w(TAG, "Lost connection with computer.");
+						parent.broadcastState(DroidPadService.STATE_CONNECTION_LOST, "");
 						server();
-						Log.d(TAG, "DPC: Someone else has connected!");
+						Log.d(TAG, "DPC: Someone else has connected.");
 					}
 				}
 			}
@@ -194,7 +183,6 @@ public class Connection implements Runnable, LogTag {
 				}
 			}
 		}
-		Log.d(TAG, "DPC: Thread dead!");
 	}
 	//END SETUP
 	
@@ -300,7 +288,7 @@ public class Connection implements Runnable, LogTag {
 		int numRawDevs = 1;
 		int numAxes = 0;
 		int numButtons = 0;
-		for(Item item : initialButtons) {
+		for(Item item : mode.getLayout()) {
 			if(item instanceof Slider) {
 				Slider s = (Slider)item;
 				switch(s.type) {
