@@ -9,8 +9,8 @@ public class Layout extends LinkedList<Item> {
 	public String name;
 	
 	// TODO: Implement this!!
-	public String title;
-	public String description;
+	private String title;
+	private String description;
 	
 	public final int titleId, descriptionId;
 	
@@ -36,5 +36,21 @@ public class Layout extends LinkedList<Item> {
 		for(Item item : items) {
 			add(item);
 		}
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }

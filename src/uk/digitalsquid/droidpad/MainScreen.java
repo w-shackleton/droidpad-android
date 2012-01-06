@@ -5,10 +5,13 @@ import java.util.List;
 import uk.digitalsquid.droidpad.buttons.Layout;
 import android.app.TabActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
@@ -20,13 +23,19 @@ import android.widget.TextView;
  * @author william
  *
  */
-public class MainScreen extends TabActivity implements OnClickListener {
+public class MainScreen extends TabActivity implements OnClickListener, OnItemClickListener /*, LogTag */ {
+	
+	private static final String TAG = "DroidPad"; // Until we import trunk
 	
 	TabHost tabHost;
+	
+	// Global state, for getting layouts. In the future, these could also be user defined.
+	App app;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		app = (App) getApplication();
 		setContentView(R.layout.main2);
 		// tabHost = (TabHost) findViewById(android.R.id.tabhost);
 		tabHost = getTabHost();
@@ -38,27 +47,31 @@ public class MainScreen extends TabActivity implements OnClickListener {
 		spec.setContent(R.id.jsTab);
 		tabHost.addTab(spec);
 		
-		ListView jsList = (ListView) findViewById(R.id.jsList);
-		jsModes = new ModeListAdapter(null); // TODO: Add!
+		// Also create the list adapter for each tab.
+		jsList = (ListView) findViewById(R.id.jsList);
+		jsModes = new ModeListAdapter(app.getLayouts(App.LAYOUTS_JS));
 		jsList.setAdapter(jsModes);
+		jsList.setOnItemClickListener(this);
 		
 		spec = tabHost.newTabSpec("mouseTab");
 		spec.setIndicator("Mouse");
 		spec.setContent(R.id.mouseTab);
 		tabHost.addTab(spec);
 		
-		ListView mouseList = (ListView) findViewById(R.id.mouseList);
-		mouseModes = new ModeListAdapter(null); // TODO: Add!
+		mouseList = (ListView) findViewById(R.id.mouseList);
+		mouseModes = new ModeListAdapter(app.getLayouts(App.LAYOUTS_MOUSE));
 		mouseList.setAdapter(mouseModes);
+		mouseList.setOnItemClickListener(this);
 		
 		spec = tabHost.newTabSpec("slideTab");
 		spec.setIndicator("Slideshow");
 		spec.setContent(R.id.slideTab);
 		tabHost.addTab(spec);
 		
-		ListView slideList = (ListView) findViewById(R.id.slideList);
-		slideModes = new ModeListAdapter(null); // TODO: Add!
+		slideList = (ListView) findViewById(R.id.slideList);
+		slideModes = new ModeListAdapter(app.getLayouts(App.LAYOUTS_SLIDE));
 		slideList.setAdapter(slideModes);
+		slideList.setOnItemClickListener(this);
 	}
 	
 	@Override
@@ -66,6 +79,7 @@ public class MainScreen extends TabActivity implements OnClickListener {
 	}
 	
 	private ModeListAdapter jsModes, mouseModes, slideModes;
+	private ListView jsList, slideList, mouseList;
 	
 	private class ModeListAdapter extends BaseAdapter {
 		private final LayoutInflater inflater;
@@ -84,10 +98,10 @@ public class MainScreen extends TabActivity implements OnClickListener {
 	        }
 	        
 	        TextView title = (TextView) convertView.findViewById(R.id.title);
-	        TextView description = (TextView) convertView.findViewById(R.id.title);
+	        TextView description = (TextView) convertView.findViewById(R.id.description);
 	        
-        	title.setText(modes.get(position).title);
-        	description.setText(modes.get(position).description);
+        	title.setText(modes.get(position).getTitle());
+        	description.setText(modes.get(position).getDescription());
 
             return convertView;
 		}
@@ -105,9 +119,21 @@ public class MainScreen extends TabActivity implements OnClickListener {
 		
 		@Override
 		public int getCount() {
-			if(modes == null) return 1;
+			if(modes == null) return 0;
 			return modes.size();
 		}
 	}
 
+	@Override
+	public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+		int type = -1;
+		Layout layout = (Layout) parent.getItemAtPosition(position);
+		if(parent.equals(jsList))
+			type = App.LAYOUTS_JS;
+		else if(parent.equals(mouseList))
+			type = App.LAYOUTS_MOUSE;
+		else if(parent.equals(slideList))
+			type = App.LAYOUTS_SLIDE;
+		Log.v(TAG, "Using layout type " + type + ", \"" + layout.getTitle() + "\".");
+	}
 }

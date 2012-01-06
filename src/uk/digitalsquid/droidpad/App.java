@@ -106,13 +106,13 @@ public class App extends Application {
 	}
 	private List<Layout> getMouseLayouts() {
 		List<Layout> ret = new ArrayList<Layout>();
-		ret.add(new Layout(5, 5, new Item[] {
+		ret.add(new Layout(R.string.layout_mouse_simple, R.string.layout_mouse_simple_desc, 5, 5, new Item[] {
 				new Button(0, 0, 2, 5, "Left"),
 				new Button(2, 0, 1, 2, "Middle"),
 				new TouchPanel(2, 2, 1, 3, PanelType.Y),
 				new Button(3, 0, 2, 5, "Right"),
 		}));
-		ret.add(new Layout(5, 8, new Item[] {
+		ret.add(new Layout(R.string.layout_mouse_adv, R.string.layout_mouse_adv_desc, 5, 8, new Item[] {
 				new TouchPanel(0, 0, 5, 5, PanelType.Both),
 				new Button(0, 5, 2, 3, "Left"),
 				new Button(2, 5, 1, 1, "Middle"),
@@ -166,7 +166,7 @@ public class App extends Application {
 		for(Layout l : ret) {
 			posCounter++;
 			if(l.titleId != -1) {
-				l.title = getString(l.titleId);
+				l.setTitle(getString(l.titleId));
 			} else {
 				String name = "???";
 				switch(type) { // Get class name
@@ -180,11 +180,11 @@ public class App extends Application {
 					name = "Slideshow";
 					break;
 				}
-				l.title = getString(R.string.generic_layout_title, name, posCounter);
+				l.setTitle(getString(R.string.generic_layout_title, name, posCounter));
 			}
 			
 			if(l.descriptionId != -1) {
-				l.description = getString(l.descriptionId);
+				l.setDescription(getString(l.descriptionId));
 			} else {
 				int buttonCount = 0;
 				int sliderCount = 0;
@@ -197,7 +197,7 @@ public class App extends Application {
 					if(i instanceof TouchPanel)
 						trackCount++;
 				}
-				l.description = getString(R.string.generic_layout_description, buttonCount, sliderCount, trackCount);
+				l.setDescription(getString(R.string.generic_layout_description, buttonCount, sliderCount, trackCount));
 			}
 		}
 		return ret;

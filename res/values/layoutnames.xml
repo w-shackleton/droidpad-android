@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="layout_mouse_simple">Mouse using device tilting</string>
+    <string name="layout_mouse_simple_desc">Control the mouse by tilting the phone and pressing buttons.</string>
+    <string name="layout_mouse_adv">Mouse using a trackpad</string>
+    <string name="layout_mouse_adv_desc">Control the mouse using an onscreen trackpad.</string>
+    
+</resources>
