@@ -16,11 +16,9 @@
 
 package uk.digitalsquid.droidpad;
 
-import java.util.List;
-
 import uk.digitalsquid.droidpad.buttons.Layout;
+import uk.digitalsquid.droidpad.buttons.ModeSpec;
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -32,16 +30,21 @@ import android.os.PowerManager.WakeLock;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ToggleButton;
 
 public class Buttons extends Activity implements LogTag
 {
 	private DroidPadService boundService = null;
-	private Intent intent;
-	private ActivityManager am;
+	private Intent serviceIntent;
 	WakeLock wakelock;
 	
+	public static final String MODE_SPEC = "uk.digitalsquid.droidpad.Buttons.ModeSpec";
+	
 	ButtonView bview;
+	
+	/**
+	 * The mode, as specified by the user on the previous screen.
+	 */
+	ModeSpec mode;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,44 +53,31 @@ public class Buttons extends Activity implements LogTag
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,   
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         
-        intent = new Intent(Buttons.this,DroidPadService.class);
-        am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        mode = (ModeSpec) getIntent().getSerializableExtra(MODE_SPEC);
+        if(mode == null) {
+        	Log.w(TAG, "Activity not started with mode specification");
+        	finish();
+        	return;
+        }
+        
+        bview = new ButtonView(Buttons.this, mode);
+        setContentView(bview);
+        
+        serviceIntent = new Intent(Buttons.this,DroidPadService.class);
         wakelock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,TAG);
         wakelock.acquire();
         
         // We will now start the service to get DroidPad running.
         
-        if(!isRunning("DroidPadService"))
-        {
-        	finish();
-        }
-        else
-        {
-        	bind();
-        }
-    }
-    private boolean isRunning(String Activity)
-    {
-        List<ActivityManager.RunningServiceInfo> sl = am.getRunningServices(Integer.MAX_VALUE);
-        for(int i = 0;i < sl.size();i++)
-        {
-        	if(sl.get(i).service.getClassName().equals("uk.digitalsquid.droidpad." + Activity))
-        	{
-        		return true;
-        	}
-        }
-        return false;
+		serviceIntent.putExtra("purpose", DroidPadService.PURPOSE_SETUP);
+		serviceIntent.putExtra(DroidPadService.MODE_SPEC, mode);
+		Log.v(TAG, "Starting DroidPad service");
+		startService(serviceIntent);
     }
 
-    private ServiceConnection mConnection = new ServiceConnection()
-    {
-        public void onServiceConnected(ComponentName className, IBinder service)
-        {
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
             boundService = ((DroidPadService.LocalBinder)service).getService();
-            
-            bview = new ButtonView(Buttons.this, boundService.mode);
-            Log.v(TAG, "DPB: Using mode " + boundService.mode);
-            Buttons.this.setContentView(bview);
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -95,31 +85,43 @@ public class Buttons extends Activity implements LogTag
         }
     };
 
-    private void bind()
-    {
-		Intent j = intent;
-        bindService(j,mConnection,0);
+    /**
+     * Binds to the DroidPad service, to communicate with it.
+     */
+    private void bind() {
+        bindService(serviceIntent, serviceConnection,0);
     }
-    private void unbind()
-    {
-    	if(boundService != null)
-    	{
-    		unbindService(mConnection);
+    private void unbind() {
+    	if(boundService != null) {
+    		unbindService(serviceConnection);
     	}
     }
+    
     @Override
-    public void onDestroy()
-    {
-        if(isRunning("DroidPadService"))
-        {
-        	unbind();
-        }
+    public void onResume() {
+    	super.onResume();
+    	bind();
+    }
+    
+    @Override
+    public void onPause() {
+    	super.onPause();
+    	unbind();
+    }
+    
+    @Override
+    public void onDestroy() {
+    	stopService(serviceIntent);
         wakelock.release();
     	super.onDestroy();
     }
     
-    public void sendEvent(Layout layout)
-    {
+    /**
+     * Sends the layout info to the service, if it is connected.
+     * @param layout
+     */
+    public void sendEvent(Layout layout) {
+    	if(boundService == null) return;
     	boundService.buttons = layout;
     }
 }

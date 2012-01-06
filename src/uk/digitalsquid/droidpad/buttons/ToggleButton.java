@@ -8,6 +8,8 @@ import android.util.Log;
 
 public class ToggleButton extends Button implements LogTag {
 
+	private static final long serialVersionUID = -6001760405211069340L;
+
 	public ToggleButton(int x, int y, int sx, int sy, String text) {
 		super(x, y, sx, sy, text);
 	}

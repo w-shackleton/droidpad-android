@@ -6,6 +6,8 @@ import android.graphics.RectF;
 
 public class Slider extends Item {
 	
+	private static final long serialVersionUID = -7180651801411890289L;
+
 	public static enum SliderType {
 		X,
 		Y,

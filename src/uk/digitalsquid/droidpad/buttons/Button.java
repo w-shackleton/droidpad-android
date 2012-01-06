@@ -5,6 +5,8 @@ import android.graphics.Point;
 import android.graphics.RectF;
 
 public class Button extends Item {
+	private static final long serialVersionUID = -7921469580817352801L;
+	
 	public final String text;
 	public final int textSize;
 	

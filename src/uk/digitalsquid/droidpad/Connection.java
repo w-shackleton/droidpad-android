@@ -27,9 +27,8 @@ import java.net.SocketException;
 import uk.digitalsquid.droidpad.buttons.Button;
 import uk.digitalsquid.droidpad.buttons.Item;
 import uk.digitalsquid.droidpad.buttons.Layout;
+import uk.digitalsquid.droidpad.buttons.ModeSpec;
 import uk.digitalsquid.droidpad.buttons.Slider;
-import android.os.Bundle;
-import android.os.Message;
 import android.util.Log;
 
 /**
@@ -50,7 +49,7 @@ public class Connection implements Runnable, LogTag {
 	 * TODO: No need for long.
 	 */
 	private long interval = 50;
-	private String mode;
+	private ModeSpec mode;
 	private DroidPadService parent;
 	private boolean stopping = false;
 	
@@ -59,7 +58,7 @@ public class Connection implements Runnable, LogTag {
 	
 	private boolean invX = false, invY = false;
 	// NORMAL THREAD
-	public Connection(DroidPadService droidPadServer, int Port, int interval2, String Mode, boolean invX, boolean invY)
+	public Connection(DroidPadService droidPadServer, int Port, int interval2, ModeSpec mode, boolean invX, boolean invY)
 	{
 		parent = droidPadServer;
 		port = Port;
@@ -68,7 +67,7 @@ public class Connection implements Runnable, LogTag {
 		this.invX = invX;
 		this.invY = invY;
 		
-		mode = Mode;
+		this.mode = mode;
 		//Toast.makeText(parent, String.valueOf(interval), Toast.LENGTH_SHORT).show();
 		Log.v(TAG, "DPC: Infos recieved (initiated)");
 	}
@@ -128,7 +127,7 @@ public class Connection implements Runnable, LogTag {
 						String st = new String(ch);
 						if(st.startsWith("<STOP>"))
 						{
-							setConnectedStatus(false,"0.0.0.0");
+							parent.broadcastState(DroidPadService.STATE_WAITING, "");
 							server();
 						}
 					}
@@ -199,37 +198,6 @@ public class Connection implements Runnable, LogTag {
 	}
 	//END SETUP
 	
-	//MAIN WINDOW NOTIFY
-	public final synchronized void notifyOfParent()
-	{
-		if(parent.isWinAvailable())
-		{
-			//Toast.makeText(parent, "Parent Disconnected", Toast.LENGTH_SHORT).show();
-		}
-		else
-		{
-			//Toast.makeText(parent, "Parent Connected", Toast.LENGTH_SHORT).show();
-			if(s != null)
-			{
-				if(s.isConnected())
-				{
-					setConnectedStatus(true, s.getInetAddress().getHostAddress());
-				}
-			}
-		}
-	}
-	private void setConnectedStatus(boolean activated,String ip)
-	{
-		Message msg = new Message();
-		Bundle b = new Bundle();
-		b.putString("ip", ip);
-		msg.arg1 = activated ? 1 : 0;
-		msg.setData(b);
-		if(parent.isWinAvailable())
-			parent.getWin().isConnectedCallback.sendMessage(msg);
-	}
-	//END MAIN WINDOW NOTIFY
-	
 	//SERVER METHODS
 	private void server() { server(true); }
 	private void server(boolean autoSetup)
@@ -251,7 +219,7 @@ public class Connection implements Runnable, LogTag {
 				e.printStackTrace();
 			}
 			if(autoSetup)serverSetup();
-			setConnectedStatus(true, s.getInetAddress().getHostAddress());
+			parent.broadcastState(DroidPadService.STATE_CONNECTED, s.getInetAddress().getHostAddress());
 		}
 	}
 	private void serverInit()
@@ -349,7 +317,7 @@ public class Connection implements Runnable, LogTag {
 			}
 		}
 		try {
-			os.write(("<MODE>" + mode + "</MODE><MODESPEC>" + numRawDevs + "," + numAxes + "," + numButtons + "</MODESPEC>\n").getBytes());
+			os.write(("<MODE>" + mode.getModeString() + "</MODE><MODESPEC>" + numRawDevs + "," + numAxes + "," + numButtons + "</MODESPEC>\n").getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
 			Log.e(TAG, "DPC: Error sending info to PC");

@@ -1,5 +1,7 @@
 package uk.digitalsquid.droidpad.buttons;
 
+import java.io.Serializable;
+
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
@@ -7,7 +9,9 @@ import android.graphics.Paint.Style;
 import android.graphics.Point;
 import android.graphics.RectF;
 
-public abstract class Item {
+public abstract class Item implements Serializable {
+	private static final long serialVersionUID = -2217591684825043179L;
+	
 	protected static final int TEXT_SIZE = 14;
 	public static final int BUTTON_GAP = 10;
 	

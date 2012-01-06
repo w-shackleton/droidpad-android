@@ -6,6 +6,8 @@ import android.graphics.RectF;
 
 public class TouchPanel extends Item {
 	
+	private static final long serialVersionUID = -8300732746587169324L;
+
 	public static enum PanelType {
 		X,
 		Y,

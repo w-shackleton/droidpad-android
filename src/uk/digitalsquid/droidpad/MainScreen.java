@@ -3,6 +3,7 @@ package uk.digitalsquid.droidpad;
 import java.util.List;
 
 import uk.digitalsquid.droidpad.buttons.Layout;
+import uk.digitalsquid.droidpad.buttons.ModeSpec;
 import android.app.TabActivity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -57,7 +58,7 @@ public class MainScreen extends TabActivity implements OnClickListener, OnItemCl
 		
 		// Also create the list adapter for each tab.
 		jsList = (ListView) findViewById(R.id.jsList);
-		jsModes = new ModeListAdapter(app.getLayouts(App.LAYOUTS_JS));
+		jsModes = new ModeListAdapter(app.getLayouts(ModeSpec.LAYOUTS_JS));
 		jsList.setAdapter(jsModes);
 		jsList.setOnItemClickListener(this);
 		
@@ -67,7 +68,7 @@ public class MainScreen extends TabActivity implements OnClickListener, OnItemCl
 		tabHost.addTab(spec);
 		
 		mouseList = (ListView) findViewById(R.id.mouseList);
-		mouseModes = new ModeListAdapter(app.getLayouts(App.LAYOUTS_MOUSE));
+		mouseModes = new ModeListAdapter(app.getLayouts(ModeSpec.LAYOUTS_MOUSE));
 		mouseList.setAdapter(mouseModes);
 		mouseList.setOnItemClickListener(this);
 		
@@ -77,7 +78,7 @@ public class MainScreen extends TabActivity implements OnClickListener, OnItemCl
 		tabHost.addTab(spec);
 		
 		slideList = (ListView) findViewById(R.id.slideList);
-		slideModes = new ModeListAdapter(app.getLayouts(App.LAYOUTS_SLIDE));
+		slideModes = new ModeListAdapter(app.getLayouts(ModeSpec.LAYOUTS_SLIDE));
 		slideList.setAdapter(slideModes);
 		slideList.setOnItemClickListener(this);
 	}
@@ -137,12 +138,19 @@ public class MainScreen extends TabActivity implements OnClickListener, OnItemCl
 		int type = -1;
 		Layout layout = (Layout) parent.getItemAtPosition(position);
 		if(parent.equals(jsList))
-			type = App.LAYOUTS_JS;
+			type = ModeSpec.LAYOUTS_JS;
 		else if(parent.equals(mouseList))
-			type = App.LAYOUTS_MOUSE;
+			type = ModeSpec.LAYOUTS_MOUSE;
 		else if(parent.equals(slideList))
-			type = App.LAYOUTS_SLIDE;
+			type = ModeSpec.LAYOUTS_SLIDE;
 		Log.v(TAG, "Using layout type " + type + ", \"" + layout.getTitle() + "\".");
+		
+		Intent intent = new Intent(this, Buttons.class);
+		ModeSpec spec = new ModeSpec();
+		spec.setLayout(layout);
+		spec.setMode(type);
+		intent.putExtra(Buttons.MODE_SPEC, spec);
+		startActivity(intent);
 	}
 	
     public boolean onCreateOptionsMenu(Menu menu)

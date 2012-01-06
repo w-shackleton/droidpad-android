@@ -1,14 +1,12 @@
 package uk.digitalsquid.droidpad.buttons;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
-public class Layout extends LinkedList<Item> {
+public class Layout extends LinkedList<Item> implements Serializable {
 
 	private static final long serialVersionUID = -7330556550048198609L;
-	@Deprecated
-	public String name;
 	
-	// TODO: Implement this!!
 	private String title;
 	private String description;
 	

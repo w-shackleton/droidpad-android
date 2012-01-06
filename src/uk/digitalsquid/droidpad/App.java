@@ -6,6 +6,7 @@ import java.util.List;
 import uk.digitalsquid.droidpad.buttons.Button;
 import uk.digitalsquid.droidpad.buttons.Item;
 import uk.digitalsquid.droidpad.buttons.Layout;
+import uk.digitalsquid.droidpad.buttons.ModeSpec;
 import uk.digitalsquid.droidpad.buttons.Slider;
 import uk.digitalsquid.droidpad.buttons.Slider.SliderType;
 import uk.digitalsquid.droidpad.buttons.ToggleButton;
@@ -136,10 +137,6 @@ public class App extends Application {
 		return ret;
 	}
 	
-	public static final int LAYOUTS_JS = 1;
-	public static final int LAYOUTS_MOUSE = 2;
-	public static final int LAYOUTS_SLIDE = 3;
-	
 	/**
 	 * Gets the layouts with the title & description filled in. Makes them up if they aren't present.
 	 * @param type
@@ -148,13 +145,13 @@ public class App extends Application {
 	public final List<Layout> getLayouts(int type) {
 		List<Layout> ret;
 		switch(type) {
-		case LAYOUTS_JS:
+		case ModeSpec.LAYOUTS_JS:
 			ret = getJSLayouts();
 			break;
-		case LAYOUTS_MOUSE:
+		case ModeSpec.LAYOUTS_MOUSE:
 			ret = getMouseLayouts();
 			break;
-		case LAYOUTS_SLIDE:
+		case ModeSpec.LAYOUTS_SLIDE:
 			ret = getSlideLayouts();
 			break;
 		default:
@@ -170,13 +167,13 @@ public class App extends Application {
 			} else {
 				String name = "???";
 				switch(type) { // Get class name
-				case LAYOUTS_JS:
+				case ModeSpec.LAYOUTS_JS:
 					name = "Joystick"; // i18nise?
 					break;
-				case LAYOUTS_MOUSE:
+				case ModeSpec.LAYOUTS_MOUSE:
 					name = "Mouse";
 					break;
-				case LAYOUTS_SLIDE:
+				case ModeSpec.LAYOUTS_SLIDE:
 					name = "Slideshow";
 					break;
 				}

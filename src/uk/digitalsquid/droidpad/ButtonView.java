@@ -18,6 +18,7 @@ package uk.digitalsquid.droidpad;
 
 import uk.digitalsquid.droidpad.buttons.Item;
 import uk.digitalsquid.droidpad.buttons.Layout;
+import uk.digitalsquid.droidpad.buttons.ModeSpec;
 import uk.digitalsquid.droidpad.buttons.Slider;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -37,15 +38,15 @@ public class ButtonView extends View implements LogTag
 	
 	private final Layout layout;
 	
-	public ButtonView(Buttons parent, Layout layout) {
+	public ButtonView(Buttons parent, ModeSpec mode) {
 		super(parent);
+		
+		layout = mode.getLayout(); // No need to keep type?
 		
         landscape = PreferenceManager.getDefaultSharedPreferences(parent).getBoolean("orientation", false);
         
         boolean floatingAxes = !PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("axesfloat", false);
         
-        //type="2";
-        this.layout = layout;
         for(Item item : layout) {
         	if(item instanceof Slider) {
         		((Slider)item).setAxesFloat(floatingAxes);

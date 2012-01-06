@@ -19,7 +19,7 @@
         </activity>
     
 
-<service android:name="uk.digitalsquid.droidpad.DroidPadServicead">
+<service android:name="uk.digitalsquid.droidpad.DroidPadService">
 </service>
 <activity android:icon="@drawable/icon" android:launchMode="singleTop" android:screenOrientation="portrait" android:name="uk.digitalsquid.droidpad.Buttons" android:excludeFromRecents="true" android:label="DroidPad Buttons">
             <intent-filter>

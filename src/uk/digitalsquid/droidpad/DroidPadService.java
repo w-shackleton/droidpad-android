@@ -17,9 +17,7 @@
 package uk.digitalsquid.droidpad;
 
 import uk.digitalsquid.droidpad.buttons.Layout;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
+import uk.digitalsquid.droidpad.buttons.ModeSpec;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -38,12 +36,17 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class DroidPadService extends Service implements LogTag {
-	private NotificationManager NM;
-	private Notification notification;
-	private PendingIntent contentIntent;
+	
+	public static final String MODE_SPEC = "uk.digitalsquid.droidpad.DroidPadService.ModeSpec";
+	
+	public static final String INTENT_STATUSUPDATE = "uk.digitalsquid.droidpad.DroidPadService.Status";
+	public static final String INTENT_EXTRA_STATE = "uk.digitalsquid.droidpad.DroidPadService.Status.State";
+	public static final String INTENT_EXTRA_IP = "uk.digitalsquid.droidpad.DroidPadService.Status.Ip";
+	public static final int STATE_CONNECTED = 1;
+	public static final int STATE_WAITING = 2;
+	
 	private Boolean setup = false;
-	private Connection apc;
-	private DroidPad win;
+	private Connection connection;
 	private Thread th;
 	public int port;
 	public int interval;
@@ -51,7 +54,8 @@ public class DroidPadService extends Service implements LogTag {
 	public static final int PURPOSE_SETUP = 1;
 	public static final int PURPOSE_CALIBRATE = 2;
 	
-	public String mode = "1";
+	ModeSpec mode;
+	
 	public boolean invX, invY;
 	public Layout buttons;
 	
@@ -71,29 +75,25 @@ public class DroidPadService extends Service implements LogTag {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		Log.d(TAG, "DPS: Service Created");
-        NM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-        // Display a notification about us starting.  We put an icon in the status bar.
-        showNotification();
+		
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		
-		mode = prefs.getString("layout", "1s4");
-		
+		try {
+		interval = prefs.getInt("updateinterval", 20);
+		port = prefs.getInt("portnumber", 3141);
 		landscape = prefs.getBoolean("orientation", false);
+		} catch (ClassCastException e) {
+			Log.e(TAG, "ERROR: Invalid preference", e);
+			Toast.makeText(this, "Incorrect preferences set, please check", Toast.LENGTH_LONG).show();
+			stopSelf();
+			return;
+		}
 		
 		sm = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		if(mode != "slide")
-		{
-			try
-			{
-				sm.registerListener(asl, sm.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0), SensorManager.SENSOR_DELAY_GAME);
-			}
-			catch(IndexOutOfBoundsException e)
-			{
-				Toast.makeText(this, "ERROR: Accelerometer not found!", Toast.LENGTH_SHORT).show();
-			}
-			
-			Log.v(TAG, "DPS: Sensors initiated.");
+		try {
+			sm.registerListener(sensorEvents, sm.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0), SensorManager.SENSOR_DELAY_GAME);
+		} catch(IndexOutOfBoundsException e) {
+			Toast.makeText(this, "ERROR: Accelerometer not found!", Toast.LENGTH_SHORT).show();
 		}
 		calibX = prefs.getFloat("calibX", 0);
 		calibY = prefs.getFloat("calibY", 0);
@@ -117,43 +117,26 @@ public class DroidPadService extends Service implements LogTag {
 		Log.v(TAG, "DPS: Wifi lock sorted...");
         
 	}
-	private void showNotification() {
-		notification = new Notification(R.drawable.icon, getText(R.string.NotificationTitle2),
-                System.currentTimeMillis());
-		contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, DroidPad.class), 0);
-		notification.setLatestEventInfo(this, getText(R.string.NotificationTitle),
-				getText(R.string.NotificationText), contentIntent);
-		notification.flags |= Notification.FLAG_ONGOING_EVENT;
-		NM.notify(R.string.NotificationTitle, notification);
-		Log.v(TAG, "DPS: Notification");
-	}
 	@Override
-	public void onStart(Intent intent, int startId)
-	{
+	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStart(intent, startId);
 		Log.d(TAG, "DPS: Service Started");
 		switch(intent.getExtras().getInt("purpose"))
 		{
-		case DroidPad.PURPOSE_SETUP:
+		case PURPOSE_SETUP:
 			if(!setup)
 			{
 				//Toast.makeText(this, "Service started with setup", Toast.LENGTH_SHORT).show();
 				setup = true;
 				
-				if(wL != null)
-				{
+				if(wL != null) {
 					wL.acquire();
 					Log.d(TAG, "DPS: Wifi Locked");
 				}
-		        //Toast.makeText(this, "Locking Wifi.", Toast.LENGTH_SHORT).show();
-				interval = intent.getExtras().getInt("interval", 20);
-				port = intent.getExtras().getInt("port", 3141);
 
-		        apc = new Connection(this, port, interval, mode, prefs.getBoolean("reverse-x", false), prefs.getBoolean("reverse-y", false));
-				Log.v(TAG, "DPS: DroidPad connection initiated");
-		        th = new Thread(apc);
-				Log.v(TAG, "DPS: DroidPad connection thread initiated");
+		        mode = (ModeSpec) intent.getSerializableExtra(MODE_SPEC);
+		        connection = new Connection(this, port, interval, mode, prefs.getBoolean("reverse-x", false), prefs.getBoolean("reverse-y", false));
+		        th = new Thread(connection);
 		        th.start();
 				Log.v(TAG, "DPS: DroidPad connection thread started!");
 				
@@ -166,24 +149,19 @@ public class DroidPadService extends Service implements LogTag {
 				Log.w(TAG, "DPS: Service started but already set up (this shouldn't happen)");
 			}
 			break;
-		case DroidPad.PURPOSE_CALIBRATE:
-			calibX = x;
-			calibY = y;
-			Log.v(TAG, "DPS: Calibrated");
-			break;
 		case 0:
 			Log.i(TAG, "DPS: Unknown purpose, killing...");
 			stopSelf();
 			break;
 		}
+		return START_STICKY;
 	}
 	@Override
 	public void onDestroy() {
-		NM.cancel(R.string.NotificationTitle);
-		if(asl != null)
-			sm.unregisterListener(asl);
+		if(sensorEvents != null)
+			sm.unregisterListener(sensorEvents);
 		Log.v(TAG, "DPS: Stopping DPC thread...");
-		apc.killThread();
+		connection.killThread();
 		try {
 			th.join();
 		} catch (InterruptedException e) {
@@ -207,7 +185,7 @@ public class DroidPadService extends Service implements LogTag {
 	// BIND
 	@Override
 	public IBinder onBind(Intent arg0) {
-		return mBinder;
+		return binder;
 	}
 	
     public class LocalBinder extends Binder {
@@ -215,16 +193,10 @@ public class DroidPadService extends Service implements LogTag {
             return DroidPadService.this;
         }
     }
-    private final IBinder mBinder = new LocalBinder();
+    private final IBinder binder = new LocalBinder();
     // END BIND
     
-    //PARENT CALLBACK
-    public void setParentObject(DroidPad a)
-    {
-    	setWin(a);
-    }
-    //END PARENT CALLBACK
-    private SensorEventListener asl = new SensorEventListener() {
+    private SensorEventListener sensorEvents = new SensorEventListener() {
 		@Override
 		public void onAccuracyChanged(Sensor arg0, int arg1) {
 		}
@@ -250,7 +222,7 @@ public class DroidPadService extends Service implements LogTag {
      * Returns the analogue JS values from the accelerometer reports.
      * @return
      */
-    public synchronized float[] getAVals()
+    public float[] getAVals()
     {
     	return new float[] {x - calibX, y - calibY, z};
     }
@@ -260,16 +232,15 @@ public class DroidPadService extends Service implements LogTag {
     	return buttons;
     }
     
-	private void setWin(DroidPad win) {
-		this.win = win;
-		apc.notifyOfParent();
-	}
-	
-	public DroidPad getWin() {
-		return win;
-	}
-	
-	public boolean isWinAvailable() {
-		return win != null;
-	}
+    /**
+     * Sends out a broadcast intent with information about whether DroidPad is connected.
+     * @param state
+     * @param connectedPc
+     */
+    void broadcastState(int state, String connectedPc) {
+    	Intent intent = new Intent(INTENT_STATUSUPDATE);
+    	intent.putExtra(INTENT_EXTRA_STATE, state);
+    	intent.putExtra(INTENT_EXTRA_IP, connectedPc);
+    	sendBroadcast(intent);
+    }
 }
