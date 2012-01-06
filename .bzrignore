@@ -1,11 +1,8 @@
 bin/classes.dex
-bin/droidpad-android.apk
+bin/*.apk
 bin/resources.ap_
 bin/uk
-bin/droidpad-android.mt.apk
 bin
-bin/droidpad-android.multitouch.apk
-bin/droidpad-android.2.apk
 bin/javax
 lint.xml
 bin/classes

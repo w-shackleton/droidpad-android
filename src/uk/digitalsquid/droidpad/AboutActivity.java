@@ -23,7 +23,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-public class DroidPadAbout extends Activity implements OnClickListener{
+public class AboutActivity extends Activity implements OnClickListener{
 	// ACTIVITY
     /** Called when the activity is first created. */
     @Override
@@ -35,6 +35,6 @@ public class DroidPadAbout extends Activity implements OnClickListener{
 
 	@Override
 	public void onClick(View v) {
-		startActivity(new Intent(DroidPadAbout.this,DroidPadIntro.class));
+		startActivity(new Intent(AboutActivity.this,IntroActivity.class));
 	}
 }

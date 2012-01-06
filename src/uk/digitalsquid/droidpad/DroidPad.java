@@ -64,7 +64,7 @@ public class DroidPad extends Activity implements LogTag /* implements SharedPre
 	private Intent i, j;
 	/*private ImageView pmStat, mmStat, bmStat, ppStat;*/
 	private TextView ontext, context, iptext, ipNWtext, localiptext, localwifitext;
-	private DroidPadServer apsbound = null;
+	private DroidPadService apsbound = null;
 	private ActivityManager am;
 	private boolean running;
 	
@@ -128,8 +128,8 @@ public class DroidPad extends Activity implements LogTag /* implements SharedPre
         localiptext = (TextView)findViewById(R.id.LocalIPText);
         localwifitext = (TextView)findViewById(R.id.LocalWifiText);
         
-        i = new Intent(DroidPad.this,DroidPadServer.class);
-        j = new Intent(DroidPad.this,DroidPadButtons.class);
+        i = new Intent(DroidPad.this,DroidPadService.class);
+        j = new Intent(DroidPad.this,Buttons.class);
         am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         
 		startb.setEnabled(false);
@@ -141,7 +141,7 @@ public class DroidPad extends Activity implements LogTag /* implements SharedPre
         	startit.setEnabled(false);
 			Log.i(TAG, "DP: No accelerometer!");
         }
-        if(isRunning("DroidPadServer"))
+        if(isRunning("DroidPadService"))
         {
 			Log.v(TAG, "DP: DPS already running");
         	startit.setText("Stop");
@@ -173,7 +173,7 @@ public class DroidPad extends Activity implements LogTag /* implements SharedPre
         wifiState();
         wifiConn();
         
-        if(isRunning("DroidPadButtons"))
+        if(isRunning("Buttons"))
         {
         	startActivity(j);
         }
@@ -245,7 +245,7 @@ public class DroidPad extends Activity implements LogTag /* implements SharedPre
 					Log.i(TAG, "DP: Stopping DroidPad");
 		        	sendParentKill();
 		        	unbind();
-		        	i = new Intent(DroidPad.this, DroidPadServer.class);
+		        	i = new Intent(DroidPad.this, DroidPadService.class);
 		        	stopService(i);
 					Log.v(TAG, "DP: Sucessfully killed DPS");
 		        	startit.setText("Start");
@@ -331,11 +331,11 @@ public class DroidPad extends Activity implements LogTag /* implements SharedPre
     			startActivity(i);
     			break;
     		case R.id.about:
-    			i = new Intent(DroidPad.this, DroidPadAbout.class);
+    			i = new Intent(DroidPad.this, AboutActivity.class);
     			startActivity(i);
     			break;
     		case R.id.calibrate:
-    			i = new Intent(DroidPad.this, DroidPadServer.class);
+    			i = new Intent(DroidPad.this, DroidPadService.class);
 				i.putExtra("purpose", PURPOSE_CALIBRATE);
 				startService(i);
 				break;
@@ -523,7 +523,7 @@ public class DroidPad extends Activity implements LogTag /* implements SharedPre
     // PRIVATE COMMANDS
     private void bind()
     {
-    	i = new Intent(DroidPad.this, DroidPadServer.class);
+    	i = new Intent(DroidPad.this, DroidPadService.class);
         bindService(i,mConnection,0);
     }
     private void unbind()
@@ -569,7 +569,7 @@ public class DroidPad extends Activity implements LogTag /* implements SharedPre
     // BINDER
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
-            apsbound = ((DroidPadServer.LocalBinder)service).getService();
+            apsbound = ((DroidPadService.LocalBinder)service).getService();
             sendParent();
         }
 
@@ -599,7 +599,7 @@ public class DroidPad extends Activity implements LogTag /* implements SharedPre
 	        		ipT = "Remote IP: " + msg.getData().getString("ip");
 	        		updateIPT(wm.getWifiState() == WifiManager.WIFI_STATE_ENABLED);
 	        	}
-	        	startActivity(new Intent(DroidPad.this, DroidPadButtons.class));
+	        	startActivity(new Intent(DroidPad.this, Buttons.class));
     		}
     		else
     		{

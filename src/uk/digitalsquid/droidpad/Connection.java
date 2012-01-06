@@ -32,7 +32,12 @@ import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 
-public class DroidPadConn implements Runnable, LogTag {
+/**
+ * This class actually opens up a connection and sends data.
+ * @author william
+ *
+ */
+public class Connection implements Runnable, LogTag {
 	private ServerSocket ss;
 	private Socket s;
 	private OutputStream os;
@@ -40,9 +45,13 @@ public class DroidPadConn implements Runnable, LogTag {
 	private InputStreamReader isr;
 	
 	private int port = 0;
+	/**
+	 * Sending interval, in milliseconds.
+	 * TODO: No need for long.
+	 */
 	private long interval = 50;
 	private String mode;
-	private DroidPadServer parent;
+	private DroidPadService parent;
 	private boolean stopping = false;
 	
 	private int fb = 1;
@@ -50,7 +59,7 @@ public class DroidPadConn implements Runnable, LogTag {
 	
 	private boolean invX = false, invY = false;
 	// NORMAL THREAD
-	public DroidPadConn(DroidPadServer droidPadServer, int Port, int interval2, String Mode, boolean invX, boolean invY)
+	public Connection(DroidPadService droidPadServer, int Port, int interval2, String Mode, boolean invX, boolean invY)
 	{
 		parent = droidPadServer;
 		port = Port;
@@ -83,8 +92,8 @@ public class DroidPadConn implements Runnable, LogTag {
 		if(!stopping) serverSetup();
 		Log.d(TAG, "DPC: Someone has connected!");
 		
-		float[] AVals;
-		String str = "";
+		float[] accelVals;
+		String data = "";
 		Layout buttons;
 		while(!stopping)
 		{
@@ -92,20 +101,20 @@ public class DroidPadConn implements Runnable, LogTag {
 			{
 				try
 				{
-					AVals = parent.getAVals();
-					str = "[{" + (invX ? AVals[0] : -AVals[0]) + "," + (invY ? AVals[1] : -AVals[1]) + "," + AVals[2] + "}";
+					accelVals = parent.getAVals();
+					data = "[{" + (invX ? accelVals[0] : -accelVals[0]) + "," + (invY ? accelVals[1] : -accelVals[1]) + "," + accelVals[2] + "}";
 					buttons = parent.getButtons();
 					if(buttons != null)
 					{
 						for(Item item : buttons)
 						{
-							str += ";";
-							str += item.getOutputString();
+							data += ";";
+							data += item.getOutputString();
 						}
 					}
-					str += "]\n"; // [] for easy string view
+					data += "]\n"; // [] for easy string view
 					
-					os.write(str.getBytes());
+					os.write(data.getBytes());
 					os.flush();
 					try {
 						Thread.sleep(interval);
@@ -119,10 +128,6 @@ public class DroidPadConn implements Runnable, LogTag {
 						String st = new String(ch);
 						if(st.startsWith("<STOP>"))
 						{
-							//if(ap != null)
-							//{
-							//	ap.test(5);
-							//}
 							setConnectedStatus(false,"0.0.0.0");
 							server();
 						}
@@ -280,6 +285,9 @@ public class DroidPadConn implements Runnable, LogTag {
 			}
 		}
 	}
+	/**
+	 * Wait for connections.
+	 */
 	private void serverMainLoop()
 	{
 		while(!stopping)
@@ -291,18 +299,19 @@ public class DroidPadConn implements Runnable, LogTag {
 				fbs = String.valueOf(fb);
 				if(fb % 15 == 0)
 					fbs = "FIZZBUZZ";
-				else
-				{
-					if(fb % 5 == 0)
-						fbs = "BUZZ";
-					if(fb % 3 == 0)
-						fbs = "FIZZ";
-				}
-				Log.v(TAG, "DPC: Timed out, retrying... (" + fbs + " retries)");
+				else if(fb % 5 == 0)
+					fbs = "BUZZ";
+				else if(fb % 3 == 0)
+					fbs = "FIZZ";
+				Log.v("DroidPad", "DPC: Timed out, retrying... (" + fbs + " retries)");
 				fb++;
 			}
 		}
 	}
+	
+	/**
+	 * Opens streams once connected.
+	 */
 	private void serverSetup()
 	{
 		try {
