@@ -4,10 +4,6 @@
 <string name="pOtherCat">Other</string>
 <string name="pAdvancedCat">Advanced</string>
 
-<string name="layoutTitle">Choose Layout</string>
-<string name="layoutPrefTitle">Button Layout &amp; Mode</string>
-<string name="layoutSummary">Change the layout of the buttons in DroidPad</string>
-
 <string name="revXTitle">Reverse Horizontally</string>
 <string name="revXSummary">Reverse the X axis</string>
 <string name="revYTitle">Reverse Vertically</string>

@@ -17,9 +17,13 @@
 package uk.digitalsquid.droidpad;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
 public class AboutActivity extends Activity implements OnClickListener{
 	// ACTIVITY
@@ -28,11 +32,16 @@ public class AboutActivity extends Activity implements OnClickListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.about);
-        // ((Button)findViewById(R.id.GoIntroButton)).setOnClickListener(this);
+        findViewById(R.id.GoIntroButton).setOnClickListener(this);
     }
 
 	@Override
 	public void onClick(View v) {
-		// startActivity(new Intent(AboutActivity.this,IntroActivity.class));
+		Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://digitalsquid.co.uk/droidpad/"));
+		try {
+			startActivity(i);
+		} catch (ActivityNotFoundException a) {
+			Toast.makeText(getBaseContext(), "Could not launch Browser.", Toast.LENGTH_SHORT).show();
+		}
 	}
 }

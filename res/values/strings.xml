@@ -1,27 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">DroidPad</string>
-<string name="app_name_buttons">Buttons</string>
-
-
-
-
-<string name="Wifi">Wifi settings</string>
-<string name="WifiShort">Wifi</string>
-<string name="About">About</string>
-<string name="Website">Website</string>
-<string name="Settings">Settings</string>
-<string name="Calibrate">Calibrate</string>
-<string name="OK">OK</string>
-<string name="Cancel">Cancel</string>
-<string name="generic_layout_description">%1$d buttons, %2$d sliders, %3$d trackpads.</string>
-<string name="generic_layout_title">%1$s layout %2$d</string>
-<string name="connectWaiting">Waiting for connection&#8230;</string>
-<string name="connected">Connected to PC</string>
-<string name="connectFailed">Lost connection with computer. Waiting for reconnect&#8230;</string>
-<string name="js">Joystick</string>
-<string name="mouse">Mouse</string>
-<string name="slideshow">Slideshow</string>
-
-
+	<string name="Wifi">Wifi settings</string>
+	<string name="WifiShort">Wifi</string>
+	<string name="About">About</string>
+	<string name="Website">Website</string>
+	<string name="Settings">Settings</string>
+	<string name="Calibrate">Calibrate</string>
+	<string name="about_title">About DroidPad</string><string name="generic_layout_description">%1$d buttons, %2$d sliders, %3$d trackpads.</string>
+	<string name="generic_layout_title">%1$s layout %2$d</string>
+	<string name="connectWaiting">Waiting for connection&#8230;</string>
+	<string name="connected">Connected to PC</string>
+	<string name="connectFailed">Lost connection with computer. Waiting for reconnect&#8230;</string>
+	<string name="js">Joystick</string>
+	<string name="mouse">Mouse</string>
+	<string name="slideshow">Slideshow</string>
 </resources>
