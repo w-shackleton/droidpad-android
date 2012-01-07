@@ -101,6 +101,7 @@ public class DroidPadService extends Service implements LogTag {
 		} catch(IndexOutOfBoundsException e) {
 			Toast.makeText(this, "ERROR: Accelerometer not found!", Toast.LENGTH_SHORT).show();
 		}
+		// FIXME: Use proper calibration rather than this?
 		calibX = prefs.getFloat("calibX", 0);
 		calibY = prefs.getFloat("calibY", 0);
 		Log.v(TAG, "DPS: Calibration " + String.valueOf(calibX) + ", " + String.valueOf(calibY) + " found.");
@@ -249,5 +250,11 @@ public class DroidPadService extends Service implements LogTag {
     	intent.putExtra(INTENT_EXTRA_STATE, state);
     	intent.putExtra(INTENT_EXTRA_IP, connectedPc);
     	sendBroadcast(intent);
+    }
+    
+    void calibrate() {
+    	calibX = x;
+    	calibY = y;
+    	Toast.makeText(this, "Saved calibration", Toast.LENGTH_LONG).show();
     }
 }

@@ -80,14 +80,20 @@ public class ButtonView extends View implements LogTag
 	
 	private int width, height;
 	
+	private float scale = 1;
+	
 	private static final Paint P_BLACK = new Paint(0xFF000000);
 	
 	@Override
 	public void onDraw(Canvas canvas)
 	{
 		super.onDraw(canvas);
-		width = canvas.getWidth();
-		height = canvas.getHeight();
+		scale = getResources().getDisplayMetrics().density;
+		
+		width = (int) ((float)canvas.getWidth() / scale);
+		height = (int) ((float)canvas.getHeight() / scale);
+		
+		canvas.scale(scale, scale);
 		
 		canvas.drawRect(0, 0, width, height, P_BLACK);
 		if(isInEditMode()) return;
@@ -103,6 +109,8 @@ public class ButtonView extends View implements LogTag
 		processPoint(x, y, false);
 	}
 	private void processPoint(float x, float y, boolean up) {
+		x /= scale;
+		y /= scale;
 		for(Item item : layout) {
 			if(item.pointIsInArea(x, y)) {
 				if(!up)

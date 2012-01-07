@@ -124,7 +124,7 @@ public class App extends Application {
 	}
 	private List<Layout> getSlideLayouts() {
 		List<Layout> ret = new ArrayList<Layout>();
-		ret.add(new Layout(new Item[] {
+		ret.add(new Layout(R.string.layout_slide, R.string.layout_slide_desc, 4, 5, new Item[] {
 				new Button(0, 3, 4, 2, "Next slide", 30),
 				new Button(1, 2, 2, 1, "Prev slide", 16),
 				new Button(0, 2, 1, 1, "Start"),

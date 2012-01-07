@@ -35,6 +35,9 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -285,5 +288,27 @@ public class Buttons extends Activity implements LogTag
     public void sendEvent(Layout layout) {
     	if(boundService == null) return;
     	boundService.buttons = layout;
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+    	MenuInflater inflater = getMenuInflater();
+    	inflater.inflate(R.menu.buttons_menu, menu);
+		return true;
+    	
+    }
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+    	if (!item.hasSubMenu()) {
+    		switch (item.getItemId()) {
+    		case R.id.calibrate:
+    			if(boundService != null) {
+    				boundService.calibrate();
+    			}
+    			break;
+    		}
+    	}
+		return true;
     }
 }

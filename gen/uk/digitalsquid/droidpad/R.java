@@ -12,10 +12,6 @@ public final class R {
         public static final int fadein=0x7f040000;
         public static final int fadeout_delay=0x7f040001;
     }
-    public static final class array {
-        public static final int ButtonChoice=0x7f090000;
-        public static final int ButtonChoiceVals=0x7f090001;
-    }
     public static final class attr {
     }
     public static final class color {
@@ -23,60 +19,58 @@ public final class R {
         public static final int statusBg=0x7f070001;
     }
     public static final class drawable {
-        public static final int backbutton=0x7f020000;
-        public static final int forwardbutton=0x7f020001;
-        public static final int green=0x7f020002;
-        public static final int icon=0x7f020003;
-        public static final int iconlarge=0x7f020004;
-        public static final int options=0x7f020005;
-        public static final int red=0x7f020006;
-        public static final int wifiicon=0x7f020007;
+        public static final int ic_menu_wifi=0x7f020000;
+        public static final int ic_tab_js=0x7f020001;
+        public static final int ic_tab_js_selected=0x7f020002;
+        public static final int ic_tab_js_unselected=0x7f020003;
+        public static final int ic_tab_mouse=0x7f020004;
+        public static final int ic_tab_mouse_selected=0x7f020005;
+        public static final int ic_tab_mouse_unselected=0x7f020006;
+        public static final int ic_tab_slide=0x7f020007;
+        public static final int ic_tab_slide_selected=0x7f020008;
+        public static final int ic_tab_slide_unselected=0x7f020009;
+        public static final int icon=0x7f02000a;
+        public static final int iconlarge=0x7f02000b;
     }
     public static final class id {
-        public static final int AboutSubtitle=0x7f0b0004;
-        public static final int AboutTitle=0x7f0b0003;
-        public static final int AboutTitleImage=0x7f0b0002;
-        public static final int Details=0x7f0b0005;
-        public static final int Details2=0x7f0b0006;
-        public static final int Details3=0x7f0b0007;
-        public static final int GoIntroButton=0x7f0b0008;
-        public static final int RelativeLayout01=0x7f0b0001;
-        public static final int ScrollView01=0x7f0b0000;
-        public static final int about=0x7f0b0020;
-        public static final int buttonView=0x7f0b0009;
-        public static final int calibrate=0x7f0b001f;
-        public static final int connectionContainer=0x7f0b000a;
-        public static final int connectionIp=0x7f0b000b;
-        public static final int connectionStatus=0x7f0b000d;
-        public static final int connectionStatusProgress=0x7f0b000c;
-        public static final int description=0x7f0b0015;
-        public static final int helpBaseBar=0x7f0b000f;
-        public static final int helpDoneButton=0x7f0b0012;
-        public static final int helpWebview=0x7f0b0013;
-        public static final int helpWindow=0x7f0b000e;
-        public static final int introBackButton=0x7f0b0010;
-        public static final int introForwardButton=0x7f0b0011;
-        public static final int jsList=0x7f0b0018;
-        public static final int jsTab=0x7f0b0017;
-        public static final int linearLayout1=0x7f0b0016;
-        public static final int mouseList=0x7f0b001a;
-        public static final int mouseTab=0x7f0b0019;
-        public static final int settings=0x7f0b001e;
-        public static final int slideList=0x7f0b001c;
-        public static final int slideTab=0x7f0b001b;
-        public static final int title=0x7f0b0014;
-        public static final int website=0x7f0b0021;
-        public static final int wifi=0x7f0b001d;
+        public static final int AboutSubtitle=0x7f0a0004;
+        public static final int AboutTitle=0x7f0a0003;
+        public static final int AboutTitleImage=0x7f0a0002;
+        public static final int Details=0x7f0a0005;
+        public static final int Details2=0x7f0a0006;
+        public static final int Details3=0x7f0a0007;
+        public static final int GoIntroButton=0x7f0a0008;
+        public static final int RelativeLayout01=0x7f0a0001;
+        public static final int ScrollView01=0x7f0a0000;
+        public static final int about=0x7f0a001a;
+        public static final int buttonView=0x7f0a0009;
+        public static final int calibrate=0x7f0a0017;
+        public static final int connectionContainer=0x7f0a000a;
+        public static final int connectionIp=0x7f0a000b;
+        public static final int connectionStatus=0x7f0a000d;
+        public static final int connectionStatusProgress=0x7f0a000c;
+        public static final int description=0x7f0a000f;
+        public static final int jsList=0x7f0a0012;
+        public static final int jsTab=0x7f0a0011;
+        public static final int linearLayout1=0x7f0a0010;
+        public static final int mouseList=0x7f0a0014;
+        public static final int mouseTab=0x7f0a0013;
+        public static final int settings=0x7f0a0019;
+        public static final int slideList=0x7f0a0016;
+        public static final int slideTab=0x7f0a0015;
+        public static final int title=0x7f0a000e;
+        public static final int website=0x7f0a001b;
+        public static final int wifi=0x7f0a0018;
     }
     public static final class layout {
         public static final int about=0x7f030000;
         public static final int buttons=0x7f030001;
-        public static final int intro=0x7f030002;
-        public static final int layoutitem=0x7f030003;
-        public static final int main2=0x7f030004;
+        public static final int layoutitem=0x7f030002;
+        public static final int main2=0x7f030003;
     }
     public static final class menu {
-        public static final int menu=0x7f0a0000;
+        public static final int buttons_menu=0x7f090000;
+        public static final int menu=0x7f090001;
     }
     public static final class raw {
         public static final int iconlarge=0x7f060000;
@@ -85,63 +79,62 @@ public final class R {
         public static final int more=0x7f060003;
     }
     public static final class string {
-        public static final int About=0x7f080026;
-        public static final int Calibrate=0x7f080029;
-        public static final int Cancel=0x7f08002b;
-        public static final int NotificationText=0x7f080023;
-        public static final int NotificationTitle=0x7f080021;
-        public static final int NotificationTitle2=0x7f080022;
-        public static final int OK=0x7f08002a;
-        public static final int PCVersion=0x7f080020;
-        public static final int PortMessage=0x7f080012;
-        public static final int PortSummary=0x7f080013;
-        public static final int PortTitle=0x7f080011;
-        public static final int Settings=0x7f080028;
-        public static final int Website=0x7f080027;
-        public static final int Wifi=0x7f080024;
-        public static final int WifiShort=0x7f080025;
-        public static final int app_name=0x7f08001e;
-        public static final int app_name_buttons=0x7f08001f;
-        public static final int axesfloatOff=0x7f08001c;
-        public static final int axesfloatOn=0x7f08001b;
-        public static final int axesfloatTitle=0x7f08001a;
-        public static final int connectFailed=0x7f080031;
-        public static final int connectWaiting=0x7f08002f;
-        public static final int connected=0x7f080030;
-        public static final int generic_layout_description=0x7f08002d;
-        public static final int generic_layout_title=0x7f08002e;
-        public static final int hello=0x7f08001d;
-        public static final int layoutPrefTitle=0x7f080008;
-        public static final int layoutSummary=0x7f080009;
-        public static final int layoutTitle=0x7f080007;
+        public static final int About=0x7f080023;
+        public static final int Calibrate=0x7f080026;
+        public static final int Cancel=0x7f080028;
+        public static final int OK=0x7f080027;
+        public static final int PortMessage=0x7f080014;
+        public static final int PortSummary=0x7f080015;
+        public static final int PortTitle=0x7f080013;
+        public static final int Settings=0x7f080025;
+        public static final int Website=0x7f080024;
+        public static final int Wifi=0x7f080021;
+        public static final int WifiShort=0x7f080022;
+        public static final int app_name=0x7f08001f;
+        public static final int app_name_buttons=0x7f080020;
+        public static final int axesfloatOff=0x7f08001e;
+        public static final int axesfloatOn=0x7f08001d;
+        public static final int axesfloatTitle=0x7f08001c;
+        public static final int connectFailed=0x7f08002d;
+        public static final int connectWaiting=0x7f08002b;
+        public static final int connected=0x7f08002c;
+        public static final int generic_layout_description=0x7f080029;
+        public static final int generic_layout_title=0x7f08002a;
+        public static final int js=0x7f08002e;
+        public static final int layoutPrefTitle=0x7f08000a;
+        public static final int layoutSummary=0x7f08000b;
+        public static final int layoutTitle=0x7f080009;
         public static final int layout_mouse_adv=0x7f080002;
         public static final int layout_mouse_adv_desc=0x7f080003;
         public static final int layout_mouse_simple=0x7f080000;
         public static final int layout_mouse_simple_desc=0x7f080001;
-        public static final int new_app_name=0x7f08002c;
-        public static final int orientationOff=0x7f080019;
-        public static final int orientationOn=0x7f080018;
-        public static final int orientationTitle=0x7f080017;
-        public static final int pAdvancedCat=0x7f080006;
-        public static final int pModesCat=0x7f080004;
-        public static final int pOtherCat=0x7f080005;
-        public static final int revXSummary=0x7f08000b;
-        public static final int revXTitle=0x7f08000a;
-        public static final int revYSummary=0x7f08000d;
-        public static final int revYTitle=0x7f08000c;
-        public static final int screenBright=0x7f080010;
-        public static final int screenBrightOff=0x7f08000f;
-        public static final int screenBrightOn=0x7f08000e;
-        public static final int updateMessage=0x7f080015;
-        public static final int updateSummary=0x7f080016;
-        public static final int updateTitle=0x7f080014;
-        public static final int wifi_connectToPhone=0x7f080038;
-        public static final int wifi_connecting=0x7f080035;
-        public static final int wifi_disabled=0x7f080032;
-        public static final int wifi_disabling=0x7f080033;
-        public static final int wifi_disconnected=0x7f080036;
-        public static final int wifi_enabling=0x7f080034;
-        public static final int wifi_scanning=0x7f080037;
+        public static final int layout_slide=0x7f080004;
+        public static final int layout_slide_desc=0x7f080005;
+        public static final int mouse=0x7f08002f;
+        public static final int orientationOff=0x7f08001b;
+        public static final int orientationOn=0x7f08001a;
+        public static final int orientationTitle=0x7f080019;
+        public static final int pAdvancedCat=0x7f080008;
+        public static final int pModesCat=0x7f080006;
+        public static final int pOtherCat=0x7f080007;
+        public static final int revXSummary=0x7f08000d;
+        public static final int revXTitle=0x7f08000c;
+        public static final int revYSummary=0x7f08000f;
+        public static final int revYTitle=0x7f08000e;
+        public static final int screenBright=0x7f080012;
+        public static final int screenBrightOff=0x7f080011;
+        public static final int screenBrightOn=0x7f080010;
+        public static final int slideshow=0x7f080030;
+        public static final int updateMessage=0x7f080017;
+        public static final int updateSummary=0x7f080018;
+        public static final int updateTitle=0x7f080016;
+        public static final int wifi_connectToPhone=0x7f080037;
+        public static final int wifi_connecting=0x7f080034;
+        public static final int wifi_disabled=0x7f080031;
+        public static final int wifi_disabling=0x7f080032;
+        public static final int wifi_disconnected=0x7f080035;
+        public static final int wifi_enabling=0x7f080033;
+        public static final int wifi_scanning=0x7f080036;
     }
     public static final class xml {
         public static final int settingsmenu=0x7f050000;

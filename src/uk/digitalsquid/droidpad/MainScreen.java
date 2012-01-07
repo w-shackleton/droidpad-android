@@ -52,7 +52,9 @@ public class MainScreen extends TabActivity implements OnClickListener, OnItemCl
 		// set up tabs
 		TabSpec spec;
 		spec = tabHost.newTabSpec("jsTab");
-		spec.setIndicator("JS (TODO: Pic)");
+		spec.setIndicator(
+				getResources().getString(R.string.js),
+				getResources().getDrawable(R.drawable.ic_tab_js));
 		spec.setContent(R.id.jsTab);
 		tabHost.addTab(spec);
 		
@@ -63,7 +65,9 @@ public class MainScreen extends TabActivity implements OnClickListener, OnItemCl
 		jsList.setOnItemClickListener(this);
 		
 		spec = tabHost.newTabSpec("mouseTab");
-		spec.setIndicator("Mouse");
+		spec.setIndicator(
+				getResources().getString(R.string.mouse),
+				getResources().getDrawable(R.drawable.ic_tab_mouse));
 		spec.setContent(R.id.mouseTab);
 		tabHost.addTab(spec);
 		
@@ -73,7 +77,9 @@ public class MainScreen extends TabActivity implements OnClickListener, OnItemCl
 		mouseList.setOnItemClickListener(this);
 		
 		spec = tabHost.newTabSpec("slideTab");
-		spec.setIndicator("Slideshow");
+		spec.setIndicator(
+				getResources().getString(R.string.slideshow),
+				getResources().getDrawable(R.drawable.ic_tab_slide));
 		spec.setContent(R.id.slideTab);
 		tabHost.addTab(spec);
 		
@@ -153,6 +159,7 @@ public class MainScreen extends TabActivity implements OnClickListener, OnItemCl
 		startActivity(intent);
 	}
 	
+    @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
     	MenuInflater inflater = getMenuInflater();
@@ -160,6 +167,8 @@ public class MainScreen extends TabActivity implements OnClickListener, OnItemCl
 		return true;
     	
     }
+    
+    @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
     	if (!item.hasSubMenu())
@@ -197,11 +206,6 @@ public class MainScreen extends TabActivity implements OnClickListener, OnItemCl
     			i = new Intent(this, AboutActivity.class);
     			startActivity(i);
     			break;
-    		case R.id.calibrate:
-    			i = new Intent(this, DroidPadService.class);
-				i.putExtra("purpose", DroidPadService.PURPOSE_CALIBRATE);
-				startService(i);
-				break;
     		}
     	}
 		return true;

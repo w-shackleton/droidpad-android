@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">DroidPad</string>
     <string name="app_name">DroidPad</string>
-<string name="app_name_buttons">Buttons</string><string name="PCVersion">1.0.0.0</string><string name="NotificationTitle">DroidPad</string>
-<string name="NotificationTitle2">DroidPad is Running</string><string name="NotificationText">DroidPad is Running.</string>
+<string name="app_name_buttons">Buttons</string>
 
 
 
@@ -16,41 +14,14 @@
 <string name="Calibrate">Calibrate</string>
 <string name="OK">OK</string>
 <string name="Cancel">Cancel</string>
-
-
-
-
-
-<string-array name="ButtonChoice">
-<item>Mouse Mode</item><item>Laptop Trackpad</item>
-<item>Slideshow Presenter</item>
-<item>2 Buttons</item><item>3 Buttons</item><item>4 Buttons</item><item>5 Buttons</item><item>1 Axis, 1 Slider,\n6 buttons (3 toggle)</item>
-<item>1 Axis, \n8 buttons</item>
-<item>1 Axis, \n8 buttons (3 toggle)</item>
-<item>1 axis, 4 sliders,\n8 buttons (2 toggle)</item>
-
-
-
-
-</string-array>
-<string-array name="ButtonChoiceVals">
-<item>mouse</item><item>mouse2</item>
-<item>slide</item>
-<item>1s1</item><item>1s2</item><item>1s3</item><item>1s4</item><item>1</item>
-<item>2</item>
-<item>2b</item>
-<item>3</item>
-
-
-
-
-</string-array>
-<string name="new_app_name">DroidPad - New UI</string>
 <string name="generic_layout_description">%1$d buttons, %2$d sliders, %3$d trackpads.</string>
 <string name="generic_layout_title">%1$s layout %2$d</string>
 <string name="connectWaiting">Waiting for connection&#8230;</string>
 <string name="connected">Connected to PC</string>
 <string name="connectFailed">Lost connection with computer. Waiting for reconnect&#8230;</string>
+<string name="js">Joystick</string>
+<string name="mouse">Mouse</string>
+<string name="slideshow">Slideshow</string>
 
 
 </resources>
