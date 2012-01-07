@@ -48,7 +48,7 @@ import android.widget.Toast;
  * @author william
  *
  */
-public class MainScreen extends TabActivity implements OnClickListener, OnItemClickListener /*, LogTag */ {
+public class DroidPad extends TabActivity implements OnClickListener, OnItemClickListener /*, LogTag */ {
 	
 	private static final String TAG = "DroidPad"; // Until we import trunk
 	
@@ -119,7 +119,7 @@ public class MainScreen extends TabActivity implements OnClickListener, OnItemCl
 		
 		public ModeListAdapter(List<Layout> modes) {
 			this.modes = modes;
-			inflater = LayoutInflater.from(MainScreen.this);
+			inflater = LayoutInflater.from(DroidPad.this);
 		}
 		
 		@Override

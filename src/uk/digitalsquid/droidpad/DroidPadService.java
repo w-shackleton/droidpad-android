@@ -128,8 +128,14 @@ public class DroidPadService extends Service implements LogTag {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStart(intent, startId);
 		Log.d(TAG, "DPS: Service Started");
-		switch(intent.getExtras().getInt("purpose"))
-		{
+		int purpose = -1;
+		try {
+			purpose = intent.getExtras().getInt("purpose");
+		} catch(NullPointerException e) { // Reported thru market?!?
+			Log.e(TAG, "Failed to get purpose!", e);
+			return START_STICKY_COMPATIBILITY;
+		}
+		switch(purpose) {
 		case PURPOSE_SETUP:
 			if(!setup)
 			{
