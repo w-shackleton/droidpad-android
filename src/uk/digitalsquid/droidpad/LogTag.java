@@ -17,5 +17,5 @@
 package uk.digitalsquid.droidpad;
 
 public interface LogTag {
-	static final String TAG = "DroidPad";
+	static final String TAG = "droidpad";
 }

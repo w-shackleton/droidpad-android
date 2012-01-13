@@ -264,6 +264,7 @@ public class Buttons extends Activity implements LogTag
 		registerReceiver(statusReceiver, statusFilter);
         registerReceiver(wifiReceiver, wifiFilter);
     	bind();
+    	getWifiStateText();
     }
     
     @Override

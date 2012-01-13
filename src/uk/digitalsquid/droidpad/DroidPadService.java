@@ -28,6 +28,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.wifi.WifiManager;
+import android.net.wifi.WifiManager.MulticastLock;
 import android.net.wifi.WifiManager.WifiLock;
 import android.os.Binder;
 import android.os.IBinder;
@@ -66,7 +67,8 @@ public class DroidPadService extends Service implements LogTag {
 	
 	protected boolean landscape = false;
 	
-	private WifiLock wL;
+	private WifiLock wifiLock;
+	private MulticastLock multicastLock;
 	
 	private SharedPreferences prefs;
 	
@@ -115,10 +117,11 @@ public class DroidPadService extends Service implements LogTag {
 		}
 		if(wm != null)
 		{
-			try{ wL = wm.createWifiLock(WifiManager.WIFI_MODE_FULL, TAG); }
-			catch (Exception e)
-			{
-				Log.w(TAG, "DPS: Could not create wifi lock");
+			try{
+				wifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL, TAG);
+				multicastLock = wm.createMulticastLock(TAG);
+			} catch (Exception e) {
+				Log.w(TAG, "DPS: Could not create wifi lock or multicast lock");
 			}
 		}
 		Log.v(TAG, "DPS: Wifi lock sorted...");
@@ -142,9 +145,10 @@ public class DroidPadService extends Service implements LogTag {
 				//Toast.makeText(this, "Service started with setup", Toast.LENGTH_SHORT).show();
 				setup = true;
 				
-				if(wL != null) {
-					wL.acquire();
-					Log.d(TAG, "DPS: Wifi Locked");
+				if(wifiLock != null) {
+					wifiLock.acquire();
+					multicastLock.acquire();
+					Log.d(TAG, "DPS: Wifi Locked & multicasting enabled");
 				}
 
 		        mode = (ModeSpec) intent.getSerializableExtra(MODE_SPEC);
@@ -184,8 +188,9 @@ public class DroidPadService extends Service implements LogTag {
 		mdns.stopRunning();
 		// Let it die out by itself.
 		Log.v(TAG, "DPS: DPC thread down!");
-		if(wL != null) wL.release();
-		Log.d(TAG, "DPS: Wifi unlocked");
+		if(wifiLock != null) wifiLock.release();
+		if(multicastLock != null) multicastLock.release();
+		Log.d(TAG, "DPS: Wifi unlocked & multicasting released.");
 		Editor prefEd = PreferenceManager.getDefaultSharedPreferences(this).edit();
 		prefEd.putFloat("calibX", calibX);
 		prefEd.putFloat("calibY", calibY);

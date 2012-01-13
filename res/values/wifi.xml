@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="wifi_disabled">Disabled</string>
-    <string name="wifi_disabling">Disabling</string>
-    <string name="wifi_enabling">Enabling</string>
-    <string name="wifi_connecting">Connecting</string>
+    <string name="wifi_disabled">Wifi Disabled</string>
+    <string name="wifi_disabling">Wifi Disabling</string>
+    <string name="wifi_enabling">Wifi Enabling</string>
+    <string name="wifi_connecting">Wifi Connecting</string>
     <string name="wifi_disconnected">Disconnected from Wifi</string>
     <string name="wifi_scanning">Scanning for Wifi</string>
     <string name="wifi_connectToPhone">Connect to phone on %1$s</string>
