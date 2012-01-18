@@ -16,6 +16,8 @@
 
 package uk.digitalsquid.droidpad;
 
+import java.net.InetAddress;
+
 import uk.digitalsquid.droidpad.buttons.Layout;
 import uk.digitalsquid.droidpad.buttons.ModeSpec;
 import android.app.Service;
@@ -27,6 +29,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.MulticastLock;
 import android.net.wifi.WifiManager.WifiLock;
@@ -66,6 +69,8 @@ public class DroidPadService extends Service implements LogTag {
 	public float calibX = 0, calibY = 0;
 	
 	protected boolean landscape = false;
+	
+	InetAddress wifiAddr;
 	
 	private WifiLock wifiLock;
 	private MulticastLock multicastLock;
@@ -117,6 +122,9 @@ public class DroidPadService extends Service implements LogTag {
 		}
 		if(wm != null)
 		{
+			WifiInfo wifiInfo = wm.getConnectionInfo();
+			if(wifiInfo != null)
+				wifiAddr = Buttons.intToInetAddress(wifiInfo.getIpAddress());
 			try{
 				wifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL, TAG);
 				multicastLock = wm.createMulticastLock(TAG);
@@ -158,7 +166,13 @@ public class DroidPadService extends Service implements LogTag {
 				Log.v(TAG, "DPS: DroidPad connection thread started!");
 				
 				Log.v(TAG, "DPS: Starting mDNS broadcaster");
-				mdns = new MDNSBroadcaster("DEVICE NAME", port);
+				String deviceName =
+						PreferenceManager.getDefaultSharedPreferences(
+								getBaseContext()).getString("devicename",
+										getResources().getString(R.string.deviceDefaultName));
+				mdns = new MDNSBroadcaster(wifiAddr,
+						deviceName.substring(0, Math.min(deviceName.length(), 40)),
+						port);
 				mdns.start();
 			}
 			else

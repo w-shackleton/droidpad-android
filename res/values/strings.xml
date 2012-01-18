@@ -15,4 +15,5 @@
 	<string name="js">Joystick</string>
 	<string name="mouse">Mouse</string>
 	<string name="slideshow">Slideshow</string>
+	<string name="deviceDefaultName">Android Device</string>
 </resources>

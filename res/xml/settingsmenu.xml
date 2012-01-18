@@ -4,7 +4,7 @@
 <PreferenceScreen
         xmlns:android="http://schemas.android.com/apk/res/android" android:title="@string/Settings">
 
-    <PreferenceCategory android:title="@string/pModesCat"><CheckBoxPreference
+    <EditTextPreference android:key="devicename" android:title="@string/deviceName" android:summary="@string/deviceNameDesc"/><PreferenceCategory android:title="@string/pModesCat"><CheckBoxPreference
                 android:persistent="true" android:key="reverse-x" android:summary="@string/revXSummary" android:title="@string/revXTitle"/><CheckBoxPreference
                 android:persistent="true" android:key="reverse-y" android:summary="@string/revYSummary" android:title="@string/revYTitle"/>
                 <CheckBoxPreference android:key="axesfloat" android:defaultValue="true" android:summaryOn="@string/axesfloatOn" android:summaryOff="@string/axesfloatOff" android:title="@string/axesfloatTitle"></CheckBoxPreference>
@@ -29,6 +29,7 @@
 
     
 </PreferenceCategory>
+
 
     
 

@@ -17,6 +17,7 @@
 package uk.digitalsquid.droidpad;
 
 import java.io.IOException;
+import java.net.InetAddress;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
@@ -31,11 +32,13 @@ public class MDNSBroadcaster extends Thread implements LogTag {
 	private ServiceInfo dpAnnounce;
 	private final String devName, name;
 	private final int port;
+	private final InetAddress addr;
 	
-	public MDNSBroadcaster(String deviceName, int port) {
+	public MDNSBroadcaster(InetAddress addr, String deviceName, int port) {
 		devName = "droidpad:" + Base64.encodeBytes(deviceName.getBytes());
 		this.name = deviceName;
 		this.port = port;
+		this.addr = addr;
 	}
 	
 	private boolean stopping = false;
@@ -45,7 +48,7 @@ public class MDNSBroadcaster extends Thread implements LogTag {
 		while(jmdns == null) {
 			if(stopping) return;
 	        try {
-				jmdns = JmDNS.create();
+				jmdns = JmDNS.create(addr); // If addr is null jmdns will guess it.
 			} catch (IOException e) {
 				Log.e(TAG, "Couldn't start JmDNS! Will try again soon.");
 				e.printStackTrace();
