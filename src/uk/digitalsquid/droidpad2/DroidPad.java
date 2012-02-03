@@ -20,11 +20,16 @@ import java.util.List;
 
 import uk.digitalsquid.droidpad2.buttons.Layout;
 import uk.digitalsquid.droidpad2.buttons.ModeSpec;
+import android.app.AlertDialog.Builder;
+import android.app.Dialog;
 import android.app.TabActivity;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,9 +53,7 @@ import android.widget.Toast;
  * @author william
  *
  */
-public class DroidPad extends TabActivity implements OnClickListener, OnItemClickListener /*, LogTag */ {
-	
-	private static final String TAG = "DroidPad"; // Until we import trunk
+public class DroidPad extends TabActivity implements OnClickListener, OnItemClickListener, LogTag {
 	
 	TabHost tabHost;
 	
@@ -103,6 +106,31 @@ public class DroidPad extends TabActivity implements OnClickListener, OnItemClic
 		slideModes = new ModeListAdapter(app.getLayouts(ModeSpec.LAYOUTS_SLIDE));
 		slideList.setAdapter(slideModes);
 		slideList.setOnItemClickListener(this);
+		
+		// TODO: Remove in release
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(app);
+		if(prefs.getInt("firstTime", 1) == 1) {
+			prefs.edit().putInt("firstTime", 0).commit();
+			showDialog(1);
+		}
+	}
+	
+	@Override
+	public Dialog onCreateDialog(int id) {
+		switch(id) {
+		case 1: // Temp dialog to show new version needs to be dl'd
+			Builder builder = new Builder(this);
+			builder.setTitle(R.string.app_name);
+			builder.setMessage(R.string.betaWelcome);
+			builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+			return builder.create();
+		}
+		return null;
 	}
 	
 	@Override
