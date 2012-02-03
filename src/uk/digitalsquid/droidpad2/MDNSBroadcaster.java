@@ -14,7 +14,7 @@
  *  along with DroidPad.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package uk.digitalsquid.droidpad;
+package uk.digitalsquid.droidpad2;
 
 import java.io.IOException;
 import java.net.InetAddress;

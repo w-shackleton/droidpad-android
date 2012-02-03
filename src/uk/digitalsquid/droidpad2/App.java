@@ -14,20 +14,20 @@
  *  along with DroidPad.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package uk.digitalsquid.droidpad;
+package uk.digitalsquid.droidpad2;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import uk.digitalsquid.droidpad.buttons.Button;
-import uk.digitalsquid.droidpad.buttons.Item;
-import uk.digitalsquid.droidpad.buttons.Layout;
-import uk.digitalsquid.droidpad.buttons.ModeSpec;
-import uk.digitalsquid.droidpad.buttons.Slider;
-import uk.digitalsquid.droidpad.buttons.Slider.SliderType;
-import uk.digitalsquid.droidpad.buttons.ToggleButton;
-import uk.digitalsquid.droidpad.buttons.TouchPanel;
-import uk.digitalsquid.droidpad.buttons.TouchPanel.PanelType;
+import uk.digitalsquid.droidpad2.buttons.Button;
+import uk.digitalsquid.droidpad2.buttons.Item;
+import uk.digitalsquid.droidpad2.buttons.Layout;
+import uk.digitalsquid.droidpad2.buttons.ModeSpec;
+import uk.digitalsquid.droidpad2.buttons.Slider;
+import uk.digitalsquid.droidpad2.buttons.Slider.SliderType;
+import uk.digitalsquid.droidpad2.buttons.ToggleButton;
+import uk.digitalsquid.droidpad2.buttons.TouchPanel;
+import uk.digitalsquid.droidpad2.buttons.TouchPanel.PanelType;
 import android.app.Application;
 
 /**

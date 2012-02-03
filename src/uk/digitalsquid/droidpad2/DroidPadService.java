@@ -14,12 +14,12 @@
  *  along with DroidPad.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package uk.digitalsquid.droidpad;
+package uk.digitalsquid.droidpad2;
 
 import java.net.InetAddress;
 
-import uk.digitalsquid.droidpad.buttons.Layout;
-import uk.digitalsquid.droidpad.buttons.ModeSpec;
+import uk.digitalsquid.droidpad2.buttons.Layout;
+import uk.digitalsquid.droidpad2.buttons.ModeSpec;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -41,11 +41,11 @@ import android.widget.Toast;
 
 public class DroidPadService extends Service implements LogTag {
 	
-	public static final String MODE_SPEC = "uk.digitalsquid.droidpad.DroidPadService.ModeSpec";
+	public static final String MODE_SPEC = "uk.digitalsquid.droidpad2.DroidPadService.ModeSpec";
 	
-	public static final String INTENT_STATUSUPDATE = "uk.digitalsquid.droidpad.DroidPadService.Status";
-	public static final String INTENT_EXTRA_STATE = "uk.digitalsquid.droidpad.DroidPadService.Status.State";
-	public static final String INTENT_EXTRA_IP = "uk.digitalsquid.droidpad.DroidPadService.Status.Ip";
+	public static final String INTENT_STATUSUPDATE = "uk.digitalsquid.droidpad2.DroidPadService.Status";
+	public static final String INTENT_EXTRA_STATE = "uk.digitalsquid.droidpad2.DroidPadService.Status.State";
+	public static final String INTENT_EXTRA_IP = "uk.digitalsquid.droidpad2.DroidPadService.Status.Ip";
 	public static final int STATE_CONNECTED = 1;
 	public static final int STATE_WAITING = 2;
 	public static final int STATE_CONNECTION_LOST = 3;

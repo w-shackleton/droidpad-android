@@ -14,12 +14,12 @@
  *  along with DroidPad.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package uk.digitalsquid.droidpad;
+package uk.digitalsquid.droidpad2;
 
-import uk.digitalsquid.droidpad.buttons.Item;
-import uk.digitalsquid.droidpad.buttons.Layout;
-import uk.digitalsquid.droidpad.buttons.ModeSpec;
-import uk.digitalsquid.droidpad.buttons.Slider;
+import uk.digitalsquid.droidpad2.buttons.Item;
+import uk.digitalsquid.droidpad2.buttons.Layout;
+import uk.digitalsquid.droidpad2.buttons.ModeSpec;
+import uk.digitalsquid.droidpad2.buttons.Slider;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;

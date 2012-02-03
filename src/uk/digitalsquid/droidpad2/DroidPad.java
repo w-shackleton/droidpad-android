@@ -14,12 +14,12 @@
  *  along with DroidPad.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package uk.digitalsquid.droidpad;
+package uk.digitalsquid.droidpad2;
 
 import java.util.List;
 
-import uk.digitalsquid.droidpad.buttons.Layout;
-import uk.digitalsquid.droidpad.buttons.ModeSpec;
+import uk.digitalsquid.droidpad2.buttons.Layout;
+import uk.digitalsquid.droidpad2.buttons.ModeSpec;
 import android.app.TabActivity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;

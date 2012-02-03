@@ -14,13 +14,13 @@
  *  along with DroidPad.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package uk.digitalsquid.droidpad;
+package uk.digitalsquid.droidpad2;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import uk.digitalsquid.droidpad.buttons.Layout;
-import uk.digitalsquid.droidpad.buttons.ModeSpec;
+import uk.digitalsquid.droidpad2.buttons.Layout;
+import uk.digitalsquid.droidpad2.buttons.ModeSpec;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -56,7 +56,7 @@ public class Buttons extends Activity implements LogTag
 	WifiManager wm;
 	WifiLock wL;
 	
-	public static final String MODE_SPEC = "uk.digitalsquid.droidpad.Buttons.ModeSpec";
+	public static final String MODE_SPEC = "uk.digitalsquid.droidpad2.Buttons.ModeSpec";
 	
 	LinearLayout connectionContainer;
 	ProgressBar connectionStatusProgress;

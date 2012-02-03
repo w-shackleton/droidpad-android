@@ -14,7 +14,7 @@
  *  along with DroidPad.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package uk.digitalsquid.droidpad;
+package uk.digitalsquid.droidpad2;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,11 +24,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
-import uk.digitalsquid.droidpad.buttons.Button;
-import uk.digitalsquid.droidpad.buttons.Item;
-import uk.digitalsquid.droidpad.buttons.Layout;
-import uk.digitalsquid.droidpad.buttons.ModeSpec;
-import uk.digitalsquid.droidpad.buttons.Slider;
+import uk.digitalsquid.droidpad2.buttons.Button;
+import uk.digitalsquid.droidpad2.buttons.Item;
+import uk.digitalsquid.droidpad2.buttons.Layout;
+import uk.digitalsquid.droidpad2.buttons.ModeSpec;
+import uk.digitalsquid.droidpad2.buttons.Slider;
 import android.util.Log;
 
 /**
@@ -142,6 +142,14 @@ public class Connection implements Runnable, LogTag {
 		if(!stopping)
 		{
 			stopping = true;
+			
+			try {
+				os.write("<STOP>\n".getBytes()); // Doesn't really matter if this fails.
+				os.flush();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			
 			if(isr != null)
 			{
 				try {

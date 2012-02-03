@@ -14,7 +14,7 @@
  *  along with DroidPad.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package uk.digitalsquid.droidpad.buttons;
+package uk.digitalsquid.droidpad2.buttons;
 
 import java.io.Serializable;
 import java.util.LinkedList;

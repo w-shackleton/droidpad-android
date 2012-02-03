@@ -14,9 +14,9 @@
  *  along with DroidPad.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package uk.digitalsquid.droidpad.buttons;
+package uk.digitalsquid.droidpad2.buttons;
 
-import uk.digitalsquid.droidpad.LogTag;
+import uk.digitalsquid.droidpad2.LogTag;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.RectF;

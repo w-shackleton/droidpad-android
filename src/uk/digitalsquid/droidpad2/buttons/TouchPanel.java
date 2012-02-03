@@ -14,29 +14,28 @@
  *  along with DroidPad.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package uk.digitalsquid.droidpad.buttons;
+package uk.digitalsquid.droidpad2.buttons;
 
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.RectF;
 
-public class Slider extends Item {
+public class TouchPanel extends Item {
 	
-	private static final long serialVersionUID = -7180651801411890289L;
+	private static final long serialVersionUID = -8300732746587169324L;
 
-	public static enum SliderType {
+	public static enum PanelType {
 		X,
 		Y,
 		Both
 	}
 	
 	public static final int SLIDER_TOT = 16384;
-	public static final int SLIDER_CUTOFF = 700;
 	
 	public static final int SLIDER_GAP = 16;
 	public static final int SLIDER_SIZE = 10;
 	
-	public final SliderType type;
+	public final PanelType type;
 	
 	/**
 	 * Axis X direction thing
@@ -48,64 +47,44 @@ public class Slider extends Item {
 	public int ay;
 	
 	private float tmpAx, tmpAy;
+	private float startX, startY;
+	private float accumulatedAx, accumulatedAy;
 
-	public Slider(int x, int y, int sx, int sy, SliderType type) {
+	public TouchPanel(int x, int y, int sx, int sy, PanelType type) {
 		super(x, y, sx, sy);
 		this.type = type;
 	}
 
 	@Override
 	public void drawInArea(Canvas c, RectF area, Point centre, boolean landscape) {
-		float tempXw = area.width() - (2 * SLIDER_GAP);
-		float tempYw = area.height() - (2 * SLIDER_GAP);
-
-		float posOnScreenX = ((float)ax / (float)SLIDER_TOT * tempXw / 2f) + centre.x;
-		float posOnScreenY = ((float)ay / (float)SLIDER_TOT * tempYw / 2) + centre.y;
-
-		if(type == SliderType.X || type == SliderType.Both)
-			c.drawLine(posOnScreenX, area.top, posOnScreenX, area.bottom, pGrayBG);
-		
-		if(type == SliderType.Y || type == SliderType.Both)
-			c.drawLine(area.left, posOnScreenY, area.right, posOnScreenY, pGrayBG);
-		
-		c.drawCircle(posOnScreenX, posOnScreenY, SLIDER_SIZE, pText);
+		// No drawing to do...
 	}
 
 	@Override
 	public String getOutputString() {
 		switch(type) {
 		case X:
-			return "{S" + ax + "}";
+			return "{C" + ax + "}";
 		case Y:
-			return "{S" + ay + "}";
+			return "{C" + ay + "}";
 		case Both:
 		default:
-			return "{A" + ax + "," + ay + "}";
+			return "{T" + ax + "," + ay + "}";
 		}
 	}
 	
-	private boolean axesFloat = false;
-	
-	/**
-	 * When axes are floating, they don't reset when let go of
-	 * @param axesFloat If true, axes will float.
-	 */
-	public void setAxesFloat(boolean axesFloat) {
-		this.axesFloat = axesFloat;
-	}
+	private boolean newRun = true, tmpNewRun = true;
 
 	@Override
 	public void resetStickyLock() {
-		if(!axesFloat) {
-			tmpAx = 0;
-			tmpAy = 0;
-		}
+		tmpNewRun = true;
 	}
 
 	@Override
 	public void finaliseState() {
-		ax = (int) tmpAx;
-		ay = (int) tmpAy;
+		newRun = tmpNewRun;
+		ax = (int) (tmpAx + startX + accumulatedAx);
+		ay = (int) (tmpAy + startY + accumulatedAy);
 	}
 
 	@Override
@@ -115,24 +94,29 @@ public class Slider extends Item {
 		float tempXw = area.width() - (2 * SLIDER_GAP);
 		float tempYw = area.height() - (2 * SLIDER_GAP);
 		
-		if(type == SliderType.X || type == SliderType.Both)
+		if(type == PanelType.X || type == PanelType.Both)
 		{
 			tmpAx = ((float)(x - centre.x) / tempXw * 2f * SLIDER_TOT);
 			if(tmpAx < -SLIDER_TOT)
 				tmpAx = -SLIDER_TOT;
 			else if(tmpAx > SLIDER_TOT)
 				tmpAx = SLIDER_TOT;
-			ax = (int) tmpAx;
 		}
-		if(type == SliderType.Y || type == SliderType.Both)
+		if(type == PanelType.Y || type == PanelType.Both)
 		{
-			tmpAy = ((y - centre.y) / tempYw * 2 * SLIDER_TOT);
+			tmpAy = ((float)(y - centre.y) / tempYw * 2 * SLIDER_TOT);
 			if(tmpAy < -SLIDER_TOT)
 				tmpAy = -SLIDER_TOT;
 			else if(tmpAy > SLIDER_TOT)
 				tmpAy = SLIDER_TOT;
-			ay = (int) tmpAy;
 		}
+		
+		if(newRun) { // Reset, starting fresh if the start position wasn't anything
+			newRun = false;
+			startX = ax - tmpAx;
+			startY = ay - tmpAy;
+		}
+		tmpNewRun = newRun;
 	}
 
 	@Override

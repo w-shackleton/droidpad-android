@@ -14,16 +14,8 @@
  *  along with DroidPad.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package uk.digitalsquid.droidpad;
+package uk.digitalsquid.droidpad2;
 
-import android.os.Bundle;
-import android.preference.PreferenceActivity;
-
-public class SettingsMenu extends PreferenceActivity {
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.settingsmenu);
-    }
+public interface LogTag {
+	static final String TAG = "droidpad";
 }
