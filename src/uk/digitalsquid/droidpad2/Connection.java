@@ -144,8 +144,10 @@ public class Connection implements Runnable, LogTag {
 			stopping = true;
 			
 			try {
-				os.write("<STOP>\n".getBytes()); // Doesn't really matter if this fails.
-				os.flush();
+				if(os != null) {
+					os.write("<STOP>\n".getBytes()); // Doesn't really matter if this fails.
+					os.flush();
+				}
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
