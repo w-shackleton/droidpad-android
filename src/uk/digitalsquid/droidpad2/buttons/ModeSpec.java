@@ -31,8 +31,12 @@ public class ModeSpec implements Serializable {
 	
 	private int mode;
 
-	public static final int LAYOUTS_SLIDE = 3;
-	public static final int LAYOUTS_MOUSE = 2;
+	public static final int LAYOUTS_SLIDE = 4;
+	public static final int LAYOUTS_MOUSE = 3;
+	/**
+	 * Absolute mouse positioning
+	 */
+	public static final int LAYOUTS_MOUSE_ABS = 2;
 	public static final int LAYOUTS_JS = 1;
 	public Layout getLayout() {
 		return layout;
@@ -49,6 +53,8 @@ public class ModeSpec implements Serializable {
 			return "1"; // Compatibility - old version assumes number = js mode
 		case LAYOUTS_MOUSE:
 			return "mouse";
+		case LAYOUTS_MOUSE_ABS:
+			return "absmouse";
 		case LAYOUTS_SLIDE:
 			return "slide";
 		}

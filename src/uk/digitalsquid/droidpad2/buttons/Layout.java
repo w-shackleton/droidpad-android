@@ -26,6 +26,14 @@ public class Layout extends LinkedList<Item> implements Serializable {
 	private String title;
 	private String description;
 	
+	/**
+	 * Extra details, specific to each layout type
+	 */
+	private int extraDetail;
+	
+	public static final int EXTRA_MOUSE_ABSOLUTE = 1;
+	public static final int EXTRA_MOUSE_TRACKPAD = 2;
+	
 	public final int titleId, descriptionId;
 	
 	private static final int BUTTONS_X = 4;
@@ -52,6 +60,20 @@ public class Layout extends LinkedList<Item> implements Serializable {
 		}
 	}
 
+	public Layout(int titleId, int descriptionId, int extraDetail, int width, int height, Item[] items) {
+		this.width = width;
+		this.height = height;
+		
+		this.extraDetail = extraDetail;
+		
+		this.titleId = titleId;
+		this.descriptionId = descriptionId;
+		
+		for(Item item : items) {
+			add(item);
+		}
+	}
+
 	public String getTitle() {
 		return title;
 	}
@@ -66,5 +88,13 @@ public class Layout extends LinkedList<Item> implements Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public void setExtraDetail(int extraDetail) {
+		this.extraDetail = extraDetail;
+	}
+
+	public int getExtraDetail() {
+		return extraDetail;
 	}
 }

@@ -129,12 +129,19 @@ public class App extends Application {
 				new TouchPanel(2, 2, 1, 3, PanelType.Y),
 				new Button(3, 0, 2, 5, "Right"),
 		}));
-		ret.add(new Layout(R.string.layout_mouse_adv, R.string.layout_mouse_adv_desc, 5, 8, new Item[] {
+		ret.add(new Layout(R.string.layout_mouse_adv, R.string.layout_mouse_adv_desc, Layout.EXTRA_MOUSE_TRACKPAD, 5, 8, new Item[] {
 				new TouchPanel(0, 0, 5, 5, PanelType.Both),
 				new Button(0, 5, 2, 3, "Left"),
 				new Button(2, 5, 1, 1, "Middle"),
 				new TouchPanel(2, 6, 1, 2, PanelType.Y),
 				new Button(3, 5, 2, 3, "Right"),
+		}));
+		ret.add(new Layout(R.string.layout_mouse_abs, R.string.layout_mouse_abs_desc, Layout.EXTRA_MOUSE_ABSOLUTE, 5, 5, new Item[] {
+				new Button(0, 0, 2, 5, "Left"),
+				new Button(2, 0, 1, 2, "Middle"),
+				new TouchPanel(2, 2, 1, 3, PanelType.Y),
+				new Button(3, 0, 2, 4, "Right"),
+				new Button(3, 4, 2, 1, "Reset"),
 		}));
 		return ret;
 	}
