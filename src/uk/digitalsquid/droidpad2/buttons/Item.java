@@ -16,6 +16,8 @@
 
 package uk.digitalsquid.droidpad2.buttons;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 
 import android.graphics.Canvas;
@@ -27,6 +29,14 @@ import android.graphics.RectF;
 
 public abstract class Item implements Serializable {
 	private static final long serialVersionUID = -2217591684825043179L;
+	
+	public static final int FLAG_BUTTON			= 0x1;
+	public static final int FLAG_TOGGLE_BUTTON	= 0x2 | FLAG_BUTTON;
+	public static final int FLAG_SLIDER			= 0x4;
+	public static final int FLAG_TRACKPAD		= 0x8;
+	public static final int FLAG_HAS_X_AXIS		= 0x10;
+	public static final int FLAG_HAS_Y_AXIS		= 0x20;
+	public static final int FLAG_IS_RESET		= 0x40;
 	
 	protected static final int TEXT_SIZE = 14;
 	public static final int BUTTON_GAP = 10;
@@ -130,6 +140,28 @@ public abstract class Item implements Serializable {
 	}
 	
 	public abstract String getOutputString();
+	
+	/**
+	 * See binary spec for info on the layout of this
+	 * @param os
+	 * @throws IOException
+	 */
+	public void writeBinary(DataOutputStream os) throws IOException {
+		os.writeInt(getFlags());
+		os.writeInt(0); // Reserved
+		os.writeInt(getData1());
+		os.writeInt(getData2());
+		os.writeInt(getData3());
+	}
+	
+	/**
+	 * Used for binary serialisation
+	 * @return
+	 */
+	abstract int getFlags();
+	abstract int getData1();
+	abstract int getData2();
+	abstract int getData3();
 	
 	public boolean pointIsInArea(float x2, float y2) {
 		return computeArea().contains(x2, y2);

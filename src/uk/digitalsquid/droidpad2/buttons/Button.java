@@ -76,4 +76,27 @@ public class Button extends Item {
 	public void onMouseOff() {
 		
 	}
+
+	@Override
+	int getFlags() {
+		return FLAG_BUTTON;
+	}
+
+	/**
+	 * Data 1 is the button's on/off state
+	 */
+	@Override
+	int getData1() {
+		return selected ? 1 : 0;
+	}
+
+	@Override
+	int getData2() {
+		return 0;
+	}
+
+	@Override
+	int getData3() {
+		return 0;
+	}
 }

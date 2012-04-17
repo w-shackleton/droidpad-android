@@ -7,3 +7,4 @@ bin/javax
 lint.xml
 bin/classes
 bin/res
+bin/jarlist.cache

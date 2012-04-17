@@ -58,4 +58,9 @@ public class ToggleButton extends Button implements LogTag {
 	public void resetStickyLock() {
 		
 	}
+	
+	@Override
+	int getFlags() {
+		return FLAG_TOGGLE_BUTTON;
+	}
 }

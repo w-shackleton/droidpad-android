@@ -122,4 +122,52 @@ public class TouchPanel extends Item {
 	@Override
 	public void onMouseOff() {
 	}
+
+	@Override
+	int getFlags() {
+		int extraFlags = 0;
+		
+		switch(type) {
+		case X:
+			extraFlags = FLAG_HAS_X_AXIS;
+			break;
+		case Y:
+			extraFlags = FLAG_HAS_Y_AXIS;
+			break;
+		case Both:
+			extraFlags = FLAG_HAS_X_AXIS | FLAG_HAS_Y_AXIS;
+			break;
+		}
+		
+		return FLAG_TRACKPAD | extraFlags;
+	}
+
+	@Override
+	int getData1() {
+		switch(type) {
+		case X:
+		case Both:
+			return x;
+		case Y:
+			return y;
+		}
+		return 0;
+	}
+
+	@Override
+	int getData2() {
+		switch(type) {
+		case X:
+		case Y:
+			return 0;
+		case Both:
+			return y;
+		}
+		return 0;
+	}
+
+	@Override
+	int getData3() {
+		return 0;
+	}
 }

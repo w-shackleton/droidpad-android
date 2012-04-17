@@ -24,11 +24,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
+import uk.digitalsquid.droidpad2.buttons.AnalogueData;
 import uk.digitalsquid.droidpad2.buttons.Button;
 import uk.digitalsquid.droidpad2.buttons.Item;
-import uk.digitalsquid.droidpad2.buttons.Layout;
 import uk.digitalsquid.droidpad2.buttons.ModeSpec;
 import uk.digitalsquid.droidpad2.buttons.Slider;
+import uk.digitalsquid.droidpad2.serialise.ClassicSerialiser;
 import android.util.Log;
 
 /**
@@ -79,27 +80,12 @@ public class Connection implements Runnable, LogTag {
 		if(!stopping) serverSetup();
 		Log.d(TAG, "DPC: Someone has connected!");
 		
-		float[] accelVals;
-		String data = "";
-		Layout buttons;
-		while(!stopping)
-		{
-			if(s != null)
-			{
-				try
-				{
-					accelVals = parent.getAVals();
-					data = "[{" + (invX ? accelVals[0] : -accelVals[0]) + "," + (invY ? accelVals[1] : -accelVals[1]) + "," + accelVals[2] + "}";
-					buttons = parent.getButtons();
-					if(buttons != null)
-					{
-						for(Item item : buttons)
-						{
-							data += ";";
-							data += item.getOutputString();
-						}
-					}
-					data += "]\n"; // [] for easy string view
+		while(!stopping) {
+			if(s != null) {
+				try {
+					AnalogueData analogue = new AnalogueData(parent.getAVals(), null, invX, invY);
+					
+					String data = ClassicSerialiser.formatLine(analogue, parent.getButtons());
 					
 					os.write(data.getBytes());
 					os.flush();
