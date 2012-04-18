@@ -3,10 +3,12 @@ BINARY SPEC
 Since old versions of DroidPad use a very bad text-based format, new versions still use a text-based header containing details of type and features
 
 Each packet contains a header:
+* header bytes "DPAD" - 0x4450 4144 (in network order)
 * number of elements (int32)
 * flags (int32)
   * Has accel		(0x1)
   * Has gyro		(0x2)
+  * Stop / close stream	(0x4) - If this flag is passed then all other options are invalid.
 * accel x, y, z (three floats)
 * gyro x, y, z (three floats)
 * RESERVED x, y, z (three floats)
@@ -20,7 +22,6 @@ Followed is a list (length given by number) with each element of the following f
   * Has a X axis		(0x10)
   * Has a Y axis		(0x20)
   * Is a 'reset' button		(0x40)
-* RESERVED (int32)
 * Data 1 (4 bytes)
 * Data 2 (4 bytes)
 * Data 3 (4 bytes)

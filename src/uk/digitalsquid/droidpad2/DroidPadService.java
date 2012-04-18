@@ -255,13 +255,11 @@ public class DroidPadService extends Service implements LogTag {
      * Returns the analogue JS values from the accelerometer reports.
      * @return
      */
-    public float[] getAVals()
-    {
+    public float[] getAVals() {
     	return new float[] {x - calibX, y - calibY, z};
     }
     
-    public synchronized Layout getButtons()
-    {
+    public Layout getButtons() {
     	return buttons;
     }
     

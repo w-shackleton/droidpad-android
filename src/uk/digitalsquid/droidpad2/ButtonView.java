@@ -192,4 +192,8 @@ public class ButtonView extends View implements LogTag
 
 		return true;
 	}
+
+	Layout getLayout() {
+		return layout;
+	}
 }

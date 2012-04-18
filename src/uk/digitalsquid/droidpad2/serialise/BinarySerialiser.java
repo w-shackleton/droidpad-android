@@ -17,6 +17,9 @@ public class BinarySerialiser {
 	
 	static final int HEADER_FLAG_HAS_ACCEL = 0x1;
 	static final int HEADER_FLAG_HAS_GYRO = 0x2;
+	static final int HEADER_FLAG_STOP = 0x4;
+	
+	static final byte[] HEADER_BYTES = "DPAD".getBytes();
 
 	public static final void writeBinary(DataOutputStream out, AnalogueData analogue, Layout layout) throws IOException {
 		writeHeader(out, analogue, layout);
@@ -40,6 +43,40 @@ public class BinarySerialiser {
 		final float reservedY = 0;
 		final float reservedZ = 0;
 		
+		out.write(HEADER_BYTES);
+		out.writeInt(elems);
+		out.writeInt(flags);
+		out.writeFloat(accelX);
+		out.writeFloat(accelY);
+		out.writeFloat(accelZ);
+		out.writeFloat(gyroX);
+		out.writeFloat(gyroY);
+		out.writeFloat(gyroZ);
+		out.writeFloat(reservedX);
+		out.writeFloat(reservedY);
+		out.writeFloat(reservedZ);
+	}
+	
+	/**
+	 * Sends a stop command out in the binary format.
+	 * @param out
+	 * @throws IOException 
+	 */
+	public static final void writeStopCommand(DataOutputStream out) throws IOException {
+		final int elems = 0;
+		final int flags = HEADER_FLAG_STOP;
+		
+		final float accelX = 0;
+		final float accelY = 0;
+		final float accelZ = 0;
+		final float gyroX = 0;
+		final float gyroY = 0;
+		final float gyroZ = 0;
+		final float reservedX = 0;
+		final float reservedY = 0;
+		final float reservedZ = 0;
+		
+		out.write(HEADER_BYTES);
 		out.writeInt(elems);
 		out.writeInt(flags);
 		out.writeFloat(accelX);

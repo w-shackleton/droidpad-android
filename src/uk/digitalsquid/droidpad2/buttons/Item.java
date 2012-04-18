@@ -148,7 +148,6 @@ public abstract class Item implements Serializable {
 	 */
 	public void writeBinary(DataOutputStream os) throws IOException {
 		os.writeInt(getFlags());
-		os.writeInt(0); // Reserved
 		os.writeInt(getData1());
 		os.writeInt(getData2());
 		os.writeInt(getData3());

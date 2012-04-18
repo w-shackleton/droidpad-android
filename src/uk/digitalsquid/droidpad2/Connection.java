@@ -16,6 +16,8 @@
 
 package uk.digitalsquid.droidpad2;
 
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -29,6 +31,7 @@ import uk.digitalsquid.droidpad2.buttons.Button;
 import uk.digitalsquid.droidpad2.buttons.Item;
 import uk.digitalsquid.droidpad2.buttons.ModeSpec;
 import uk.digitalsquid.droidpad2.buttons.Slider;
+import uk.digitalsquid.droidpad2.serialise.BinarySerialiser;
 import uk.digitalsquid.droidpad2.serialise.ClassicSerialiser;
 import android.util.Log;
 
@@ -44,26 +47,32 @@ public class Connection implements Runnable, LogTag {
 	private InputStream is;
 	private InputStreamReader isr;
 	
+	private BufferedOutputStream bufferedOutput;
+	private DataOutputStream dataOutput;
+	
 	private int port = 0;
 	/**
 	 * Sending interval, in milliseconds.
-	 * TODO: No need for long.
 	 */
-	private long interval = 50;
+	
+	private int interval = 50;
 	private ModeSpec mode;
 	private DroidPadService parent;
 	private boolean stopping = false;
 	
 	private int fb = 1;
-	private String fbs = "";
+	
+	/**
+	 * When true, binary data is sent.
+	 */
+	private boolean sendBinary = false;
 	
 	private boolean invX = false, invY = false;
 	// NORMAL THREAD
-	public Connection(DroidPadService droidPadServer, int Port, int interval2, ModeSpec mode, boolean invX, boolean invY)
-	{
+	public Connection(DroidPadService droidPadServer, int Port, int interval2, ModeSpec mode, boolean invX, boolean invY) {
 		parent = droidPadServer;
 		port = Port;
-		interval = (long) (float) ((1 / (float) interval2) * 1000);
+		interval = (int) ((1 / (float) interval2) * 1000);
 		
 		this.invX = invX;
 		this.invY = invY;
@@ -80,15 +89,22 @@ public class Connection implements Runnable, LogTag {
 		if(!stopping) serverSetup();
 		Log.d(TAG, "DPC: Someone has connected!");
 		
+		sendBinary = false;
+		
 		while(!stopping) {
 			if(s != null) {
 				try {
 					AnalogueData analogue = new AnalogueData(parent.getAVals(), null, invX, invY);
 					
-					String data = ClassicSerialiser.formatLine(analogue, parent.getButtons());
+					if(!sendBinary) {
+						String data = ClassicSerialiser.formatLine(analogue, parent.getButtons());
+						
+						bufferedOutput.write(data.getBytes());
+						bufferedOutput.flush();
+					} else {
+						BinarySerialiser.writeBinary(dataOutput, analogue, parent.getButtons());
+					}
 					
-					os.write(data.getBytes());
-					os.flush();
 					try {
 						Thread.sleep(interval);
 					} catch (InterruptedException e) {
@@ -99,17 +115,18 @@ public class Connection implements Runnable, LogTag {
 						char[] ch = new char[1024];
 						isr.read(ch);
 						String st = new String(ch);
-						if(st.startsWith("<STOP>"))
-						{
+						if(st.startsWith("<STOP>")) {
 							parent.broadcastState(DroidPadService.STATE_WAITING, "");
 							server();
+						} else if(st.startsWith("<BINARY>")) {
+							// start sending binary packets instead
+							sendBinary = true;
 						}
 					}
 				} catch (NumberFormatException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
-					if(!stopping)
-					{
+					if(!stopping) {
 						Log.w(TAG, "Lost connection with computer.");
 						parent.broadcastState(DroidPadService.STATE_CONNECTION_LOST, "");
 						server();
@@ -122,56 +139,67 @@ public class Connection implements Runnable, LogTag {
 	//END NORMAL THREAD
 	
 	//SETUP
-	public final synchronized void killThread()
-	{
+	public final synchronized void killThread() {
 		Log.d(TAG, "DPC: Thread dying...");
-		if(!stopping)
-		{
+		if(!stopping) {
 			stopping = true;
 			
 			try {
-				if(os != null) {
-					os.write("<STOP>\n".getBytes()); // Doesn't really matter if this fails.
-					os.flush();
+				if(bufferedOutput != null) {
+					if(sendBinary) {
+						BinarySerialiser.writeStopCommand(dataOutput);
+					} else {
+						bufferedOutput.write("<STOP>\n".getBytes()); // Doesn't really matter if this fails.
+						bufferedOutput.flush();
+					}
 				}
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
 			
-			if(isr != null)
-			{
+			if(isr != null) {
 				try {
 					isr.close();
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
 			}
-			if(is != null)
-			{
+			if(is != null) {
 				try {
 					is.close();
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
 			}
-			if(os != null)
-			{
+			if(dataOutput != null) {
+				try {
+					dataOutput.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+			if(bufferedOutput != null) {
+				try {
+					bufferedOutput.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+			if(os != null) {
 				try {
 					os.close();
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
 			}
-			if(s != null)
-			{
+			if(s != null) {
 				try {
 					s.close();
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
 			}
-			if(ss != null)
-			{
+			if(ss != null) {
 				try {
 					ss.close();
 				} catch (IOException e) {
@@ -184,17 +212,14 @@ public class Connection implements Runnable, LogTag {
 	
 	//SERVER METHODS
 	private void server() { server(true); }
-	private void server(boolean autoSetup)
-	{
+	private void server(boolean autoSetup) {
 		serverInit();
 		if(stopping) return; // Escape method
 		serverMainLoop();
-		if(!stopping)
-		{
+		if(!stopping) {
 			try {
 				s.setTcpNoDelay(true);
-			}
-			catch (SocketException e) {
+			} catch (SocketException e) {
 				e.printStackTrace();
 			}
 			try {
@@ -227,11 +252,9 @@ public class Connection implements Runnable, LogTag {
 				}
 				if(stopping) return;
 			}
-			try
-			{
+			try {
 				ss.setSoTimeout(2000);
-			} catch (SocketException e)
-			{
+			} catch (SocketException e) {
 				e.printStackTrace();
 				Log.w(TAG, "DPC: Couldn't set timeout");
 			}
@@ -240,15 +263,13 @@ public class Connection implements Runnable, LogTag {
 	/**
 	 * Wait for connections.
 	 */
-	private void serverMainLoop()
-	{
-		while(!stopping)
-		{
+	private void serverMainLoop() {
+		while(!stopping) {
 			try {
 				s = ss.accept();
 				return;
 			} catch (IOException e) {
-				fbs = String.valueOf(fb);
+				String fbs = String.valueOf(fb);
 				if(fb % 15 == 0)
 					fbs = "FIZZBUZZ";
 				else if(fb % 5 == 0)
@@ -264,10 +285,12 @@ public class Connection implements Runnable, LogTag {
 	/**
 	 * Opens streams once connected.
 	 */
-	private void serverSetup()
-	{
+	private void serverSetup() {
 		try {
 			os = s.getOutputStream();
+			bufferedOutput = new BufferedOutputStream(os);
+			dataOutput = new DataOutputStream(bufferedOutput);
+			sendBinary = false;
 		} catch (IOException e) {
 			e.printStackTrace();
 			Log.e(TAG, "DPC: Couldn't create output stream");
@@ -301,7 +324,7 @@ public class Connection implements Runnable, LogTag {
 			}
 		}
 		try {
-			os.write(("<MODE>" + mode.getModeString() + "</MODE><MODESPEC>" + numRawDevs + "," + numAxes + "," + numButtons + "</MODESPEC>\n").getBytes());
+			bufferedOutput.write(("<MODE>" + mode.getModeString() + "</MODE><MODESPEC>" + numRawDevs + "," + numAxes + "," + numButtons + "</MODESPEC><SUPPORTSBINARY>\n").getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
 			Log.e(TAG, "DPC: Error sending info to PC");

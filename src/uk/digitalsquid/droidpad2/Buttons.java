@@ -132,6 +132,7 @@ public class Buttons extends Activity implements LogTag
     private ServiceConnection serviceConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             boundService = ((DroidPadService.LocalBinder)service).getService();
+            sendEvent(bview.getLayout());
         }
 
         public void onServiceDisconnected(ComponentName className) {
