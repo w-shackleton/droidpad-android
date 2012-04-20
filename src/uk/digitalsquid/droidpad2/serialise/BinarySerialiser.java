@@ -90,5 +90,6 @@ public class BinarySerialiser implements LogTag {
 		out.writeFloat(reservedX);
 		out.writeFloat(reservedY);
 		out.writeFloat(reservedZ);
+		out.flush();
 	}
 }

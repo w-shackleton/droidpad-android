@@ -163,7 +163,7 @@ public class Slider extends Item {
 		switch(type) {
 		case X:
 		case Both:
-			return x;
+			return ax;
 		}
 		return 0;
 	}
@@ -173,7 +173,7 @@ public class Slider extends Item {
 		switch(type) {
 		case Y:
 		case Both:
-			return y;
+			return ay;
 		}
 		return 0;
 	}
