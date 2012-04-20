@@ -16,11 +16,12 @@
 
 package uk.digitalsquid.droidpad2.buttons;
 
+import uk.digitalsquid.droidpad2.LogTag;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.RectF;
 
-public class TouchPanel extends Item {
+public class TouchPanel extends Item implements LogTag {
 	
 	private static final long serialVersionUID = -8300732746587169324L;
 
@@ -147,9 +148,7 @@ public class TouchPanel extends Item {
 		switch(type) {
 		case X:
 		case Both:
-			return x;
-		case Y:
-			return y;
+			return ax;
 		}
 		return 0;
 	}
@@ -157,11 +156,9 @@ public class TouchPanel extends Item {
 	@Override
 	int getData2() {
 		switch(type) {
-		case X:
 		case Y:
-			return 0;
 		case Both:
-			return y;
+			return ay;
 		}
 		return 0;
 	}

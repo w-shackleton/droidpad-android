@@ -3,6 +3,7 @@ package uk.digitalsquid.droidpad2.serialise;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import uk.digitalsquid.droidpad2.LogTag;
 import uk.digitalsquid.droidpad2.buttons.AnalogueData;
 import uk.digitalsquid.droidpad2.buttons.Item;
 import uk.digitalsquid.droidpad2.buttons.Layout;
@@ -13,7 +14,7 @@ import uk.digitalsquid.droidpad2.buttons.Layout;
  * @author william
  *
  */
-public class BinarySerialiser {
+public class BinarySerialiser implements LogTag {
 	
 	static final int HEADER_FLAG_HAS_ACCEL = 0x1;
 	static final int HEADER_FLAG_HAS_GYRO = 0x2;
@@ -26,6 +27,7 @@ public class BinarySerialiser {
 		for(Item item : layout) {
 			item.writeBinary(out);
 		}
+		out.flush();
 	}
 	
 	private static final void writeHeader(DataOutputStream out, AnalogueData analogue, Layout layout) throws IOException {

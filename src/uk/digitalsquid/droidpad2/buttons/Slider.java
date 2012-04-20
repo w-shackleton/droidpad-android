@@ -164,8 +164,6 @@ public class Slider extends Item {
 		case X:
 		case Both:
 			return x;
-		case Y:
-			return y;
 		}
 		return 0;
 	}
@@ -173,9 +171,7 @@ public class Slider extends Item {
 	@Override
 	int getData2() {
 		switch(type) {
-		case X:
 		case Y:
-			return 0;
 		case Both:
 			return y;
 		}
