@@ -198,6 +198,8 @@ public class DroidPad extends TabActivity implements OnClickListener, OnItemClic
 		Intent intent = new Intent(this, Buttons.class);
 		ModeSpec spec = new ModeSpec();
 		spec.setLayout(layout);
+		if(layout.getExtraDetail() == Layout.EXTRA_MOUSE_ABSOLUTE)
+			type = ModeSpec.LAYOUTS_MOUSE_ABS; // Special case
 		spec.setMode(type);
 		intent.putExtra(Buttons.MODE_SPEC, spec);
 		startActivity(intent);

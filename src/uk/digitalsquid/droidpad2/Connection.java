@@ -94,7 +94,7 @@ public class Connection implements Runnable, LogTag {
 		while(!stopping) {
 			if(s != null) {
 				try {
-					AnalogueData analogue = new AnalogueData(parent.getAVals(), null, invX, invY);
+					AnalogueData analogue = new AnalogueData(parent.getAccelValues(), parent.getGyroValues(), invX, invY);
 					
 					if(!sendBinary) {
 						String data = ClassicSerialiser.formatLine(analogue, parent.getButtons());

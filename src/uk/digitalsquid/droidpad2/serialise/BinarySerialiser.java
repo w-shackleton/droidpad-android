@@ -41,6 +41,7 @@ public class BinarySerialiser implements LogTag {
 		final float gyroX = analogue.hasGyroscope() ? analogue.getGyroscope()[0] : 0;
 		final float gyroY = analogue.hasGyroscope() ? analogue.getGyroscope()[1] : 0;
 		final float gyroZ = analogue.hasGyroscope() ? analogue.getGyroscope()[2] : 0;
+		final float gyroAcc = analogue.hasGyroscope() ? analogue.getGyroscope()[3] : 0;
 		final float reservedX = 0;
 		final float reservedY = 0;
 		final float reservedZ = 0;
@@ -54,6 +55,7 @@ public class BinarySerialiser implements LogTag {
 		out.writeFloat(gyroX);
 		out.writeFloat(gyroY);
 		out.writeFloat(gyroZ);
+		out.writeFloat(gyroAcc);
 		out.writeFloat(reservedX);
 		out.writeFloat(reservedY);
 		out.writeFloat(reservedZ);
@@ -74,6 +76,7 @@ public class BinarySerialiser implements LogTag {
 		final float gyroX = 0;
 		final float gyroY = 0;
 		final float gyroZ = 0;
+		final float gyroZN = 0;
 		final float reservedX = 0;
 		final float reservedY = 0;
 		final float reservedZ = 0;
@@ -87,6 +90,7 @@ public class BinarySerialiser implements LogTag {
 		out.writeFloat(gyroX);
 		out.writeFloat(gyroY);
 		out.writeFloat(gyroZ);
+		out.writeFloat(gyroZN);
 		out.writeFloat(reservedX);
 		out.writeFloat(reservedY);
 		out.writeFloat(reservedZ);

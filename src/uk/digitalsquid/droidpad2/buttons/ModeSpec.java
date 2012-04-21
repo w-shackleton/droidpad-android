@@ -30,7 +30,7 @@ public class ModeSpec implements Serializable {
 	private Layout layout;
 	
 	private int mode;
-
+	
 	public static final int LAYOUTS_SLIDE = 4;
 	public static final int LAYOUTS_MOUSE = 3;
 	/**

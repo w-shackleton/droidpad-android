@@ -65,8 +65,9 @@ public class DroidPadService extends Service implements LogTag {
 	public Layout buttons;
 	
 	private SensorManager sm;
-	public float x = 0,y = 0,z = 0;
-	public float calibX = 0, calibY = 0;
+	float x, y, z;
+	float gyroX, gyroY, gyroZ, gyroAccumulator;
+	float calibX = 0, calibY = 0;
 	
 	protected boolean landscape = false;
 	
@@ -106,7 +107,7 @@ public class DroidPadService extends Service implements LogTag {
 		try {
 			sm.registerListener(sensorEvents, sm.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0), SensorManager.SENSOR_DELAY_GAME);
 		} catch(IndexOutOfBoundsException e) {
-			Toast.makeText(this, "ERROR: Accelerometer not found!", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "Accelerometer not found on this device", Toast.LENGTH_SHORT).show();
 		}
 		// FIXME: Use proper calibration rather than this?
 		calibX = prefs.getFloat("calibX", 0);
@@ -115,24 +116,22 @@ public class DroidPadService extends Service implements LogTag {
 		
 		WifiManager wm = null;
         
-		try{ wm = (WifiManager) getSystemService(Context.WIFI_SERVICE); }
-		catch(Exception e)
-		{
+		try {
+			wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		} catch(Exception e) {
 			Log.w(TAG, "DPS: Could not get wifi manager");
 		}
-		if(wm != null)
-		{
+		if(wm != null) {
 			WifiInfo wifiInfo = wm.getConnectionInfo();
 			if(wifiInfo != null)
 				wifiAddr = Buttons.intToInetAddress(wifiInfo.getIpAddress());
-			try{
+			try {
 				wifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL, TAG);
 				multicastLock = wm.createMulticastLock(TAG);
 			} catch (Exception e) {
 				Log.w(TAG, "DPS: Could not create wifi lock or multicast lock");
 			}
 		}
-		Log.v(TAG, "DPS: Wifi lock sorted...");
         
 	}
 	@Override
@@ -160,6 +159,16 @@ public class DroidPadService extends Service implements LogTag {
 				}
 
 		        mode = (ModeSpec) intent.getSerializableExtra(MODE_SPEC);
+		        
+		        // Special cases which need extra detail
+		        if(mode.getLayout().getExtraDetail() == Layout.EXTRA_MOUSE_ABSOLUTE) { // Needs gyro
+					try {
+						sm.registerListener(sensorEvents, sm.getSensorList(Sensor.TYPE_GYROSCOPE).get(0), SensorManager.SENSOR_DELAY_GAME);
+					} catch(IndexOutOfBoundsException e) {
+						Toast.makeText(this, "Gyroscope not found on this device", Toast.LENGTH_SHORT).show();
+					}
+		        }
+		        
 		        connection = new Connection(this, port, interval, mode, prefs.getBoolean("reverse-x", false), prefs.getBoolean("reverse-y", false));
 		        th = new Thread(connection);
 		        th.start();
@@ -229,6 +238,9 @@ public class DroidPadService extends Service implements LogTag {
     private final IBinder binder = new LocalBinder();
     // END BIND
     
+    long gyroIntegrationTime;
+    boolean gyroAvailable = false;
+    
     private SensorEventListener sensorEvents = new SensorEventListener() {
 		@Override
 		public void onAccuracyChanged(Sensor arg0, int arg1) {
@@ -236,17 +248,46 @@ public class DroidPadService extends Service implements LogTag {
 
 		@Override
 		public void onSensorChanged(SensorEvent event) {
-			if(landscape)
-			{
-				x = -event.values[1];
-				y = -event.values[0];
-				z = event.values[2];
-			}
-			else
-			{
-				x = event.values[0];
-				y = event.values[1];
-				z = event.values[2];
+			switch(event.sensor.getType()) {
+			case Sensor.TYPE_ACCELEROMETER:
+				if(landscape) {
+					x = -event.values[1];
+					y = -event.values[0];
+					z = event.values[2];
+				} else {
+					x = event.values[0];
+					y = event.values[1];
+					z = event.values[2];
+				}
+				break;
+			case Sensor.TYPE_GYROSCOPE:
+				gyroAvailable = true;
+				float rx, ry, rz;
+				if(landscape) {
+					rx = -event.values[1];
+					ry = -event.values[0];
+					rz = event.values[2];
+				} else {
+					rx = event.values[0];
+					ry = event.values[1];
+					rz = event.values[2];
+				}
+				float timeDiff = (float)(gyroIntegrationTime - System.nanoTime()) / 1000f / 1000f / 1000f;
+				if(gyroIntegrationTime != 0) {
+					gyroX += rx * timeDiff;
+					gyroY += ry * timeDiff;
+					gyroZ += rz * timeDiff;
+					
+					/*
+					 * The dot product here selects the components of the rotations which
+					 * are important for rotating about the world z-axis (not the phone's one)
+					 */
+					Vec3 gravityUnit = new Vec3(x, y, z).getUnitVector();
+					float normalisedRotation = new Vec3(rx, ry, rz).dot(gravityUnit);
+					gyroAccumulator += normalisedRotation * timeDiff;
+				}
+				
+				gyroIntegrationTime = System.nanoTime();
 			}
 		}
     };
@@ -255,8 +296,13 @@ public class DroidPadService extends Service implements LogTag {
      * Returns the analogue JS values from the accelerometer reports.
      * @return
      */
-    public float[] getAVals() {
+    public float[] getAccelValues() {
     	return new float[] {x - calibX, y - calibY, z};
+    }
+    
+    public float[] getGyroValues() {
+    	if(!gyroAvailable) return null;
+    	return new float[] { gyroX, gyroY, gyroZ, gyroAccumulator };
     }
     
     public Layout getButtons() {

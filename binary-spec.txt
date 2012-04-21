@@ -10,7 +10,7 @@ Each packet contains a header:
   * Has gyro		(0x2)
   * Stop / close stream	(0x4) - If this flag is passed then all other options are invalid.
 * accel x, y, z (three floats)
-* gyro x, y, z (three floats)
+* gyro x, y, z, normalised z (three floats) - These are accumulated values. Normalised z always points down.
 * RESERVED x, y, z (three floats)
 
 Followed is a list (length given by number) with each element of the following format:
