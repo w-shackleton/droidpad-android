@@ -97,8 +97,8 @@ public class ButtonView extends View implements LogTag
 		
 		canvas.drawRect(0, 0, width, height, P_BLACK);
 		if(isInEditMode()) return;
-		widthIter = width / layout.width;
-		heightIter = height / layout.height;
+		widthIter = width / layout.getWidth();
+		heightIter = height / layout.getHeight();
 		
 		for(Item item : layout) {
 			item.draw(canvas, widthIter, heightIter, landscape);

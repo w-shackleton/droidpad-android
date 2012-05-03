@@ -181,7 +181,7 @@ public class App extends Application {
 			throw new IllegalArgumentException("Invalid value for 'type'");
 		}
 		
-		// Used to label unlabeled modes.
+		// Used to label unlabelled modes.
 		int posCounter = 0;
 		for(Layout l : ret) {
 			posCounter++;

@@ -36,9 +36,17 @@ public class Layout extends LinkedList<Item> implements Serializable {
 	
 	public final int titleId, descriptionId;
 	
-	private static final int BUTTONS_X = 4;
-	private static final int BUTTONS_Y = 5;
-	public final int width, height;
+	/**
+	 * The default X size
+	 */
+	public static final int BUTTONS_X = 4;
+	/**
+	 * The default Y size
+	 */
+	public static final int BUTTONS_Y = 5;
+	private final int width;
+
+	private final int height;
 
 	public Layout(Item[] items) {
 		this(BUTTONS_X, BUTTONS_Y, items);
@@ -46,6 +54,15 @@ public class Layout extends LinkedList<Item> implements Serializable {
 	
 	public Layout(int width, int height, Item[] items) {
 		this(-1, -1, width, height, items);
+	}
+	
+	public Layout(String title, String description, int width, int height) {
+		setTitle(title);
+		setDescription(description);
+		titleId = -2; // -2 indicates already set
+		descriptionId = -2;
+		this.width = width;
+		this.height = height;
 	}
 	
 	public Layout(int titleId, int descriptionId, int width, int height, Item[] items) {
@@ -96,5 +113,13 @@ public class Layout extends LinkedList<Item> implements Serializable {
 
 	public int getExtraDetail() {
 		return extraDetail;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
 	}
 }
