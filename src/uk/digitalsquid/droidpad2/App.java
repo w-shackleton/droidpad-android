@@ -141,7 +141,7 @@ public class App extends Application {
 				new Button(2, 0, 1, 2, "Middle"),
 				new TouchPanel(2, 2, 1, 3, PanelType.Y),
 				new Button(3, 0, 2, 4, "Right"),
-				new Button(3, 4, 2, 1, "Reset"),
+				new Button(3, 4, 2, 1, "Reset").setResetButton(true),
 		}));
 		return ret;
 	}

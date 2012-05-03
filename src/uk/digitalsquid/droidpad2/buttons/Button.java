@@ -26,6 +26,8 @@ public class Button extends Item {
 	public final String text;
 	public final int textSize;
 	
+	private boolean resetButton;
+	
 	protected boolean tmpSelected = false;
 
 	public Button(int x, int y, int sx, int sy, String text) {
@@ -79,7 +81,7 @@ public class Button extends Item {
 
 	@Override
 	int getFlags() {
-		return FLAG_BUTTON;
+		return FLAG_BUTTON | (resetButton ? FLAG_IS_RESET : 0);
 	}
 
 	/**
@@ -98,5 +100,19 @@ public class Button extends Item {
 	@Override
 	int getData3() {
 		return 0;
+	}
+
+	public boolean isResetButton() {
+		return resetButton;
+	}
+
+	/**
+	 * Returns this for chaining
+	 * @param resetButton
+	 * @return
+	 */
+	public Button setResetButton(boolean resetButton) {
+		this.resetButton = resetButton;
+		return this;
 	}
 }
