@@ -28,6 +28,7 @@ import uk.digitalsquid.droidpad2.buttons.Slider.SliderType;
 import uk.digitalsquid.droidpad2.buttons.ToggleButton;
 import uk.digitalsquid.droidpad2.buttons.TouchPanel;
 import uk.digitalsquid.droidpad2.buttons.TouchPanel.PanelType;
+import uk.digitalsquid.droidpad2.xml.Scanner;
 import android.app.Application;
 
 /**
@@ -36,6 +37,9 @@ import android.app.Application;
  *
  */
 public class App extends Application {
+	
+	private Scanner fileScanner;
+	
 	private List<Layout> getJSLayouts() {
 		List<Layout> ret = new ArrayList<Layout>();
 		ret.add(new Layout(new Item[] {
@@ -166,28 +170,30 @@ public class App extends Application {
 	 * @return
 	 */
 	public final List<Layout> getLayouts(int type) {
+		if(fileScanner == null) fileScanner = new Scanner(getBaseContext());
 		List<Layout> ret;
 		switch(type) {
 		case ModeSpec.LAYOUTS_JS:
 			ret = getJSLayouts();
+			ret.addAll(fileScanner.getJsModes());
 			break;
 		case ModeSpec.LAYOUTS_MOUSE:
 			ret = getMouseLayouts();
+			ret.addAll(fileScanner.getMouseModes());
 			break;
 		case ModeSpec.LAYOUTS_SLIDE:
 			ret = getSlideLayouts();
+			ret.addAll(fileScanner.getSlideshowModes());
 			break;
 		default:
 			throw new IllegalArgumentException("Invalid value for 'type'");
 		}
 		
-		// Used to label unlabeled modes.
+		// Used to label unlabelled modes.
 		int posCounter = 0;
 		for(Layout l : ret) {
 			posCounter++;
-			if(l.titleId != -1) {
-				l.setTitle(getString(l.titleId));
-			} else {
+			if(l.titleId == -1) {
 				String name = "???";
 				switch(type) { // Get class name
 				case ModeSpec.LAYOUTS_JS:
@@ -201,11 +207,13 @@ public class App extends Application {
 					break;
 				}
 				l.setTitle(getString(R.string.generic_layout_title, name, posCounter));
+			} else if(l.titleId == -2) {
+				// Do nothing
+			} else {
+				l.setTitle(getString(l.titleId));
 			}
 			
-			if(l.descriptionId != -1) {
-				l.setDescription(getString(l.descriptionId));
-			} else {
+			if(l.descriptionId == -1) {
 				int buttonCount = 0;
 				int sliderCount = 0;
 				int trackCount = 0;
@@ -218,8 +226,20 @@ public class App extends Application {
 						trackCount++;
 				}
 				l.setDescription(getString(R.string.generic_layout_description, buttonCount, sliderCount, trackCount));
+			} else if(l.descriptionId == -2) {
+				// Do nothing
+			} else {
+				l.setDescription(getString(l.descriptionId));
 			}
 		}
 		return ret;
+	}
+	
+	/**
+	 * Rescans custom layouts on SD card
+	 */
+	public void rescanFiles() {
+		if(fileScanner == null) fileScanner = new Scanner(getBaseContext());
+		fileScanner.rescan();
 	}
 }

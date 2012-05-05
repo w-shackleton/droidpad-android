@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<layout
+	mode="mouse"
+	title="Custom mouse mode"
+	description="Sample layout for editing"
+	width="4"
+	height="4">
+	<button x="0" y="0" width="4" height="2" textSize="18">
+		Left
+	</button>
+	<button x="0" y="2" width="4" height="2" textSize="16">
+		Right
+	</button>
+</layout>

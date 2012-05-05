@@ -68,6 +68,8 @@ public class DroidPad extends TabActivity implements OnClickListener, OnItemClic
 		// tabHost = (TabHost) findViewById(android.R.id.tabhost);
 		tabHost = getTabHost();
 		
+		app.rescanFiles();
+		
 		// set up tabs
 		TabSpec spec;
 		spec = tabHost.newTabSpec("jsTab");

@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<layout
+	mode="slide"
+	title="Custom slideshow presentation"
+	description="Sample layout for editing"
+	width="6"
+	height="7">
+	<!--
+		  The order for slideshow buttons is as follows:
+		  * Next
+		  * Previous
+		  * Start slideshow
+		  * End slideshow
+		  * Toggle white fill - can be a toggle button
+		  * Toggle black fill - can be a toggle button
+		  * Return to beginning
+		  * Go to end
+	     -->
+	<button x="0" y="0" width="6" height="2" textSize="30">
+		Next
+	</button>
+	<button x="0" y="2" width="2" height="2" textSize="20">
+		Previous
+	</button>
+	<button x="2" y="2" width="2" height="2" textSize="20">
+		Start
+	</button>
+	<button x="4" y="2" width="2" height="2" textSize="20">
+		Quit
+	</button>
+
+	<toggle x="0" y="6" width="3" height="1" textSize="16">
+		Toggle white
+	</toggle>
+	<toggle x="3" y="6" width="3" height="1" textSize="16">
+		Toggle black
+	</toggle>
+
+	<button x="0" y="5" width="3" height="1" textSize="14">
+		Go to beginning
+	</button>
+	<button x="3" y="5" width="3" height="1" textSize="14">
+		Go to end
+	</button>
+</layout>
