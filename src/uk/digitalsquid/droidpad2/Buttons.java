@@ -224,11 +224,13 @@ public class Buttons extends Activity implements LogTag
 	        	stringId = R.string.wifi_scanning;
 	        	break;
 	        }
+	        break;
         case WifiManager.WIFI_STATE_ENABLING:
         	stringId = R.string.wifi_enabling;
         	break;
         }
         // If got through, return string resource
+        if(stringId == -1) return "";
         return getResources().getString(stringId);
     }
 

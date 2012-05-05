@@ -12,6 +12,7 @@ import uk.digitalsquid.droidpad2.buttons.ModeSpec;
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 
 /**
@@ -71,6 +72,7 @@ public class Scanner implements LogTag {
 			}
 			catch(IOException e) {
 				Log.e(TAG, "Failed to parse custom XML layout", e);
+				Toast.makeText(context, "Failed to load custom layout " + layout.getName(), Toast.LENGTH_SHORT).show();
 			}
 		}
 	}
