@@ -3,6 +3,7 @@
 <item android:id="@+id/settings" android:title="@string/Settings" android:titleCondensed="@string/Settings" android:alphabeticShortcut="s" android:icon="@android:drawable/ic_menu_preferences">
 </item><item android:title="@string/About" android:id="@+id/about" android:alphabeticShortcut="a" android:icon="@android:drawable/ic_menu_info_details"></item>
 <item android:title="@string/Website" android:titleCondensed="@string/Website" android:id="@+id/website" android:alphabeticShortcut="i" android:icon="@android:drawable/ic_menu_help"></item>
+<item android:id="@+id/customlayouthelp" android:icon="@android:drawable/ic_menu_help" android:title="@string/customlayouthelp"></item>
 
 
 </menu>
