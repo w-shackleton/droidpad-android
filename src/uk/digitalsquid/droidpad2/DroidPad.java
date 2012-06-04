@@ -237,12 +237,9 @@ public class DroidPad extends TabActivity implements OnClickListener, OnItemClic
     			break;
     		case R.id.website:
     			i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://digitalsquid.co.uk/droidpad/"));
-    			try
-    			{
+    			try {
     				startActivity(i);
-    			}
-    			catch (ActivityNotFoundException a)
-    			{
+    			} catch (ActivityNotFoundException a) {
     				Toast.makeText(getBaseContext(), "Could not launch Browser.", Toast.LENGTH_SHORT).show();
     			}
     			break;
@@ -253,6 +250,14 @@ public class DroidPad extends TabActivity implements OnClickListener, OnItemClic
     		case R.id.about:
     			i = new Intent(this, AboutActivity.class);
     			startActivity(i);
+    			break;
+    		case R.id.customlayouthelp:
+    			i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://digitalsquid.co.uk/droidpad/custom-layout"));
+    			try {
+    				startActivity(i);
+    			} catch (ActivityNotFoundException a) {
+    				Toast.makeText(getBaseContext(), "Could not launch Browser.", Toast.LENGTH_SHORT).show();
+    			}
     			break;
     		}
     	}
