@@ -89,12 +89,11 @@ public final class R {
         public static final int axesfloatOff=0x7f060021;
         public static final int axesfloatOn=0x7f060020;
         public static final int axesfloatTitle=0x7f06001f;
-        public static final int betaWelcome=0x7f060035;
+        public static final int betaWelcome=0x7f060034;
         public static final int connectFailed=0x7f060030;
         public static final int connectWaiting=0x7f06002e;
         public static final int connected=0x7f06002f;
-        public static final int customlayouthelp=0x7f060036;
-        public static final int deviceDefaultName=0x7f060034;
+        public static final int customlayouthelp=0x7f060035;
         public static final int deviceName=0x7f060022;
         public static final int deviceNameDesc=0x7f060023;
         public static final int generic_layout_description=0x7f06002c;
@@ -127,13 +126,13 @@ public final class R {
         public static final int updateMessage=0x7f06001a;
         public static final int updateSummary=0x7f06001b;
         public static final int updateTitle=0x7f060019;
-        public static final int wifi_connectToPhone=0x7f06003d;
-        public static final int wifi_connecting=0x7f06003a;
-        public static final int wifi_disabled=0x7f060037;
-        public static final int wifi_disabling=0x7f060038;
-        public static final int wifi_disconnected=0x7f06003b;
-        public static final int wifi_enabling=0x7f060039;
-        public static final int wifi_scanning=0x7f06003c;
+        public static final int wifi_connectToPhone=0x7f06003c;
+        public static final int wifi_connecting=0x7f060039;
+        public static final int wifi_disabled=0x7f060036;
+        public static final int wifi_disabling=0x7f060037;
+        public static final int wifi_disconnected=0x7f06003a;
+        public static final int wifi_enabling=0x7f060038;
+        public static final int wifi_scanning=0x7f06003b;
     }
     public static final class xml {
         public static final int settingsmenu=0x7f050000;

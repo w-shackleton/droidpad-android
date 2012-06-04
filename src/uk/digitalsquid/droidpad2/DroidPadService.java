@@ -34,6 +34,7 @@ import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.MulticastLock;
 import android.net.wifi.WifiManager.WifiLock;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -175,10 +176,13 @@ public class DroidPadService extends Service implements LogTag {
 				Log.v(TAG, "DPS: DroidPad connection thread started!");
 				
 				Log.v(TAG, "DPS: Starting mDNS broadcaster");
+				final String defaultName = Build.MODEL;
 				String deviceName =
 						PreferenceManager.getDefaultSharedPreferences(
 								getBaseContext()).getString("devicename",
-										getResources().getString(R.string.deviceDefaultName));
+										defaultName);
+				// In case field is set but blank
+				if(deviceName.equals("")) deviceName = defaultName;
 				mdns = new MDNSBroadcaster(wifiAddr,
 						deviceName.substring(0, Math.min(deviceName.length(), 40)),
 						port);
