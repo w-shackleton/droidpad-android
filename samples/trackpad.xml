@@ -12,5 +12,6 @@
 		Right
 	</button>
 
+	<!-- This panel is where finger movements are done -->
 	<panel x="0" y="2" width="4" height="2" type="both" />
 </layout>

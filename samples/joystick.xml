@@ -5,6 +5,9 @@
 	description="Sample layout for editing"
 	width="6"
 	height="7">
+	<!-- Buttons can be added by creating new entries below.
+	     The order that the buttons appear in decides the
+	     order that they appear as joystick buttons -->
 	<button x="0" y="0" width="6" height="2" textSize="30">
 		A
 	</button>
