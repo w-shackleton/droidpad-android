@@ -30,6 +30,8 @@ import uk.digitalsquid.droidpad2.buttons.TouchPanel;
 import uk.digitalsquid.droidpad2.buttons.TouchPanel.PanelType;
 import uk.digitalsquid.droidpad2.xml.Scanner;
 import android.app.Application;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 
 /**
  * Global session things, such as (new) button layout mechanism
@@ -140,7 +142,9 @@ public class App extends Application {
 				new TouchPanel(2, 6, 1, 2, PanelType.Y),
 				new Button(3, 5, 2, 3, "Right"),
 		}));
-		ret.add(new Layout(R.string.layout_mouse_abs, R.string.layout_mouse_abs_desc, Layout.EXTRA_MOUSE_ABSOLUTE, 5, 5, new Item[] {
+		
+		// This layout requires a gyroscope.
+		if(isGyroSupported()) ret.add(new Layout(R.string.layout_mouse_abs, R.string.layout_mouse_abs_desc, Layout.EXTRA_MOUSE_ABSOLUTE, 5, 5, new Item[] {
 				new Button(0, 0, 2, 5, "Left"),
 				new Button(2, 0, 1, 2, "Middle"),
 				new TouchPanel(2, 2, 1, 3, PanelType.Y),
@@ -241,5 +245,15 @@ public class App extends Application {
 	public void rescanFiles() {
 		if(fileScanner == null) fileScanner = new Scanner(getBaseContext());
 		fileScanner.rescan();
+	}
+	
+	/**
+	 * Returns <code>true</code> if the current device reports having a gyroscope.
+	 * @return
+	 */
+	public boolean isGyroSupported() {
+		SensorManager manager = (SensorManager) getSystemService(SENSOR_SERVICE);
+		if(manager == null) return false;
+		return manager.getSensorList(Sensor.TYPE_GYROSCOPE).size() > 0;
 	}
 }

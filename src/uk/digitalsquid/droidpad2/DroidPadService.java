@@ -18,6 +18,7 @@ package uk.digitalsquid.droidpad2;
 
 import java.net.InetAddress;
 
+import uk.digitalsquid.droidpad2.buttons.Item;
 import uk.digitalsquid.droidpad2.buttons.Layout;
 import uk.digitalsquid.droidpad2.buttons.ModeSpec;
 import android.app.Service;
@@ -105,11 +106,17 @@ public class DroidPadService extends Service implements LogTag {
 		}
 		
 		sm = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		try {
-			sm.registerListener(sensorEvents, sm.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0), SensorManager.SENSOR_DELAY_GAME);
-		} catch(IndexOutOfBoundsException e) {
+		
+		Sensor downwardsDirection = null;
+		downwardsDirection = sm.getDefaultSensor(Sensor.TYPE_GRAVITY);
+		if(downwardsDirection == null) // Use accel
+			downwardsDirection = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		if(downwardsDirection == null) {
 			Toast.makeText(this, "Accelerometer not found on this device", Toast.LENGTH_SHORT).show();
+			// TODO: Stop here?
 		}
+		sm.registerListener(sensorEvents, downwardsDirection, SensorManager.SENSOR_DELAY_GAME);
+		
 		// FIXME: Use proper calibration rather than this?
 		calibX = prefs.getFloat("calibX", 0);
 		calibY = prefs.getFloat("calibY", 0);
@@ -163,11 +170,12 @@ public class DroidPadService extends Service implements LogTag {
 		        
 		        // Special cases which need extra detail
 		        if(mode.getLayout().getExtraDetail() == Layout.EXTRA_MOUSE_ABSOLUTE) { // Needs gyro
-					try {
-						sm.registerListener(sensorEvents, sm.getSensorList(Sensor.TYPE_GYROSCOPE).get(0), SensorManager.SENSOR_DELAY_GAME);
-					} catch(IndexOutOfBoundsException e) {
+		        	Sensor gyro = sm.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+		        	if(gyro != null) {
+						sm.registerListener(sensorEvents, gyro, SensorManager.SENSOR_DELAY_GAME);
+		        	} else {
 						Toast.makeText(this, "Gyroscope not found on this device", Toast.LENGTH_SHORT).show();
-					}
+		        	}
 		        }
 		        
 		        connection = new Connection(this, port, interval, mode, prefs.getBoolean("reverse-x", false), prefs.getBoolean("reverse-y", false));
@@ -254,6 +262,7 @@ public class DroidPadService extends Service implements LogTag {
 		public void onSensorChanged(SensorEvent event) {
 			switch(event.sensor.getType()) {
 			case Sensor.TYPE_ACCELEROMETER:
+			case Sensor.TYPE_GRAVITY:
 				if(landscape) {
 					x = -event.values[1];
 					y = -event.values[0];
@@ -278,6 +287,7 @@ public class DroidPadService extends Service implements LogTag {
 				}
 				float timeDiff = (float)(gyroIntegrationTime - System.nanoTime()) / 1000f / 1000f / 1000f;
 				if(gyroIntegrationTime != 0) {
+					// TODO: Use trapezium rule?
 					gyroX += rx * timeDiff;
 					gyroY += ry * timeDiff;
 					gyroZ += rz * timeDiff;

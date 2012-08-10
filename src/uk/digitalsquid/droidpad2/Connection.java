@@ -105,6 +105,9 @@ public class Connection implements Runnable, LogTag {
 						BinarySerialiser.writeBinary(dataOutput, analogue, parent.getButtons());
 					}
 					
+					// Reset overriden button presses.
+					parent.getButtons().resetOverrides();
+					
 					try {
 						Thread.sleep(interval);
 					} catch (InterruptedException e) {

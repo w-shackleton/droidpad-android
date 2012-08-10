@@ -20,7 +20,9 @@ import uk.digitalsquid.droidpad2.LogTag;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.RectF;
+import android.util.FloatMath;
 
+// TODO: Copious documentation and cleanup.
 public class TouchPanel extends Item implements LogTag {
 	
 	private static final long serialVersionUID = -8300732746587169324L;
@@ -31,10 +33,21 @@ public class TouchPanel extends Item implements LogTag {
 		Both
 	}
 	
-	public static final int SLIDER_TOT = 16384;
+	static final int SLIDER_TOT = 16384;
 	
-	public static final int SLIDER_GAP = 16;
-	public static final int SLIDER_SIZE = 10;
+	static final int SLIDER_GAP = 16;
+	
+	/**
+	 * The maximum travelable distance for DP to consider
+	 * this event as a click on the first button. (A tap.)
+	 */
+	static final int CLICK_THRESHOLD = 250;
+	
+	/**
+	 * The maximum time for DP to consider this event as a
+	 * click on the first button (short taps only).
+	 */
+	static final float CLICK_TIME = 100f / 1000f;
 	
 	public final PanelType type;
 	
@@ -49,7 +62,11 @@ public class TouchPanel extends Item implements LogTag {
 	
 	private float tmpAx, tmpAy;
 	private float startX, startY;
-	private float accumulatedAx, accumulatedAy;
+	
+	// Used to calculate total distance onscreen.
+	private float startTmpAx, startTmpAy;
+	
+	private long startTime;
 
 	public TouchPanel(int x, int y, int sx, int sy, PanelType type) {
 		super(x, y, sx, sy);
@@ -57,9 +74,7 @@ public class TouchPanel extends Item implements LogTag {
 	}
 
 	@Override
-	public void drawInArea(Canvas c, RectF area, Point centre, boolean landscape) {
-		// No drawing to do...
-	}
+	public void drawInArea(Canvas c, RectF area, Point centre, boolean landscape) { }
 
 	@Override
 	public String getOutputString() {
@@ -84,27 +99,25 @@ public class TouchPanel extends Item implements LogTag {
 	@Override
 	public void finaliseState() {
 		newRun = tmpNewRun;
-		ax = (int) (tmpAx + startX + accumulatedAx);
-		ay = (int) (tmpAy + startY + accumulatedAy);
+		ax = (int) (tmpAx + startX);
+		ay = (int) (tmpAy + startY);
 	}
 
 	@Override
 	public void onMouseOn(float x, float y) {
 		Point centre = computeCentre();
 		RectF area = computeArea();
-		float tempXw = area.width() - (2 * SLIDER_GAP);
-		float tempYw = area.height() - (2 * SLIDER_GAP);
+		final float tempXw = area.width() - (2 * SLIDER_GAP);
+		final float tempYw = area.height() - (2 * SLIDER_GAP);
 		
-		if(type == PanelType.X || type == PanelType.Both)
-		{
+		if(type == PanelType.X || type == PanelType.Both) {
 			tmpAx = ((float)(x - centre.x) / tempXw * 2f * SLIDER_TOT);
 			if(tmpAx < -SLIDER_TOT)
 				tmpAx = -SLIDER_TOT;
 			else if(tmpAx > SLIDER_TOT)
 				tmpAx = SLIDER_TOT;
 		}
-		if(type == PanelType.Y || type == PanelType.Both)
-		{
+		if(type == PanelType.Y || type == PanelType.Both) {
 			tmpAy = ((float)(y - centre.y) / tempYw * 2 * SLIDER_TOT);
 			if(tmpAy < -SLIDER_TOT)
 				tmpAy = -SLIDER_TOT;
@@ -116,12 +129,23 @@ public class TouchPanel extends Item implements LogTag {
 			newRun = false;
 			startX = ax - tmpAx;
 			startY = ay - tmpAy;
+			startTmpAx = tmpAx;
+			startTmpAy = tmpAy;
+			startTime = System.nanoTime();
 		}
 		tmpNewRun = newRun;
 	}
 
 	@Override
 	public void onMouseOff() {
+		float dx = startTmpAx - tmpAx;
+		float dy = startTmpAy - tmpAy;
+		float dist = FloatMath.sqrt(dx * dx + dy * dy);
+		float totalTime = (float)(System.nanoTime() - startTime) / 1000f / 1000f / 1000f;
+		if(dist < CLICK_THRESHOLD && totalTime < CLICK_TIME) {
+			if(callbacks != null)
+				callbacks.tapDefaultButton();
+		}
 	}
 
 	@Override
@@ -149,8 +173,9 @@ public class TouchPanel extends Item implements LogTag {
 		case X:
 		case Both:
 			return ax;
+		default:
+			return 0;
 		}
-		return 0;
 	}
 
 	@Override
@@ -159,8 +184,9 @@ public class TouchPanel extends Item implements LogTag {
 		case Y:
 		case Both:
 			return ay;
+		default:
+			return 0;
 		}
-		return 0;
 	}
 
 	@Override

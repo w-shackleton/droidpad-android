@@ -2,6 +2,11 @@ package uk.digitalsquid.droidpad2;
 
 import android.util.FloatMath;
 
+/**
+ * Simple 3D vector class
+ * @author william
+ *
+ */
 public class Vec3 {
 	float x, y, z;
 	

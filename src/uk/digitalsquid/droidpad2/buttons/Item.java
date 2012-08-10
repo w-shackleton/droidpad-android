@@ -91,6 +91,8 @@ public abstract class Item implements Serializable {
 	
 	protected boolean selected = false;
 	
+	protected ButtonPresses callbacks;
+	
 	public Item(int x, int y, int sx, int sy) {
 		this.x = x;
 		this.y = y;
@@ -146,7 +148,7 @@ public abstract class Item implements Serializable {
 	 * @param os
 	 * @throws IOException
 	 */
-	public void writeBinary(DataOutputStream os) throws IOException {
+	public final void writeBinary(DataOutputStream os) throws IOException {
 		os.writeInt(getFlags());
 		os.writeInt(getData1());
 		os.writeInt(getData2());
@@ -178,4 +180,8 @@ public abstract class Item implements Serializable {
 	
 	public abstract void onMouseOn(float x, float y);
 	public abstract void onMouseOff();
+
+	protected void setCallbacks(ButtonPresses callbacks) {
+		this.callbacks = callbacks;
+	}
 }

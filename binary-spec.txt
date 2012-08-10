@@ -10,7 +10,7 @@ Each packet contains a header:
   * Has gyro		(0x2)
   * Stop / close stream	(0x4) - If this flag is passed then all other options are invalid.
 * accel x, y, z (three floats)
-* gyro x, y, z, normalised z (three floats) - These are accumulated values. Normalised z always points down.
+* gyro x, y, z, normalised z (four floats) - These are accumulated values. Normalised z always points down.
 * RESERVED x, y, z (three floats)
 
 Followed is a list (length given by number) with each element of the following format:
@@ -25,3 +25,8 @@ Followed is a list (length given by number) with each element of the following f
 * Data 1 (4 bytes)
 * Data 2 (4 bytes)
 * Data 3 (4 bytes)
+
+If a button, data 1 is a boolean value. If a slider / trackpad, Data 1 and Data 2 are int32.
+They represent the X and Y positions, either on the slider or accumulated trackpad movement.
+Data 1 -> X
+Data 2 -> Y

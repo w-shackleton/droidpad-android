@@ -19,7 +19,7 @@ package uk.digitalsquid.droidpad2.buttons;
 import java.io.Serializable;
 import java.util.LinkedList;
 
-public class Layout extends LinkedList<Item> implements Serializable {
+public class Layout extends LinkedList<Item> implements ButtonPresses, Serializable {
 
 	private static final long serialVersionUID = -7330556550048198609L;
 	
@@ -90,6 +90,18 @@ public class Layout extends LinkedList<Item> implements Serializable {
 			add(item);
 		}
 	}
+	
+	@Override
+	public boolean add(Item object) {
+		super.add(object);
+		object.setCallbacks(this);
+		return true;
+	}
+	@Override
+	public void add(int location, Item object) {
+		super.add(location, object);
+		object.setCallbacks(this);
+	}
 
 	public String getTitle() {
 		return title;
@@ -121,5 +133,23 @@ public class Layout extends LinkedList<Item> implements Serializable {
 
 	public int getHeight() {
 		return height;
+	}
+
+	@Override
+	public void tapDefaultButton() {
+		for(Item item : this) {
+			if(item instanceof Button && !(item instanceof ToggleButton)) {
+				((Button)item).selectedOverride = true;
+				break;
+			}
+		}
+	}
+	
+	public void resetOverrides() {
+		for(Item item : this) {
+			if(item instanceof Button && !(item instanceof ToggleButton)) {
+				((Button)item).selectedOverride = false;
+			}
+		}
 	}
 }

@@ -164,8 +164,9 @@ public class Slider extends Item {
 		case X:
 		case Both:
 			return ax;
+		default:
+			return 0;
 		}
-		return 0;
 	}
 
 	@Override
@@ -174,8 +175,9 @@ public class Slider extends Item {
 		case Y:
 		case Both:
 			return ay;
+		default:
+			return 0;
 		}
-		return 0;
 	}
 
 	@Override

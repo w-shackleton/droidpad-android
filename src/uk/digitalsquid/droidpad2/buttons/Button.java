@@ -29,6 +29,12 @@ public class Button extends Item {
 	private boolean resetButton;
 	
 	protected boolean tmpSelected = false;
+	
+	/**
+	 * When set, keeps the current selected state for one cycle.
+	 * This is reset every cycle.
+	 */
+	protected boolean selectedOverride = false;
 
 	public Button(int x, int y, int sx, int sy, String text) {
 		this(x, y, sx, sy, text, TEXT_SIZE);
@@ -44,13 +50,11 @@ public class Button extends Item {
 	public void drawInArea(Canvas c, RectF area, Point centre, boolean landscape) {
 		pTextS.setTextSize(textSize);
 		pText.setTextSize(textSize);
-		if(landscape)
-		{
+		if(landscape) {
 			c.rotate(90, centre.x, centre.y);
 			c.drawText(text, centre.x, centre.y + (TEXT_SIZE / 2), isSelected() ? pTextS : pText);
 			c.rotate(-90, centre.x, centre.y);
-		}
-		else
+		} else
 			c.drawText(text, centre.x, centre.y + (TEXT_SIZE / 2), isSelected() ? pTextS : pText);
 	}
 
@@ -66,7 +70,9 @@ public class Button extends Item {
 
 	@Override
 	public void finaliseState() {
-		selected = tmpSelected;
+		if(!selectedOverride)
+			selected = tmpSelected;
+		else selected = true;
 	}
 
 	@Override
@@ -109,7 +115,7 @@ public class Button extends Item {
 	/**
 	 * Returns this for chaining
 	 * @param resetButton
-	 * @return
+	 * @return this
 	 */
 	public Button setResetButton(boolean resetButton) {
 		this.resetButton = resetButton;

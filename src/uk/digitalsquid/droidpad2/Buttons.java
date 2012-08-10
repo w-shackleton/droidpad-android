@@ -39,8 +39,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
@@ -74,9 +72,9 @@ public class Buttons extends Activity implements LogTag
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        /* this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,   
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                WindowManager.LayoutParams.FLAG_FULLSCREEN); */
         
         setContentView(R.layout.buttons);
         
@@ -223,6 +221,8 @@ public class Buttons extends Activity implements LogTag
 	        case SCANNING:
 	        	stringId = R.string.wifi_scanning;
 	        	break;
+			default:
+				break;
 	        }
 	        break;
         case WifiManager.WIFI_STATE_ENABLING:
@@ -235,18 +235,16 @@ public class Buttons extends Activity implements LogTag
     }
 
 	public static InetAddress intToInetAddress(int hostAddress) {
-	    InetAddress inetAddress;
 	    byte[] addressBytes = { (byte)(0xff & hostAddress),
 	                            (byte)(0xff & (hostAddress >> 8)),
 	                            (byte)(0xff & (hostAddress >> 16)),
 	                            (byte)(0xff & (hostAddress >> 24)) };
 	
 	    try {
-	       inetAddress = InetAddress.getByAddress(addressBytes);
+	       return InetAddress.getByAddress(addressBytes);
 	    } catch(UnknownHostException e) {
 	       return null;
 	    }
-	    return inetAddress;
 	}
 
     /**

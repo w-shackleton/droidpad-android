@@ -20,6 +20,7 @@ import java.util.List;
 
 import uk.digitalsquid.droidpad2.buttons.Layout;
 import uk.digitalsquid.droidpad2.buttons.ModeSpec;
+import android.annotation.TargetApi;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.TabActivity;
@@ -28,6 +29,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -53,6 +55,7 @@ import android.widget.Toast;
  * @author william
  *
  */
+@SuppressWarnings("deprecation")
 public class DroidPad extends TabActivity implements OnClickListener, OnItemClickListener, LogTag {
 	
 	TabHost tabHost;
@@ -207,11 +210,15 @@ public class DroidPad extends TabActivity implements OnClickListener, OnItemClic
 		startActivity(intent);
 	}
 	
-    @Override
+    @TargetApi(11)
+	@Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
     	MenuInflater inflater = getMenuInflater();
     	inflater.inflate(R.menu.menu, menu);
+    	// Item 0 should be settings
+    	if(Build.VERSION.SDK_INT >= 11)
+	    	menu.getItem(0).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		return true;
     	
     }
