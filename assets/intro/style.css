@@ -1,0 +1,24 @@
+h1, h2 {
+	text-align: center;
+}
+h1 {
+	font-size: 18pt;
+}
+h2 {
+	font-size: 16pt;
+}
+
+a {
+	color: #3366AA;
+}
+
+a.highlight {
+	font-size: 1.1em;
+	font-style: bold;
+	display: block;
+	padding: 0.3em;
+}
+
+.tutorial p {
+	margin: 0.5em;
+}

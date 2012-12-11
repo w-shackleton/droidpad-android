@@ -37,33 +37,37 @@ public final class R {
         public static final int GoIntroButton=0x7f0a0004;
         public static final int RelativeLayout01=0x7f0a0005;
         public static final int ScrollView01=0x7f0a0000;
-        public static final int about=0x7f0a0017;
+        public static final int about=0x7f0a001a;
         public static final int buttonView=0x7f0a0006;
-        public static final int calibrate=0x7f0a0014;
+        public static final int calibrate=0x7f0a0015;
         public static final int connectionContainer=0x7f0a0007;
         public static final int connectionIp=0x7f0a0008;
         public static final int connectionStatus=0x7f0a000a;
         public static final int connectionStatusProgress=0x7f0a0009;
-        public static final int customlayouthelp=0x7f0a0019;
+        public static final int customlayouthelp=0x7f0a001c;
         public static final int description=0x7f0a000c;
-        public static final int enableDevMode=0x7f0a001a;
+        public static final int enableDevMode=0x7f0a001d;
+        public static final int gettingstarted=0x7f0a0019;
         public static final int jsList=0x7f0a000f;
         public static final int jsTab=0x7f0a000e;
         public static final int linearLayout1=0x7f0a000d;
         public static final int mouseList=0x7f0a0011;
         public static final int mouseTab=0x7f0a0010;
-        public static final int settings=0x7f0a0015;
+        public static final int settings=0x7f0a0017;
         public static final int slideList=0x7f0a0013;
         public static final int slideTab=0x7f0a0012;
+        public static final int stop=0x7f0a0016;
         public static final int title=0x7f0a000b;
-        public static final int website=0x7f0a0018;
-        public static final int wifi=0x7f0a0016;
+        public static final int webView=0x7f0a0014;
+        public static final int website=0x7f0a001b;
+        public static final int wifi=0x7f0a0018;
     }
     public static final class layout {
         public static final int about=0x7f030000;
         public static final int buttons=0x7f030001;
         public static final int layoutitem=0x7f030002;
         public static final int main2=0x7f030003;
+        public static final int web_activity=0x7f030004;
     }
     public static final class menu {
         public static final int buttons_menu=0x7f090000;
@@ -99,6 +103,7 @@ public final class R {
         public static final int enable_dev_mode=0x7f060037;
         public static final int generic_layout_description=0x7f06002d;
         public static final int generic_layout_title=0x7f06002e;
+        public static final int gettingstarted=0x7f060038;
         public static final int js=0x7f060032;
         public static final int layout_mouse_abs=0x7f060008;
         public static final int layout_mouse_abs_desc=0x7f060009;
@@ -124,19 +129,21 @@ public final class R {
         public static final int screenBrightOff=0x7f060014;
         public static final int screenBrightOn=0x7f060013;
         public static final int slideshow=0x7f060034;
+        public static final int stop=0x7f060039;
         public static final int updateMessage=0x7f06001a;
         public static final int updateSummary=0x7f06001b;
         public static final int updateTitle=0x7f060019;
-        public static final int wifi_connectToPhone=0x7f06003e;
-        public static final int wifi_connecting=0x7f06003b;
-        public static final int wifi_disabled=0x7f060038;
-        public static final int wifi_disabling=0x7f060039;
-        public static final int wifi_disconnected=0x7f06003c;
-        public static final int wifi_enabling=0x7f06003a;
-        public static final int wifi_scanning=0x7f06003d;
+        public static final int wifi_connectToPhone=0x7f060040;
+        public static final int wifi_connecting=0x7f06003d;
+        public static final int wifi_disabled=0x7f06003a;
+        public static final int wifi_disabling=0x7f06003b;
+        public static final int wifi_disconnected=0x7f06003e;
+        public static final int wifi_enabling=0x7f06003c;
+        public static final int wifi_scanning=0x7f06003f;
     }
     public static final class style {
         public static final int fullscreen=0x7f080001;
+        public static final int light=0x7f080002;
         public static final int main=0x7f080000;
     }
     public static final class xml {

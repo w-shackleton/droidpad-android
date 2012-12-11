@@ -266,6 +266,10 @@ public class DroidPad extends TabActivity implements OnClickListener, OnItemClic
     				Toast.makeText(getBaseContext(), "Could not launch Browser.", Toast.LENGTH_SHORT).show();
     			}
     			break;
+    		case R.id.gettingstarted:
+    			i = new Intent(this, WebActivity.class);
+    			startActivity(i);
+    			break;
     		}
     	}
 		return true;

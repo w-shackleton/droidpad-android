@@ -11,7 +11,7 @@
 	    android:alphabeticShortcut="w"
 	    android:id="@+id/wifi" android:icon="@drawable/ic_menu_wifi">
 	</item>
-	<item
+	<item android:id="@+id/gettingstarted" android:title="@string/gettingstarted" android:icon="@android:drawable/ic_menu_info_details"></item><item
 	    android:title="@string/About"
 	    android:id="@+id/about"
 	    android:alphabeticShortcut="a"
@@ -28,6 +28,7 @@
 	    android:icon="@android:drawable/ic_menu_help"
 	    android:title="@string/customlayouthelp">
 	</item>
+	
 	
 
 </menu>

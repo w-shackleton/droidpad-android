@@ -21,4 +21,8 @@
 	<string name="customlayouthelp">Custom Layout Help</string>
 	
 	<string name="enable_dev_mode">Enable USB (Development) Mode</string>
+	
+	<string name="gettingstarted">Getting Started</string>
+	
+	<string name="stop">Stop</string>
 </resources>
