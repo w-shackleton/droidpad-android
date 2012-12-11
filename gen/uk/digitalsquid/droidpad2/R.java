@@ -46,6 +46,7 @@ public final class R {
         public static final int connectionStatusProgress=0x7f0a0009;
         public static final int customlayouthelp=0x7f0a0019;
         public static final int description=0x7f0a000c;
+        public static final int enableDevMode=0x7f0a001a;
         public static final int jsList=0x7f0a000f;
         public static final int jsTab=0x7f0a000e;
         public static final int linearLayout1=0x7f0a000d;
@@ -67,35 +68,38 @@ public final class R {
     public static final class menu {
         public static final int buttons_menu=0x7f090000;
         public static final int menu=0x7f090001;
+        public static final int settings_menu=0x7f090002;
     }
     public static final class string {
-        public static final int About=0x7f060027;
-        public static final int Calibrate=0x7f06002a;
+        public static final int About=0x7f060028;
+        public static final int Calibrate=0x7f06002b;
         public static final int PortMessage=0x7f060017;
         public static final int PortSummary=0x7f060018;
         public static final int PortTitle=0x7f060016;
-        public static final int Settings=0x7f060029;
-        public static final int Website=0x7f060028;
-        public static final int Wifi=0x7f060025;
-        public static final int WifiShort=0x7f060026;
+        public static final int Settings=0x7f06002a;
+        public static final int Website=0x7f060029;
+        public static final int Wifi=0x7f060026;
+        public static final int WifiShort=0x7f060027;
         public static final int about1=0x7f060000;
         public static final int about2=0x7f060001;
         public static final int about3=0x7f060002;
-        public static final int about_title=0x7f06002b;
-        public static final int app_name=0x7f060024;
+        public static final int about_title=0x7f06002c;
+        public static final int app_name=0x7f060025;
         public static final int axesfloatOff=0x7f060021;
         public static final int axesfloatOn=0x7f060020;
         public static final int axesfloatTitle=0x7f06001f;
-        public static final int betaWelcome=0x7f060034;
-        public static final int connectFailed=0x7f060030;
-        public static final int connectWaiting=0x7f06002e;
-        public static final int connected=0x7f06002f;
-        public static final int customlayouthelp=0x7f060035;
+        public static final int betaWelcome=0x7f060035;
+        public static final int connectFailed=0x7f060031;
+        public static final int connectWaiting=0x7f06002f;
+        public static final int connected=0x7f060030;
+        public static final int customlayouthelp=0x7f060036;
         public static final int deviceName=0x7f060022;
         public static final int deviceNameDesc=0x7f060023;
-        public static final int generic_layout_description=0x7f06002c;
-        public static final int generic_layout_title=0x7f06002d;
-        public static final int js=0x7f060031;
+        public static final int enableUsbDebugRequest=0x7f060024;
+        public static final int enable_dev_mode=0x7f060037;
+        public static final int generic_layout_description=0x7f06002d;
+        public static final int generic_layout_title=0x7f06002e;
+        public static final int js=0x7f060032;
         public static final int layout_mouse_abs=0x7f060008;
         public static final int layout_mouse_abs_desc=0x7f060009;
         public static final int layout_mouse_adv=0x7f060006;
@@ -105,7 +109,7 @@ public final class R {
         public static final int layout_slide=0x7f06000a;
         public static final int layout_slide_desc=0x7f06000b;
         public static final int morehelp=0x7f060003;
-        public static final int mouse=0x7f060032;
+        public static final int mouse=0x7f060033;
         public static final int orientationOff=0x7f06001e;
         public static final int orientationOn=0x7f06001d;
         public static final int orientationTitle=0x7f06001c;
@@ -119,17 +123,17 @@ public final class R {
         public static final int screenBright=0x7f060015;
         public static final int screenBrightOff=0x7f060014;
         public static final int screenBrightOn=0x7f060013;
-        public static final int slideshow=0x7f060033;
+        public static final int slideshow=0x7f060034;
         public static final int updateMessage=0x7f06001a;
         public static final int updateSummary=0x7f06001b;
         public static final int updateTitle=0x7f060019;
-        public static final int wifi_connectToPhone=0x7f06003c;
-        public static final int wifi_connecting=0x7f060039;
-        public static final int wifi_disabled=0x7f060036;
-        public static final int wifi_disabling=0x7f060037;
-        public static final int wifi_disconnected=0x7f06003a;
-        public static final int wifi_enabling=0x7f060038;
-        public static final int wifi_scanning=0x7f06003b;
+        public static final int wifi_connectToPhone=0x7f06003e;
+        public static final int wifi_connecting=0x7f06003b;
+        public static final int wifi_disabled=0x7f060038;
+        public static final int wifi_disabling=0x7f060039;
+        public static final int wifi_disconnected=0x7f06003c;
+        public static final int wifi_enabling=0x7f06003a;
+        public static final int wifi_scanning=0x7f06003d;
     }
     public static final class style {
         public static final int fullscreen=0x7f080001;

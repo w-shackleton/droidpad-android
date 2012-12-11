@@ -30,4 +30,5 @@
 <string name="axesfloatOff">On-screen axes will not float back to the centre</string>
 <string name="deviceName">Device Name</string>
 <string name="deviceNameDesc">Identify this device from other devices</string>
+<string name="enableUsbDebugRequest">Please enable the \'USB Debugging\' option.</string>
 </resources>
