@@ -21,6 +21,7 @@ import java.net.UnknownHostException;
 
 import uk.digitalsquid.droidpad2.buttons.Layout;
 import uk.digitalsquid.droidpad2.buttons.ModeSpec;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -45,6 +46,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+@SuppressLint("NewApi")
 public class Buttons extends Activity implements LogTag
 {
 	private DroidPadService boundService = null;
@@ -293,21 +295,26 @@ public class Buttons extends Activity implements LogTag
     }
     
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	super.onCreateOptionsMenu(menu);
     	MenuInflater inflater = getMenuInflater();
     	inflater.inflate(R.menu.buttons_menu, menu);
 		return true;
     	
     }
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	super.onOptionsItemSelected(item);
     	if (!item.hasSubMenu()) {
     		switch (item.getItemId()) {
     		case R.id.calibrate:
     			if(boundService != null) {
     				boundService.calibrate();
     			}
+    			break;
+    		case R.id.stop:
+    			// A glorified back button
+    			finish();
     			break;
     		}
     	}

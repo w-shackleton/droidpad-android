@@ -7,5 +7,6 @@
     <style name="fullscreen" parent="@android:style/Theme.NoTitleBar.Fullscreen">
         <item name="android:windowActionBar">false</item>
     </style>
+    <style name="light" parent="android:Theme.Light"></style>
     
 </resources>

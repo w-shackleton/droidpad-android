@@ -19,4 +19,10 @@
 	<string name="betaWelcome">Please note that you will need the 2.0 version of the PC client of DroidPad. Please visit digitalsquid.co.uk on your PC to download this.</string>
 	
 	<string name="customlayouthelp">Custom Layout Help</string>
+	
+	<string name="enable_dev_mode">Enable USB (Development) Mode</string>
+	
+	<string name="gettingstarted">Getting Started</string>
+	
+	<string name="stop">Stop</string>
 </resources>
