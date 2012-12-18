@@ -18,7 +18,6 @@ package uk.digitalsquid.droidpad2;
 
 import java.net.InetAddress;
 
-import uk.digitalsquid.droidpad2.buttons.Item;
 import uk.digitalsquid.droidpad2.buttons.Layout;
 import uk.digitalsquid.droidpad2.buttons.ModeSpec;
 import android.app.Service;

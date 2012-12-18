@@ -19,7 +19,10 @@ package uk.digitalsquid.droidpad2.buttons;
 import java.io.Serializable;
 import java.util.LinkedList;
 
-public class Layout extends LinkedList<Item> implements ButtonPresses, Serializable {
+import uk.digitalsquid.droidpad2.LogTag;
+import uk.digitalsquid.droidpad2.UICallbacks;
+
+public class Layout extends LinkedList<Item> implements ButtonPresses, Serializable, LogTag {
 
 	private static final long serialVersionUID = -7330556550048198609L;
 	
@@ -47,6 +50,8 @@ public class Layout extends LinkedList<Item> implements ButtonPresses, Serializa
 	private final int width;
 
 	private final int height;
+	
+	private transient UICallbacks uiCallbacks;
 
 	public Layout(Item[] items) {
 		this(BUTTONS_X, BUTTONS_Y, items);
@@ -135,6 +140,14 @@ public class Layout extends LinkedList<Item> implements ButtonPresses, Serializa
 		return height;
 	}
 
+	private UICallbacks getUiCallbacks() {
+		return uiCallbacks != null ? uiCallbacks : UICallbacks.NULL_UI_CALLBACKS;
+	}
+
+	public void setUiCallbacks(UICallbacks uiCallbacks) {
+		this.uiCallbacks = uiCallbacks;
+	}
+
 	@Override
 	public void tapDefaultButton() {
 		for(Item item : this) {
@@ -151,5 +164,6 @@ public class Layout extends LinkedList<Item> implements ButtonPresses, Serializa
 				((Button)item).selectedOverride = false;
 			}
 		}
+		getUiCallbacks().refreshScreen();
 	}
 }

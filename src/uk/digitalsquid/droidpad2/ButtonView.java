@@ -34,7 +34,7 @@ import android.view.View;
  * @author william
  *
  */
-public class ButtonView extends View implements LogTag
+public class ButtonView extends View implements LogTag, UICallbacks
 {
 	private boolean landscape;
 	
@@ -65,6 +65,7 @@ public class ButtonView extends View implements LogTag
 		this.parent = parent;
 		
 		layout = mode.getLayout(); // No need to keep type?
+		layout.setUiCallbacks(this);
         
         for(Item item : layout) {
         	if(item instanceof Slider) {
@@ -195,5 +196,11 @@ public class ButtonView extends View implements LogTag
 
 	Layout getLayout() {
 		return layout;
+	}
+
+	@Override
+	public void refreshScreen() {
+		// TODO: Only call if something has changed?
+		postInvalidate();
 	}
 }

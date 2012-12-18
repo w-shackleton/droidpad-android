@@ -70,9 +70,11 @@ public class Button extends Item {
 
 	@Override
 	public void finaliseState() {
-		if(!selectedOverride)
+		if(!selectedOverride) {
 			selected = tmpSelected;
-		else selected = true;
+		} else {
+			selected = true;
+		}
 	}
 
 	@Override
@@ -95,7 +97,12 @@ public class Button extends Item {
 	 */
 	@Override
 	int getData1() {
-		return selected ? 1 : 0;
+		int result = selected ? 1 : 0;
+		if(selectedOverride) {
+			selectedOverride = false;
+			selected = false;
+		}
+		return result;
 	}
 
 	@Override
