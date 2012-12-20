@@ -49,9 +49,11 @@ import android.widget.TextView;
 @SuppressLint("NewApi")
 public class Buttons extends Activity implements LogTag
 {
-	private DroidPadService boundService = null;
+	private BGService boundService = null;
 	private Intent serviceIntent;
 	WakeLock wakelock;
+	
+	App app;
 	
 	WifiManager wm;
 	WifiLock wL;
@@ -74,11 +76,15 @@ public class Buttons extends Activity implements LogTag
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        app = (App) getApplication();
         /* this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,   
                 WindowManager.LayoutParams.FLAG_FULLSCREEN); */
         
         setContentView(R.layout.buttons);
+        
+        // Lock service
+    	app.setServiceRequired(true);
         
         mode = (ModeSpec) getIntent().getSerializableExtra(MODE_SPEC);
         if(mode == null) {
@@ -95,7 +101,6 @@ public class Buttons extends Activity implements LogTag
         statusFilter.addAction(DroidPadService.INTENT_STATUSUPDATE);
         
         bview = (ButtonView) findViewById(R.id.buttonView);
-        bview.setModeSpec(this, mode);
         
         connectionContainer = (LinearLayout) findViewById(R.id.connectionContainer);
         connectionStatus = (TextView) findViewById(R.id.connectionStatus);
@@ -117,22 +122,22 @@ public class Buttons extends Activity implements LogTag
         wifiFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
         wifiFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
         
-        serviceIntent = new Intent(Buttons.this,DroidPadService.class);
+        serviceIntent = new Intent(Buttons.this, BGService.class);
         wakelock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,TAG);
         wakelock.acquire();
         
         // We will now start the service to get DroidPad running.
-        
-		serviceIntent.putExtra("purpose", DroidPadService.PURPOSE_SETUP);
-		serviceIntent.putExtra(DroidPadService.MODE_SPEC, mode);
 		Log.v(TAG, "Starting DroidPad service");
 		startService(serviceIntent);
     }
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
-            boundService = ((DroidPadService.LocalBinder)service).getService();
-            sendEvent(bview.getLayout());
+            boundService = ((BGService.LocalBinder)service).getService();
+            // Suggest we use the current mode, and set the mode to what the
+            // service wants us to use.
+            mode = boundService.onModeChosen(mode);
+	        bview.setModeSpec(Buttons.this, mode);
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -236,7 +241,7 @@ public class Buttons extends Activity implements LogTag
         return getResources().getString(stringId);
     }
 
-	public static InetAddress intToInetAddress(int hostAddress) {
+	public static final InetAddress intToInetAddress(int hostAddress) {
 	    byte[] addressBytes = { (byte)(0xff & hostAddress),
 	                            (byte)(0xff & (hostAddress >> 8)),
 	                            (byte)(0xff & (hostAddress >> 16)),
@@ -280,7 +285,7 @@ public class Buttons extends Activity implements LogTag
     
     @Override
     public void onDestroy() {
-    	stopService(serviceIntent);
+    	app.setServiceRequired(false);
         wakelock.release();
     	super.onDestroy();
     }
@@ -291,7 +296,7 @@ public class Buttons extends Activity implements LogTag
      */
     public void sendEvent(Layout layout) {
     	if(boundService == null) return;
-    	boundService.buttons = layout;
+    	boundService.setScreenData(layout);
     }
     
     @Override

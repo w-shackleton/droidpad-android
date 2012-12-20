@@ -53,6 +53,10 @@ public class Layout extends LinkedList<Item> implements ButtonPresses, Serializa
 	
 	private transient UICallbacks uiCallbacks;
 
+	public Layout() {
+		this(BUTTONS_X, BUTTONS_Y, new Item[0]);
+	}
+
 	public Layout(Item[] items) {
 		this(BUTTONS_X, BUTTONS_Y, items);
 	}

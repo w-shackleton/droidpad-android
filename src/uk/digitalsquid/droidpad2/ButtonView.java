@@ -38,7 +38,7 @@ public class ButtonView extends View implements LogTag, UICallbacks
 {
 	private boolean landscape;
 	
-	private Layout layout;
+	private Layout layout = new Layout();
 	
 	Buttons parent;
 	

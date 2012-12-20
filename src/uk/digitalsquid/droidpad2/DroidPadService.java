@@ -52,10 +52,12 @@ public class DroidPadService extends Service implements LogTag {
 	public static final int STATE_CONNECTION_LOST = 3;
 	
 	private Boolean setup = false;
-	private Connection connection;
+	private OldConnection connection;
 	private Thread th;
 	public int port;
 	public int interval;
+	
+	private ModeSpec currentSpec;
 	
 	public static final int PURPOSE_SETUP = 1;
 	public static final int PURPOSE_CALIBRATE = 2;
@@ -116,11 +118,6 @@ public class DroidPadService extends Service implements LogTag {
 		}
 		sm.registerListener(sensorEvents, downwardsDirection, SensorManager.SENSOR_DELAY_GAME);
 		
-		// FIXME: Use proper calibration rather than this?
-		calibX = prefs.getFloat("calibX", 0);
-		calibY = prefs.getFloat("calibY", 0);
-		Log.v(TAG, "DPS: Calibration " + String.valueOf(calibX) + ", " + String.valueOf(calibY) + " found.");
-		
 		WifiManager wm = null;
         
 		try {
@@ -177,7 +174,7 @@ public class DroidPadService extends Service implements LogTag {
 		        	}
 		        }
 		        
-		        connection = new Connection(this, port, interval, mode, prefs.getBoolean("reverse-x", false), prefs.getBoolean("reverse-y", false));
+		        connection = new OldConnection(this, port, interval, mode, prefs.getBoolean("reverse-x", false), prefs.getBoolean("reverse-y", false));
 		        th = new Thread(connection);
 		        th.start();
 				Log.v(TAG, "DPS: DroidPad connection thread started!");
@@ -339,4 +336,10 @@ public class DroidPadService extends Service implements LogTag {
     	calibY = y;
     	Toast.makeText(this, "Saved calibration", Toast.LENGTH_LONG).show();
     }
+	ModeSpec getCurrentLayout() {
+		return currentSpec;
+	}
+	void setCurrentLayout(ModeSpec currentLayout) {
+		this.currentSpec = currentLayout;
+	}
 }

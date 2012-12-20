@@ -256,4 +256,17 @@ public class App extends Application {
 		if(manager == null) return false;
 		return manager.getSensorList(Sensor.TYPE_GYROSCOPE).size() > 0;
 	}
+	
+	public boolean isServiceRequired() {
+		return serviceRequired;
+	}
+	public void setServiceRequired(boolean serviceRequired) {
+		this.serviceRequired = serviceRequired;
+	}
+
+	/**
+	 * When set to true, the background service is not allowed to die. If false,
+	 * the background service will die at some point after disconnecting successfully.
+	 */
+	private boolean serviceRequired = true;
 }
