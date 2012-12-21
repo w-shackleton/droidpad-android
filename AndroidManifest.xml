@@ -28,5 +28,6 @@
 		    </intent-filter>
 		</activity>
 		<activity android:name="WebActivity" android:theme="@style/light"></activity>
+		<service android:name="BGService"></service>
 	</application>
 </manifest> 

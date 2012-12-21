@@ -31,6 +31,8 @@ public class ModeSpec implements Serializable {
 	
 	private int mode;
 	
+	private boolean landscape;
+	
 	public static final int LAYOUTS_SLIDE = 4;
 	public static final int LAYOUTS_MOUSE = 3;
 	/**
@@ -62,5 +64,11 @@ public class ModeSpec implements Serializable {
 	}
 	public void setMode(int mode) {
 		this.mode = mode;
+	}
+	public boolean isLandscape() {
+		return landscape;
+	}
+	public void setLandscape(boolean landscape) {
+		this.landscape = landscape;
 	}
 }

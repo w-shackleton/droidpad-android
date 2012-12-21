@@ -1,13 +1,19 @@
 package uk.digitalsquid.droidpad2;
 
 import uk.digitalsquid.droidpad2.Connection.ConnectionInfo;
+import uk.digitalsquid.droidpad2.buttons.ModeSpec;
 import android.os.AsyncTask;
 
 public class Connection extends AsyncTask<ConnectionInfo, Integer, Void> {
 	
 	public static final class ConnectionInfo {
 		public int port;
+		/**
+		 * The interval between sending updates IN SECONDS
+		 */
+		public float interval;
 		public ConnectionCallbacks callbacks;
+		public ModeSpec spec;
 	}
 	
 	private ConnectionInfo info;

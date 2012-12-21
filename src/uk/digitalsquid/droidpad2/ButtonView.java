@@ -45,13 +45,13 @@ public class ButtonView extends View implements LogTag, UICallbacks
 	public ButtonView(Context context, AttributeSet attrib) {
 		super(context, attrib);
 		if(isInEditMode()) return;
-        landscape = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("orientation", false);
+		landscape = false;
 	}
 	
 	public ButtonView(Context context) {
 		super(context);
 		if(isInEditMode()) return;
-        landscape = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("orientation", false);
+		landscape = false;
 	}
 	
 	/**
@@ -60,6 +60,10 @@ public class ButtonView extends View implements LogTag, UICallbacks
 	 * @param mode
 	 */
 	public void setModeSpec(Buttons parent, ModeSpec mode) {
+		if(mode == null) {
+			mode = new ModeSpec();
+			mode.setLayout(new Layout());
+		}
         boolean floatingAxes = !PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("axesfloat", false);
 		
 		this.parent = parent;
@@ -72,6 +76,8 @@ public class ButtonView extends View implements LogTag, UICallbacks
         		((Slider)item).setAxesFloat(floatingAxes);
         	}
         }
+        
+        landscape = mode.isLandscape();
 		
 		parent.sendEvent(layout);
 	}
