@@ -99,7 +99,7 @@ public class Buttons extends Activity implements LogTag
         
         // Set up broadcast listening
         statusFilter = new IntentFilter();
-        statusFilter.addAction(DroidPadService.INTENT_STATUSUPDATE);
+        statusFilter.addAction(BGService.INTENT_STATUSUPDATE);
         
         bview = (ButtonView) findViewById(R.id.buttonView);
         
@@ -152,8 +152,8 @@ public class Buttons extends Activity implements LogTag
 	private final BroadcastReceiver statusReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			switch(intent.getIntExtra(DroidPadService.INTENT_EXTRA_STATE, DroidPadService.STATE_WAITING)) {
-			case DroidPadService.STATE_WAITING:
+			switch(intent.getIntExtra(BGService.INTENT_EXTRA_STATE, BGService.STATE_WAITING)) {
+			case BGService.STATE_WAITING:
 				if(connectionContainer.getVisibility() != View.VISIBLE) { // Anim in
 					connectionContainer.startAnimation(fadeIn);
 				}
@@ -162,7 +162,7 @@ public class Buttons extends Activity implements LogTag
 				
 				connectionStatus.setText(R.string.connectWaiting);
 				break;
-			case DroidPadService.STATE_CONNECTION_LOST:
+			case BGService.STATE_CONNECTION_LOST:
 				if(connectionContainer.getVisibility() != View.VISIBLE) { // Anim in
 					connectionContainer.startAnimation(fadeIn);
 				}
@@ -171,7 +171,7 @@ public class Buttons extends Activity implements LogTag
 				
 				connectionStatus.setText(R.string.connectFailed);
 				break;
-			case DroidPadService.STATE_CONNECTED:
+			case BGService.STATE_CONNECTED:
 				connectionStatusProgress.setVisibility(View.GONE);
 				connectionContainer.setVisibility(View.GONE); // But is being animated
 				connectionContainer.startAnimation(fadeOut);

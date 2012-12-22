@@ -119,6 +119,7 @@ public class Connection extends AsyncTask<ConnectionInfo, Progress, Void> implem
 	 * @return <code>false</code> if the thread should end now, <code>true</code>
 	 * if another session should be accepted.
 	 */
+	@SuppressWarnings("resource")
 	private boolean acceptSession(ServerSocket serverSocket) {
 		idling = true;
 		Socket socket = acceptConnection(serverSocket);
@@ -209,7 +210,8 @@ public class Connection extends AsyncTask<ConnectionInfo, Progress, Void> implem
 							publishProgress(new Progress(STATE_WAITING, ""));
 							closeConnections(socket, inputReader, dataOutput, bufferedOutput);
 							return false;
-						}
+						} else if(st.startsWith("<BINARY>"))
+							sendBinary = true;
 					}
 				}
 				

@@ -12,8 +12,8 @@ import uk.digitalsquid.droidpad2.buttons.Layout;
  */
 public class ClassicSerialiser {
 	public static final String formatLine(AnalogueData analogue, Layout layout) {
-		String data = "[{" + (analogue.isInvertX() ? analogue.getAccelerometer().x : -analogue.getAccelerometer().x) + ","
-				+ (analogue.isInvertY() ? analogue.getAccelerometer().y : -analogue.getAccelerometer().y) + "," +
+		String data = "[{" + (analogue.isInvertX() ? -analogue.getAccelerometer().x : analogue.getAccelerometer().x) + ","
+				+ (analogue.isInvertY() ? -analogue.getAccelerometer().y : analogue.getAccelerometer().y) + "," +
 				analogue.getAccelerometer().z + "}";
 		if(layout != null) {
 			for(Item item : layout) {
