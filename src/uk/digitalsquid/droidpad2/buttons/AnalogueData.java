@@ -1,25 +1,48 @@
 package uk.digitalsquid.droidpad2.buttons;
 
+import uk.digitalsquid.droidpad2.Vec3;
+
 public class AnalogueData {
-	private final float[] accelerometer;
-	private final float[] gyroscope;
+	private final Vec3 accelerometer;
+	private final Vec3 gyroscope;
+	private final float worldRotation;
 	
 	private final boolean invertX;
 	private final boolean invertY;
 	
-	public AnalogueData(float[] accelerometer, float[] gyroscope, boolean invX, boolean invY) {
+	public AnalogueData(Vec3 accelerometer, Vec3 gyroscope, float worldRotation, boolean invX, boolean invY) {
 		this.accelerometer = accelerometer;
 		this.gyroscope = gyroscope;
+		this.worldRotation = worldRotation;
+		invertX = invX;
+		invertY = invY;
+	}
+	
+	@Deprecated
+	public AnalogueData(float[] accelerometer, float[] gyroscope, boolean invX, boolean invY) {
+		this.accelerometer = new Vec3(accelerometer);
+		this.gyroscope = new Vec3(gyroscope);
+		this.worldRotation = gyroscope[3];
 		invertX = invX;
 		invertY = invY;
 	}
 
-	public float[] getAccelerometer() {
+	@Deprecated
+	public float[] getAccelerometerOld() {
+		return accelerometer.toFloats();
+	}
+	
+	public Vec3 getAccelerometer() {
 		return accelerometer;
 	}
 
-	public float[] getGyroscope() {
-		return gyroscope;
+	@Deprecated
+	public float[] getGyroscopeOld() {
+		return accelerometer.toFloats();
+	}
+	
+	public Vec3 getGyroscope() {
+		return accelerometer;
 	}
 	
 	public boolean hasAccelerometer() {
@@ -35,5 +58,9 @@ public class AnalogueData {
 
 	public boolean isInvertY() {
 		return invertY;
+	}
+
+	public float getWorldRotation() {
+		return worldRotation;
 	}
 }

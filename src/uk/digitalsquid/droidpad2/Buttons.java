@@ -45,6 +45,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 @SuppressLint("NewApi")
 public class Buttons extends Activity implements LogTag
@@ -124,7 +125,6 @@ public class Buttons extends Activity implements LogTag
         
         serviceIntent = new Intent(Buttons.this, BGService.class);
         wakelock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,TAG);
-        wakelock.acquire();
         
         // We will now start the service to get DroidPad running.
 		Log.v(TAG, "Starting DroidPad service");
@@ -136,7 +136,10 @@ public class Buttons extends Activity implements LogTag
             boundService = ((BGService.LocalBinder)service).getService();
             // Suggest we use the current mode, and set the mode to what the
             // service wants us to use.
-            mode = boundService.onModeChosen(mode);
+            ModeSpec newMode = boundService.onModeChosen(mode);
+            if(newMode != mode)
+            	Toast.makeText(getBaseContext(), "Session still running, resuming", Toast.LENGTH_LONG).show();
+            mode = newMode;
 	        bview.setModeSpec(Buttons.this, mode);
         }
 
@@ -269,6 +272,7 @@ public class Buttons extends Activity implements LogTag
     @Override
     public void onResume() {
     	super.onResume();
+        wakelock.acquire();
 		registerReceiver(statusReceiver, statusFilter);
         registerReceiver(wifiReceiver, wifiFilter);
     	bind();
@@ -278,6 +282,7 @@ public class Buttons extends Activity implements LogTag
     @Override
     public void onPause() {
     	super.onPause();
+        wakelock.release();
 		unregisterReceiver(wifiReceiver);
 		unregisterReceiver(statusReceiver);
     	unbind();
@@ -286,7 +291,7 @@ public class Buttons extends Activity implements LogTag
     @Override
     public void onDestroy() {
     	app.setServiceRequired(false);
-        wakelock.release();
+    	Log.d(TAG, "Broadcasting that service can be shut down");
     	super.onDestroy();
     }
     

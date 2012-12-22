@@ -8,7 +8,9 @@ import android.util.FloatMath;
  *
  */
 public class Vec3 {
-	float x, y, z;
+	public float x;
+	public float y;
+	public float z;
 	
 	public Vec3() { }
 	public Vec3(float x, float y, float z) {
@@ -78,5 +80,9 @@ public class Vec3 {
 		this.y -= y;
 		this.z -= z;
 		return this;
+	}
+	
+	public float[] toFloats() {
+		return new float[] {x, y, z};
 	}
 }

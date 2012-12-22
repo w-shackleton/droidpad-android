@@ -35,13 +35,15 @@ public class BinarySerialiser implements LogTag {
 		final int flags = (analogue.hasAccelerometer() ? HEADER_FLAG_HAS_ACCEL : 0) |
 					(analogue.hasGyroscope() ? HEADER_FLAG_HAS_GYRO : 0);
 		
-		final float accelX = analogue.hasAccelerometer() ? analogue.getAccelerometer()[0] : 0;
-		final float accelY = analogue.hasAccelerometer() ? analogue.getAccelerometer()[1] : 0;
-		final float accelZ = analogue.hasAccelerometer() ? analogue.getAccelerometer()[2] : 0;
-		final float gyroX = analogue.hasGyroscope() ? analogue.getGyroscope()[0] : 0;
-		final float gyroY = analogue.hasGyroscope() ? analogue.getGyroscope()[1] : 0;
-		final float gyroZ = analogue.hasGyroscope() ? analogue.getGyroscope()[2] : 0;
-		final float gyroAcc = analogue.hasGyroscope() ? analogue.getGyroscope()[3] : 0;
+		float accelX = analogue.hasAccelerometer() ? analogue.getAccelerometer().x : 0;
+		float accelY = analogue.hasAccelerometer() ? analogue.getAccelerometer().y : 0;
+		final float accelZ = analogue.hasAccelerometer() ? analogue.getAccelerometer().z : 0;
+		if(analogue.isInvertX()) accelX = -accelX;
+		if(analogue.isInvertY()) accelY = -accelY;
+		final float gyroX = analogue.hasGyroscope() ? analogue.getGyroscope().x : 0;
+		final float gyroY = analogue.hasGyroscope() ? analogue.getGyroscope().y : 0;
+		final float gyroZ = analogue.hasGyroscope() ? analogue.getGyroscope().z : 0;
+		final float gyroAcc = analogue.hasGyroscope() ? analogue.getWorldRotation() : 0;
 		final float reservedX = 0;
 		final float reservedY = 0;
 		final float reservedZ = 0;

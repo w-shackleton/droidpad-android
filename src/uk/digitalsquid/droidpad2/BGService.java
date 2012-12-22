@@ -1,3 +1,19 @@
+/*  This file is part of DroidPad.
+ *
+ *  DroidPad is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  DroidPad is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with DroidPad.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package uk.digitalsquid.droidpad2;
 
 import java.net.InetAddress;
@@ -79,12 +95,12 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 	
 	private Connection connection;
 	
-	private Vec3 accelerometer = new Vec3();
+	private final Vec3 accelerometer = new Vec3();
 	/**
 	 * Integrated from the gyroscope
 	 */
-	private Vec3 rotation = new Vec3();
-	private Vec3 rotationalVelocity = new Vec3();
+	private final Vec3 rotation = new Vec3();
+	private final Vec3 rotationalVelocity = new Vec3();
 	/**
 	 * Rotation about the world's z axis, rather than the phone's.
 	 */
@@ -177,7 +193,7 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 		newSpec.setLandscape(landscape);
 		
 		final boolean needsAccel = true;
-		final boolean needsGyro = spec.getLayout().getExtraDetail() == Layout.EXTRA_MOUSE_ABSOLUTE;
+		final boolean needsGyro = newSpec.getLayout().getExtraDetail() == Layout.EXTRA_MOUSE_ABSOLUTE;
         // Special cases which need extra detail
 		
 		if(needsAccel) {
@@ -202,8 +218,10 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 		ConnectionInfo connectionInfo = new ConnectionInfo();
 		connectionInfo.callbacks = this;
 		connectionInfo.port = port;
-		connectionInfo.spec = spec;
+		connectionInfo.spec = newSpec;
 		connectionInfo.interval = (float)interval / 1000f;
+		connectionInfo.reverseX = prefs.getBoolean("reverse-x", false);
+		connectionInfo.reverseY = prefs.getBoolean("reverse-y", false);
 		
 		connection = new Connection();
 		connection.execute(connectionInfo);
@@ -219,8 +237,10 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 		connection = null;
 		if(app.isServiceRequired()) {
 			// Launch again with old spec
+			Log.i(TAG, "Still required, launching new connection");
 			createNewConnection(spec);
 		} else {
+			Log.i(TAG, "Not required, stopping service");
 			this.stopSelf();
 		}
 		wifiLock.release();
@@ -232,9 +252,9 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		// Force stop connection if running
-		// Stop mDNS broadcaster
-		// Release wifi and multicast locks
+		if(connection != null) connection.cancel(true);
+		mdns.stopRunning();
+		Log.i(TAG, "Service stopped");
 	}
 	
 	@Override
@@ -301,8 +321,23 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 			}
 		}
     };
+
+	@Override
+	public Vec3 getAccelerometerValues() {
+		return accelerometer;
+	}
+
+	@Override
+	public Vec3 getGyroscopeValues() {
+		return rotation;
+	}
+
+	@Override
+	public float getWorldRotation() {
+		return worldRotation;
+	}
     
-    void broadcastState() {
+    public void broadcastState() {
     	Intent intent = new Intent(INTENT_STATUSUPDATE);
     	intent.putExtra(INTENT_EXTRA_STATE, state);
     	intent.putExtra(INTENT_EXTRA_IP, connectedPc);
@@ -314,7 +349,8 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
      * @param state
      * @param connectedPc
      */
-    void broadcastState(int state, String connectedPc) {
+    @Override
+    public void broadcastState(int state, String connectedPc) {
     	this.state = state;
     	this.connectedPc = connectedPc;
     	broadcastState();
