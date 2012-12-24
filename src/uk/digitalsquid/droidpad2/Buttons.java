@@ -40,6 +40,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewConfiguration;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
@@ -48,7 +50,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 @SuppressLint("NewApi")
-public class Buttons extends Activity implements LogTag
+public class Buttons extends Activity implements LogTag, OnClickListener
 {
 	private BGService boundService = null;
 	private Intent serviceIntent;
@@ -110,6 +112,10 @@ public class Buttons extends Activity implements LogTag
         
         connectionStatus.setText(R.string.connectWaiting);
         
+        findViewById(R.id.softMenuButton).setOnClickListener(this);
+        if(ViewConfiguration.get(this).hasPermanentMenuKey())
+        	findViewById(R.id.softMenuButton).setVisibility(View.GONE);
+        
         // Wifi management etc.
         wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         wL = wm.createWifiLock(WifiManager.WIFI_MODE_FULL, "DroidPad");
@@ -141,6 +147,7 @@ public class Buttons extends Activity implements LogTag
             	Toast.makeText(getBaseContext(), "Session still running, resuming", Toast.LENGTH_LONG).show();
             mode = newMode;
 	        bview.setModeSpec(Buttons.this, mode);
+	        updateStatus(boundService.getState());
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -152,35 +159,39 @@ public class Buttons extends Activity implements LogTag
 	private final BroadcastReceiver statusReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			switch(intent.getIntExtra(BGService.INTENT_EXTRA_STATE, BGService.STATE_WAITING)) {
-			case BGService.STATE_WAITING:
-				if(connectionContainer.getVisibility() != View.VISIBLE) { // Anim in
-					connectionContainer.startAnimation(fadeIn);
-				}
-				connectionStatusProgress.setVisibility(View.VISIBLE);
-				connectionContainer.setVisibility(View.VISIBLE);
-				
-				connectionStatus.setText(R.string.connectWaiting);
-				break;
-			case BGService.STATE_CONNECTION_LOST:
-				if(connectionContainer.getVisibility() != View.VISIBLE) { // Anim in
-					connectionContainer.startAnimation(fadeIn);
-				}
-				connectionStatusProgress.setVisibility(View.VISIBLE);
-				connectionContainer.setVisibility(View.VISIBLE);
-				
-				connectionStatus.setText(R.string.connectFailed);
-				break;
-			case BGService.STATE_CONNECTED:
-				connectionStatusProgress.setVisibility(View.GONE);
-				connectionContainer.setVisibility(View.GONE); // But is being animated
-				connectionContainer.startAnimation(fadeOut);
-				
-				connectionStatus.setText(R.string.connected);
-				break;
-			}
+			updateStatus(intent.getIntExtra(BGService.INTENT_EXTRA_STATE, BGService.STATE_WAITING));
 		}
 	};
+	
+	void updateStatus(int status) {
+		switch(status) {
+		case BGService.STATE_WAITING:
+			if(connectionContainer.getVisibility() != View.VISIBLE) { // Anim in
+				connectionContainer.startAnimation(fadeIn);
+			}
+			connectionStatusProgress.setVisibility(View.VISIBLE);
+			connectionContainer.setVisibility(View.VISIBLE);
+			
+			connectionStatus.setText(R.string.connectWaiting);
+			break;
+		case BGService.STATE_CONNECTION_LOST:
+			if(connectionContainer.getVisibility() != View.VISIBLE) { // Anim in
+				connectionContainer.startAnimation(fadeIn);
+			}
+			connectionStatusProgress.setVisibility(View.VISIBLE);
+			connectionContainer.setVisibility(View.VISIBLE);
+			
+			connectionStatus.setText(R.string.connectFailed);
+			break;
+		case BGService.STATE_CONNECTED:
+			connectionStatusProgress.setVisibility(View.GONE);
+			connectionContainer.setVisibility(View.GONE); // But is being animated
+			connectionContainer.startAnimation(fadeOut);
+			
+			connectionStatus.setText(R.string.connected);
+			break;
+		}
+	}
 	
 	private IntentFilter wifiFilter;
 	private final BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
@@ -323,11 +334,20 @@ public class Buttons extends Activity implements LogTag
     			}
     			break;
     		case R.id.stop:
-    			// A glorified back button
+    			stopService(serviceIntent);
     			finish();
     			break;
     		}
     	}
 		return true;
     }
+
+	@Override
+	public void onClick(View v) {
+		switch(v.getId()) {
+		case R.id.softMenuButton:
+			openOptionsMenu();
+			break;
+		}
+	}
 }

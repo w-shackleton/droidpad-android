@@ -356,6 +356,10 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
     	broadcastState();
     }
     
+    public int getState() {
+    	return state;
+    }
+    
     public void calibrate() {
     	if(accelerometer != null) {
     		calibration = new Calibration(accelerometer.x, accelerometer.y);

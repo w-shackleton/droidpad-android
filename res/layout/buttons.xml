@@ -50,4 +50,14 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/softMenuButton"
+        style="@style/soft_menu"
+        android:layout_width="32dip"
+        android:layout_height="32dip"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:focusable="false"
+        android:text="" />
+
 </RelativeLayout>

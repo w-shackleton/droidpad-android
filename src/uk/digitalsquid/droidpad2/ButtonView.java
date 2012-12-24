@@ -191,7 +191,7 @@ public class ButtonView extends View implements LogTag, UICallbacks
 			}
 		}
 		
-		parent.sendEvent(layout); // Make sure always latest - eg service restart
+		if(parent != null) parent.sendEvent(layout); // Make sure always latest - eg service restart
 		
 		finaliseItemState();
 		

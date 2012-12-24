@@ -29,6 +29,9 @@ public final class R {
         public static final int ic_tab_slide_selected=0x7f020008;
         public static final int ic_tab_slide_unselected=0x7f020009;
         public static final int icon=0x7f02000a;
+        public static final int soft_menu=0x7f02000b;
+        public static final int soft_menu_selected=0x7f02000c;
+        public static final int soft_menu_unselected=0x7f02000d;
     }
     public static final class id {
         public static final int AboutSubtitle=0x7f0a0001;
@@ -37,30 +40,31 @@ public final class R {
         public static final int GoIntroButton=0x7f0a0004;
         public static final int RelativeLayout01=0x7f0a0005;
         public static final int ScrollView01=0x7f0a0000;
-        public static final int about=0x7f0a001a;
+        public static final int about=0x7f0a001b;
         public static final int buttonView=0x7f0a0006;
-        public static final int calibrate=0x7f0a0015;
+        public static final int calibrate=0x7f0a0016;
         public static final int connectionContainer=0x7f0a0007;
         public static final int connectionIp=0x7f0a0008;
         public static final int connectionStatus=0x7f0a000a;
         public static final int connectionStatusProgress=0x7f0a0009;
-        public static final int customlayouthelp=0x7f0a001c;
-        public static final int description=0x7f0a000c;
-        public static final int enableDevMode=0x7f0a001d;
-        public static final int gettingstarted=0x7f0a0019;
-        public static final int jsList=0x7f0a000f;
-        public static final int jsTab=0x7f0a000e;
-        public static final int linearLayout1=0x7f0a000d;
-        public static final int mouseList=0x7f0a0011;
-        public static final int mouseTab=0x7f0a0010;
-        public static final int settings=0x7f0a0017;
-        public static final int slideList=0x7f0a0013;
-        public static final int slideTab=0x7f0a0012;
-        public static final int stop=0x7f0a0016;
-        public static final int title=0x7f0a000b;
-        public static final int webView=0x7f0a0014;
-        public static final int website=0x7f0a001b;
-        public static final int wifi=0x7f0a0018;
+        public static final int customlayouthelp=0x7f0a001d;
+        public static final int description=0x7f0a000d;
+        public static final int enableDevMode=0x7f0a001e;
+        public static final int gettingstarted=0x7f0a001a;
+        public static final int jsList=0x7f0a0010;
+        public static final int jsTab=0x7f0a000f;
+        public static final int linearLayout1=0x7f0a000e;
+        public static final int mouseList=0x7f0a0012;
+        public static final int mouseTab=0x7f0a0011;
+        public static final int settings=0x7f0a0018;
+        public static final int slideList=0x7f0a0014;
+        public static final int slideTab=0x7f0a0013;
+        public static final int softMenuButton=0x7f0a000b;
+        public static final int stop=0x7f0a0017;
+        public static final int title=0x7f0a000c;
+        public static final int webView=0x7f0a0015;
+        public static final int website=0x7f0a001c;
+        public static final int wifi=0x7f0a0019;
     }
     public static final class layout {
         public static final int about=0x7f030000;
@@ -142,9 +146,10 @@ public final class R {
         public static final int wifi_scanning=0x7f06003f;
     }
     public static final class style {
-        public static final int fullscreen=0x7f080001;
-        public static final int light=0x7f080002;
-        public static final int main=0x7f080000;
+        public static final int fullscreen=0x7f080002;
+        public static final int light=0x7f080003;
+        public static final int main=0x7f080001;
+        public static final int soft_menu=0x7f080000;
     }
     public static final class xml {
         public static final int settingsmenu=0x7f050000;

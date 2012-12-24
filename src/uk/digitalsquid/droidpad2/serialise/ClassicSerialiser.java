@@ -25,4 +25,8 @@ public class ClassicSerialiser {
 		
 		return data;
 	}
+	
+	public static final String writeStopCommand() {
+		return "<STOP>\n";
+	}
 }

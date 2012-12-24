@@ -222,6 +222,19 @@ public class Connection extends AsyncTask<ConnectionInfo, Progress, Void> implem
 				return true; // true means we want another connection
 			}
 		}
+		// If we get to here, user must have cancelled the loop
+		try {
+			if(sendBinary) {
+				BinarySerialiser.writeStopCommand(dataOutput);
+			} else {
+				bufferedOutput.write(ClassicSerialiser.writeStopCommand().getBytes());
+				bufferedOutput.flush();
+			}
+			publishProgress(new Progress(STATE_WAITING, ""));
+		} catch(IOException e) {
+			Log.w(TAG, "Failed to send stop message to server", e);
+		}
+		closeConnections(socket, inputReader, dataOutput, bufferedOutput);
 		
 		return false;
 	}
