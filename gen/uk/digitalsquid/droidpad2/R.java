@@ -96,7 +96,6 @@ public final class R {
         public static final int axesfloatOff=0x7f060021;
         public static final int axesfloatOn=0x7f060020;
         public static final int axesfloatTitle=0x7f06001f;
-        public static final int betaWelcome=0x7f060035;
         public static final int connectFailed=0x7f060031;
         public static final int connectWaiting=0x7f06002f;
         public static final int connected=0x7f060030;
@@ -137,6 +136,7 @@ public final class R {
         public static final int updateMessage=0x7f06001a;
         public static final int updateSummary=0x7f06001b;
         public static final int updateTitle=0x7f060019;
+        public static final int welcome=0x7f060035;
         public static final int wifi_connectToPhone=0x7f060040;
         public static final int wifi_connecting=0x7f06003d;
         public static final int wifi_disabled=0x7f06003a;

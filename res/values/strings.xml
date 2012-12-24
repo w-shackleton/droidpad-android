@@ -16,7 +16,7 @@
 	<string name="mouse">Mouse</string>
 	<string name="slideshow">Slideshow</string>
 	
-	<string name="betaWelcome">Please note that you will need the 2.0 version of the PC client of DroidPad. Please visit digitalsquid.co.uk on your PC to download this.</string>
+	<string name="welcome">If you have used DroidPad before, please update the software running on your computer to the 2.0 version of DroidPad.</string>
 	
 	<string name="customlayouthelp">Custom Layout Help</string>
 	

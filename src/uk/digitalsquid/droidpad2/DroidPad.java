@@ -126,7 +126,7 @@ public class DroidPad extends TabActivity implements OnClickListener, OnItemClic
 		case 1: // Temp dialog to show new version needs to be dl'd
 			Builder builder = new Builder(this);
 			builder.setTitle(R.string.app_name);
-			builder.setMessage(R.string.betaWelcome);
+			builder.setMessage(R.string.welcome);
 			builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
