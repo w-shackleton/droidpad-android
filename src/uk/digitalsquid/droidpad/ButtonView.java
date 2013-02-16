@@ -17,6 +17,7 @@
 package uk.digitalsquid.droidpad;
 
 import uk.digitalsquid.droidpad.buttons.Item;
+import uk.digitalsquid.droidpad.buttons.Item.ScreenInfo;
 import uk.digitalsquid.droidpad.buttons.Layout;
 import uk.digitalsquid.droidpad.buttons.ModeSpec;
 import uk.digitalsquid.droidpad.buttons.Slider;
@@ -81,15 +82,12 @@ public class ButtonView extends View implements LogTag, UICallbacks
 		
 		parent.sendEvent(layout);
 	}
-
-	private int widthIter;
-	private int heightIter;
-	
-	private int width, height;
 	
 	private float scale = 1;
 	
 	private static final Paint P_BLACK = new Paint(0xFF000000);
+	
+	private ScreenInfo tmpScreenInfo = new ScreenInfo();
 	
 	@Override
 	public void onDraw(Canvas canvas)
@@ -97,18 +95,20 @@ public class ButtonView extends View implements LogTag, UICallbacks
 		super.onDraw(canvas);
 		scale = getResources().getDisplayMetrics().density;
 		
-		width = (int) ((float)canvas.getWidth() / scale);
-		height = (int) ((float)canvas.getHeight() / scale);
+		float width = (float)canvas.getWidth() / scale;
+		float height = (float)canvas.getHeight() / scale;
 		
 		canvas.scale(scale, scale);
 		
 		canvas.drawRect(0, 0, width, height, P_BLACK);
 		if(isInEditMode()) return;
-		widthIter = width / layout.getWidth();
-		heightIter = height / layout.getHeight();
+		float widthIter = width / layout.getWidth();
+		float heightIter = height / layout.getHeight();
+		
+		tmpScreenInfo.set(width, height, widthIter, heightIter, landscape);
 		
 		for(Item item : layout) {
-			item.draw(canvas, widthIter, heightIter, landscape);
+			item.draw(canvas, tmpScreenInfo);
 		}
 	}
 
@@ -119,9 +119,9 @@ public class ButtonView extends View implements LogTag, UICallbacks
 		x /= scale;
 		y /= scale;
 		for(Item item : layout) {
-			if(item.pointIsInArea(x, y)) {
+			if(item.pointIsInArea(tmpScreenInfo, x, y)) {
 				if(!up)
-					item.onMouseOn(x, y);
+					item.onMouseOn(tmpScreenInfo, x, y);
 				else {
 					item.onMouseOff();
 					item.resetStickyLock();

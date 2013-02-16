@@ -24,7 +24,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
-import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.RectF;
 
 public abstract class Item implements Serializable {
@@ -84,59 +84,39 @@ public abstract class Item implements Serializable {
 
     }
 	
-	public final int x, y;
-	public final int sx, sy;
-	
-	private int lastWidth, lastHeight;
+	public final Position pos;
 	
 	protected boolean selected = false;
 	
 	protected ButtonPresses callbacks;
 	
+	/**
+	 * Grid constructor - use to create a grid item
+	 * @param x
+	 * @param y
+	 * @param sx
+	 * @param sy
+	 */
 	public Item(int x, int y, int sx, int sy) {
-		this.x = x;
-		this.y = y;
-		this.sx = sx < 1 ? 1 : sx;
-		this.sy = sy < 1 ? 1 : sy;
+		pos = new GridPosition(x, y, sx < 1 ? 1 : sx, sy < 1 ? 1 : sy);
 	}
 	
-	public final void draw(Canvas c, int width, int height, boolean landscape) {
-		RectF area = computeArea(width, height);
-		Point centre = computeCentre(area);
+	public final void draw(Canvas c, ScreenInfo info) {
+		RectF area = pos.computeArea(info);
+		PointF centre = pos.computeCentre(info);
 		
 		c.drawRoundRect(area, 10, 10, bp);
 		
-		drawInternal(c, area, centre, landscape);
-		drawInArea(c, area, centre, landscape);
+		drawInternal(c, area, centre, info.landscape);
+		drawInArea(c, area, centre, info.landscape);
 	}
 	
-	protected abstract void drawInArea(Canvas c, RectF area, Point centre, boolean landscape);
+	protected abstract void drawInArea(Canvas c, RectF area, PointF centre, boolean landscape);
 	
-	private void drawInternal(Canvas c, RectF area, Point centre, boolean landscape) {
+	private void drawInternal(Canvas c, RectF area, PointF centre, boolean landscape) {
 		c.drawRoundRect(area, 10, 10, isSelected() ? bpS : bp);
 	}
 	
-	protected final RectF computeArea(int width, int height) {
-		lastWidth = width;
-		lastHeight = height;
-		return new RectF(
-				x * width + BUTTON_GAP,
-				y * height + BUTTON_GAP,
-				(x + sx) * width - BUTTON_GAP,
-				(y + sy) * height - BUTTON_GAP);
-	}
-	protected final RectF computeArea() {
-		return computeArea(lastWidth, lastHeight);
-	}
-	
-	protected final Point computeCentre(RectF area) {
-		return new Point((int)area.centerX(), (int)area.centerY());
-	}
-	
-	protected final Point computeCentre() {
-		return computeCentre(computeArea());
-	}
-
 	public boolean isSelected() {
 		return selected;
 	}
@@ -164,8 +144,8 @@ public abstract class Item implements Serializable {
 	abstract int getData2();
 	abstract int getData3();
 	
-	public boolean pointIsInArea(float x2, float y2) {
-		return computeArea().contains(x2, y2);
+	public boolean pointIsInArea(ScreenInfo info, float x2, float y2) {
+		return pos.computeArea(info).contains(x2, y2);
 	}
 	
 	/**
@@ -178,10 +158,84 @@ public abstract class Item implements Serializable {
 	 */
 	public abstract void finaliseState();
 	
-	public abstract void onMouseOn(float x, float y);
+	public abstract void onMouseOn(ScreenInfo info, float x, float y);
 	public abstract void onMouseOff();
 
 	protected void setCallbacks(ButtonPresses callbacks) {
 		this.callbacks = callbacks;
+	}
+	
+	public static class ScreenInfo {
+		public float width, height;
+		public float gridWidth, gridHeight;
+		
+		public boolean landscape;
+		
+		public ScreenInfo() {
+			width = 1000;
+			height = 1000;
+			gridWidth = 100;
+			gridHeight = 100;
+		}
+		public ScreenInfo(float w, float h, float gw, float gh, boolean landscape) {
+			width = w;
+			height = h;
+			gridWidth = gw;
+			gridHeight = gh;
+			this.landscape = landscape;
+		}
+		public void set(float w, float h, float gw, float gh, boolean landscape) {
+			width = w;
+			height = h;
+			gridWidth = gw;
+			gridHeight = gh;
+			this.landscape = landscape;
+		}
+	}
+	
+	/**
+	 * Describes the position of an onscreen button.
+	 * Is either grid-based, or positioned absolutely.
+	 */
+	public static abstract class Position {
+		private Position() { }
+		
+		public abstract RectF computeArea(ScreenInfo info);
+		public abstract PointF computeCentre(ScreenInfo info);
+	}
+	
+	public static class GridPosition extends Position {
+		/**
+		 * The x-coordinate, grid based
+		 */
+		int x;
+		/**
+		 * The y-coordinate, grid-based
+		 */
+		int y;
+		
+		int sx, sy;
+		
+		public GridPosition(int x, int y, int sx, int sy) {
+			this.x = x;
+			this.y = y;
+			this.sx = sx;
+			this.sy = sy;
+		}
+		
+		@Override
+		public final RectF computeArea(ScreenInfo info) {
+			return new RectF(
+					x * info.gridWidth + BUTTON_GAP,
+					y * info.gridHeight + BUTTON_GAP,
+					(x + sx) * info.gridWidth - BUTTON_GAP,
+					(y + sy) * info.gridHeight - BUTTON_GAP);
+		}
+		
+		@Override
+		public final PointF computeCentre(ScreenInfo info) {
+			return new PointF((x + sx / 2) * info.gridWidth,
+					(y + sy / 2) * info.gridHeight);
+		}
 	}
 }

@@ -17,7 +17,7 @@
 package uk.digitalsquid.droidpad.buttons;
 
 import android.graphics.Canvas;
-import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.RectF;
 
 public class Button extends Item {
@@ -47,7 +47,7 @@ public class Button extends Item {
 	}
 
 	@Override
-	public void drawInArea(Canvas c, RectF area, Point centre, boolean landscape) {
+	public void drawInArea(Canvas c, RectF area, PointF centre, boolean landscape) {
 		pTextS.setTextSize(textSize);
 		pText.setTextSize(textSize);
 		if(landscape) {
@@ -78,7 +78,7 @@ public class Button extends Item {
 	}
 
 	@Override
-	public void onMouseOn(float x, float y) {
+	public void onMouseOn(ScreenInfo info, float x, float y) {
 		tmpSelected = true;
 	}
 

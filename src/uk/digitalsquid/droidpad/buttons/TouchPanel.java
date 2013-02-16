@@ -18,7 +18,7 @@ package uk.digitalsquid.droidpad.buttons;
 
 import uk.digitalsquid.droidpad.LogTag;
 import android.graphics.Canvas;
-import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.FloatMath;
 
@@ -74,7 +74,7 @@ public class TouchPanel extends Item implements LogTag {
 	}
 
 	@Override
-	public void drawInArea(Canvas c, RectF area, Point centre, boolean landscape) { }
+	public void drawInArea(Canvas c, RectF area, PointF centre, boolean landscape) { }
 
 	@Override
 	public String getOutputString() {
@@ -104,9 +104,9 @@ public class TouchPanel extends Item implements LogTag {
 	}
 
 	@Override
-	public void onMouseOn(float x, float y) {
-		Point centre = computeCentre();
-		RectF area = computeArea();
+	public void onMouseOn(ScreenInfo info, float x, float y) {
+		PointF centre = pos.computeCentre(info);
+		RectF area = pos.computeArea(info);
 		final float tempXw = area.width() - (2 * SLIDER_GAP);
 		final float tempYw = area.height() - (2 * SLIDER_GAP);
 		

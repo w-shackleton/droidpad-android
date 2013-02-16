@@ -19,6 +19,7 @@ package uk.digitalsquid.droidpad.layout;
 import java.io.IOException;
 import java.io.Reader;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -57,6 +58,12 @@ public class JsonDecoder implements LogTag {
 		int height = root.optInt("", 5);
 		Layout layout = new Layout(title, description, width, height);
 		result.setLayout(layout);
+		
+		JSONArray items = root.getJSONArray("items");
+		for(int i = 0; i < items.length(); i++) {
+			JSONObject item = items.getJSONObject(i);
+			// TODO: Decode item here
+		}
 		
 		return result;
 	}

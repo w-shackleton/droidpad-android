@@ -17,7 +17,7 @@
 package uk.digitalsquid.droidpad.buttons;
 
 import android.graphics.Canvas;
-import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.RectF;
 
 public class Slider extends Item {
@@ -55,7 +55,7 @@ public class Slider extends Item {
 	}
 
 	@Override
-	public void drawInArea(Canvas c, RectF area, Point centre, boolean landscape) {
+	public void drawInArea(Canvas c, RectF area, PointF centre, boolean landscape) {
 		float tempXw = area.width() - (2 * SLIDER_GAP);
 		float tempYw = area.height() - (2 * SLIDER_GAP);
 
@@ -109,9 +109,9 @@ public class Slider extends Item {
 	}
 
 	@Override
-	public void onMouseOn(float x, float y) {
-		Point centre = computeCentre();
-		RectF area = computeArea();
+	public void onMouseOn(ScreenInfo info, float x, float y) {
+		PointF centre = pos.computeCentre(info);
+		RectF area = pos.computeArea(info);
 		float tempXw = area.width() - (2 * SLIDER_GAP);
 		float tempYw = area.height() - (2 * SLIDER_GAP);
 		
