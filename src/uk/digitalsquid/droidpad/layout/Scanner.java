@@ -1,7 +1,24 @@
-package uk.digitalsquid.droidpad.xml;
+/*  This file is part of DroidPad.
+ *
+ *  DroidPad is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  DroidPad is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with DroidPad.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
+package uk.digitalsquid.droidpad.layout;
+
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +73,7 @@ public class Scanner implements LogTag {
 		
 		for(File layout : layouts) {
 			try {
-				ModeSpec spec = LayoutDecoder.decodeLayout(new FileInputStream(layout));
+				ModeSpec spec = decodeLayout(layout);
 				switch(spec.getMode()) {
 				case ModeSpec.LAYOUTS_JS:
 					jsModes.add(spec.getLayout());
@@ -74,6 +91,27 @@ public class Scanner implements LogTag {
 				Log.e(TAG, "Failed to parse custom XML layout", e);
 				Toast.makeText(context, "Failed to load custom layout " + layout.getName(), Toast.LENGTH_SHORT).show();
 			}
+		}
+	}
+	
+	static final ModeSpec decodeLayout(File layout) throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(layout));
+		reader.mark(256);
+		char[] head = new char[1];
+		reader.read(head);
+		reader.reset();
+		switch(head[0]) {
+		case '<': // XML
+			return XmlDecoder.decodeLayout(reader);
+		case '{': // JSON
+			return JsonDecoder.decodeLayout(reader);
+		default: // Not sure; try both
+			try {
+				return XmlDecoder.decodeLayout(reader);
+			} catch(IOException e) {
+				Log.w(TAG, "File " + layout.getAbsolutePath() + " couldn't be decoded as XML");
+			}
+			return JsonDecoder.decodeLayout(reader);
 		}
 	}
 	

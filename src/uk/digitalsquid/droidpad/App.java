@@ -28,7 +28,7 @@ import uk.digitalsquid.droidpad.buttons.Slider.SliderType;
 import uk.digitalsquid.droidpad.buttons.ToggleButton;
 import uk.digitalsquid.droidpad.buttons.TouchPanel;
 import uk.digitalsquid.droidpad.buttons.TouchPanel.PanelType;
-import uk.digitalsquid.droidpad.xml.Scanner;
+import uk.digitalsquid.droidpad.layout.Scanner;
 import android.app.Application;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;

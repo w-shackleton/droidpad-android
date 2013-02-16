@@ -1,7 +1,23 @@
-package uk.digitalsquid.droidpad.xml;
+/*  This file is part of DroidPad.
+ *
+ *  DroidPad is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  DroidPad is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with DroidPad.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package uk.digitalsquid.droidpad.layout;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.Reader;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -17,9 +33,9 @@ import uk.digitalsquid.droidpad.buttons.Button;
 import uk.digitalsquid.droidpad.buttons.Layout;
 import uk.digitalsquid.droidpad.buttons.ModeSpec;
 import uk.digitalsquid.droidpad.buttons.Slider;
+import uk.digitalsquid.droidpad.buttons.Slider.SliderType;
 import uk.digitalsquid.droidpad.buttons.ToggleButton;
 import uk.digitalsquid.droidpad.buttons.TouchPanel;
-import uk.digitalsquid.droidpad.buttons.Slider.SliderType;
 import uk.digitalsquid.droidpad.buttons.TouchPanel.PanelType;
 import android.sax.Element;
 import android.sax.ElementListener;
@@ -27,12 +43,12 @@ import android.sax.RootElement;
 import android.sax.TextElementListener;
 
 
-public class LayoutDecoder implements LogTag {
-	private LayoutDecoder() {}
+public class XmlDecoder implements LogTag {
+	private XmlDecoder() {}
 	
 	private static final SAXParserFactory factory = SAXParserFactory.newInstance();
 	
-	public static final ModeSpec decodeLayout(InputStream stream) throws IOException {
+	public static final ModeSpec decodeLayout(Reader stream) throws IOException {
 		try {
 			return internalDecodeLayout(stream);
 		} catch (ParserConfigurationException e) {
@@ -45,7 +61,7 @@ public class LayoutDecoder implements LogTag {
 			throw e2;
 		}
 	}
-	private static final ModeSpec internalDecodeLayout(InputStream stream) throws ParserConfigurationException, SAXException, IOException {
+	private static final ModeSpec internalDecodeLayout(Reader stream) throws ParserConfigurationException, SAXException, IOException {
 		SAXParser parser = factory.newSAXParser();
 		
 		DocumentListener doc = new DocumentListener();
