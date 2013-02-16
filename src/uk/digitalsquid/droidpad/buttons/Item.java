@@ -101,6 +101,21 @@ public abstract class Item implements Serializable {
 		pos = new GridPosition(x, y, sx < 1 ? 1 : sx, sy < 1 ? 1 : sy);
 	}
 	
+	/**
+	 * General constructor
+	 * @param x
+	 * @param y
+	 * @param sx
+	 * @param sy
+	 * @param free <code>true</code>, this will be a free (floating) item
+	 */
+	public Item(float x, float y, float sx, float sy, boolean free) {
+		if(free)
+			pos = new FreePosition(x, y, sx, sy);
+		else
+			pos = new GridPosition((int)x, (int)y, (int)sx < 1 ? 1 : (int)sx, (int)sy < 1 ? 1 : (int)sy);
+	}
+	
 	public final void draw(Canvas c, ScreenInfo info) {
 		RectF area = pos.computeArea(info);
 		PointF centre = pos.computeCentre(info);
@@ -230,6 +245,41 @@ public abstract class Item implements Serializable {
 					y * info.gridHeight + BUTTON_GAP,
 					(x + sx) * info.gridWidth - BUTTON_GAP,
 					(y + sy) * info.gridHeight - BUTTON_GAP);
+		}
+		
+		@Override
+		public final PointF computeCentre(ScreenInfo info) {
+			return new PointF((x + sx / 2) * info.gridWidth,
+					(y + sy / 2) * info.gridHeight);
+		}
+	}
+	
+	public static class FreePosition extends Position {
+		/**
+		 * The x-coordinate, between 0 and 1
+		 */
+		float x;
+		/**
+		 * The y-coordinate, between 0 and 1
+		 */
+		float y;
+		
+		float sx, sy;
+		
+		public FreePosition(float x, float y, float sx, float sy) {
+			this.x = x;
+			this.y = y;
+			this.sx = sx;
+			this.sy = sy;
+		}
+		
+		@Override
+		public final RectF computeArea(ScreenInfo info) {
+			return new RectF(
+					x * info.width + BUTTON_GAP,
+					y * info.height + BUTTON_GAP,
+					(x + sx) * info.width - BUTTON_GAP,
+					(y + sy) * info.height - BUTTON_GAP);
 		}
 		
 		@Override
