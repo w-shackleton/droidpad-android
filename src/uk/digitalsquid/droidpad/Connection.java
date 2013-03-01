@@ -20,10 +20,17 @@ import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.security.Security;
+
+import org.spongycastle.crypto.tls.PSKTlsClient;
+import org.spongycastle.crypto.tls.TlsPSKIdentity;
+import org.spongycastle.crypto.tls.TlsProtocolHandler;
 
 import uk.digitalsquid.droidpad.Connection.ConnectionInfo;
 import uk.digitalsquid.droidpad.Connection.Progress;
@@ -39,6 +46,10 @@ import android.util.Log;
 
 public class Connection extends AsyncTask<ConnectionInfo, Progress, Void> implements LogTag {
 	
+	static {
+	    Security.addProvider(new org.spongycastle.jce.provider.BouncyCastleProvider());
+	}
+	
 	public static final int STATE_CONNECTED = 1;
 	public static final int STATE_WAITING = 2;
 	public static final int STATE_CONNECTION_LOST = 3;
@@ -52,6 +63,9 @@ public class Connection extends AsyncTask<ConnectionInfo, Progress, Void> implem
 		public ConnectionCallbacks callbacks;
 		public ModeSpec spec;
 		public boolean reverseX, reverseY;
+		
+		public boolean encrypt;
+		public TlsPSKIdentity identity;
 	}
 	
 	public static final class Progress {
@@ -119,7 +133,6 @@ public class Connection extends AsyncTask<ConnectionInfo, Progress, Void> implem
 	 * @return <code>false</code> if the thread should end now, <code>true</code>
 	 * if another session should be accepted.
 	 */
-	@SuppressWarnings("resource")
 	private boolean acceptSession(ServerSocket serverSocket) {
 		idling = true;
 		Socket socket = acceptConnection(serverSocket);
@@ -137,9 +150,20 @@ public class Connection extends AsyncTask<ConnectionInfo, Progress, Void> implem
 		DataOutputStream dataOutput = null;
 		InputStreamReader inputReader = null;
 		try {
-			bufferedOutput = new BufferedOutputStream(socket.getOutputStream());
+			OutputStream innerOutput; InputStream innerInput;
+			if(info.encrypt) {
+				TlsProtocolHandler protocol = new TlsProtocolHandler(socket.getInputStream(), socket.getOutputStream());
+				PSKTlsClient tlsClient = new PSKTlsClient(info.identity);
+				protocol.connect(tlsClient);
+				innerOutput = protocol.getOutputStream();
+				innerInput = protocol.getInputStream();
+			} else {
+				innerOutput = socket.getOutputStream();
+				innerInput = socket.getInputStream();
+			}
+			bufferedOutput = new BufferedOutputStream(innerOutput);
 			dataOutput = new DataOutputStream(bufferedOutput);
-			inputReader = new InputStreamReader(socket.getInputStream());
+			inputReader = new InputStreamReader(innerInput);
 		} catch (IOException e) {
 			Log.e(TAG, "Failed to initialise IO streams", e);
 			closeConnections(socket, inputReader, dataOutput, bufferedOutput);
