@@ -269,4 +269,11 @@ public class App extends Application {
 	 * the background service will die at some point after disconnecting successfully.
 	 */
 	private boolean serviceRequired = true;
+	
+	private Pairing pairing;
+	
+	public Pairing getPairingEngine() {
+		if(pairing == null) pairing = new Pairing(this);
+		return pairing;
+	}
 }

@@ -16,8 +16,10 @@
 
 package uk.digitalsquid.droidpad;
 
+import java.io.IOException;
 import java.util.List;
 
+import uk.digitalsquid.droidpad.Pairing.DevicePair;
 import uk.digitalsquid.droidpad.buttons.Layout;
 import uk.digitalsquid.droidpad.buttons.ModeSpec;
 import android.annotation.TargetApi;
@@ -49,6 +51,9 @@ import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 /**
  * This is the new, much improved main UI for DroidPad.
@@ -116,17 +121,41 @@ public class DroidPad extends TabActivity implements OnClickListener, OnItemClic
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(app);
 		if(prefs.getInt("firstTime", 1) == 1) {
 			prefs.edit().putInt("firstTime", 0).commit();
-			showDialog(1);
+			showDialog(DIALOG_UPGRADE);
 		}
 	}
 	
+	static final int DIALOG_UPGRADE = 1;
+	static final int DIALOG_PAIRFAILED = 2;
+	static final int DIALOG_PAIRSUCCESS = 3;
+	
 	@Override
 	public Dialog onCreateDialog(int id) {
+		Builder builder = new Builder(this);
 		switch(id) {
-		case 1: // Temp dialog to show new version needs to be dl'd
-			Builder builder = new Builder(this);
+		case DIALOG_UPGRADE: // Temp dialog to show new version needs to be dl'd
 			builder.setTitle(R.string.app_name);
 			builder.setMessage(R.string.welcome);
+			builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+			return builder.create();
+		case DIALOG_PAIRSUCCESS:
+			builder.setTitle(R.string.pairsuccesstitle);
+			builder.setMessage(getResources().getString(R.string.pairsuccessdescription, tmpDeviceName));
+			builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+			return builder.create();
+		case DIALOG_PAIRFAILED:
+			builder.setTitle(R.string.pairfailedtitle);
+			builder.setMessage(R.string.pairfaileddescription);
 			builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
@@ -224,13 +253,10 @@ public class DroidPad extends TabActivity implements OnClickListener, OnItemClic
     }
     
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-    	if (!item.hasSubMenu())
-    	{
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	if (!item.hasSubMenu()) {
     		Intent i;
-    		switch (item.getItemId())
-    		{
+    		switch (item.getItemId()) {
     		case R.id.wifi:
     			i = new Intent(Settings.ACTION_WIFI_SETTINGS);
     			try
@@ -249,6 +275,12 @@ public class DroidPad extends TabActivity implements OnClickListener, OnItemClic
     			} catch (ActivityNotFoundException a) {
     				Toast.makeText(getBaseContext(), "Could not launch Browser.", Toast.LENGTH_SHORT).show();
     			}
+    			break;
+    		case R.id.pairnewdevice:
+    			Toast.makeText(this, "Please scan the barcode created by the software on your computer.", Toast.LENGTH_LONG);
+    			IntentIntegrator barcodeIntegrator = new IntentIntegrator(this);
+    			barcodeIntegrator.setMessageByID(R.string.pairdevicemessage);
+    			barcodeIntegrator.initiateScan();
     			break;
     		case R.id.settings:
     			i = new Intent(this, SettingsMenu.class);
@@ -274,4 +306,31 @@ public class DroidPad extends TabActivity implements OnClickListener, OnItemClic
     	}
 		return true;
     }
+    
+    /**
+     * Temp variable used by successful dialog box.
+     */
+    private String tmpDeviceName;
+    
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    	super.onActivityResult(requestCode, resultCode, intent);
+    	IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+    	if (scanResult != null) {
+    		try {
+				DevicePair newPair = app.getPairingEngine().pairNewDevice(scanResult.getContents());
+				tmpDeviceName = newPair.getComputerName();
+				showDialog(DIALOG_PAIRSUCCESS);
+			} catch (IllegalArgumentException e) {
+				Log.e(TAG, "Failed to decode barcode content", e);
+				showDialog(DIALOG_PAIRFAILED);
+			} catch (IOException e) {
+				e.printStackTrace();
+				Log.e(TAG, "Failed to save new pairing content to DB", e);
+				// TODO: Show a different dialog?
+				showDialog(DIALOG_PAIRFAILED);
+			}
+    		return;
+    	}
+	}
 }
