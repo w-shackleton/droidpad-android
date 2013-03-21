@@ -23,6 +23,7 @@ import java.util.UUID;
 import uk.digitalsquid.ext.Base64;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -100,6 +101,29 @@ public class Pairing implements LogTag {
 				throw new IOException("Failed to add a new device pair to the database");
 			db.close();
 		}
+		
+		public DevicePair findPairing(UUID computerId) throws IOException {
+			SQLiteDatabase db = getReadableDatabase();
+			Cursor c = db.query("pairs",
+					new String[] {
+						"computerName",
+						"deviceId",
+						"psk"},
+					"computerId = ?",
+					new String[] {
+						computerId.toString()
+					},
+					null, null, null);
+			if(c.getCount() < 1) return null;
+			UUID deviceId;
+			String computerName; byte[] psk;
+			computerName = c.getString(0);
+			deviceId = UUID.fromString(c.getString(1));
+			psk = Base64.decode(c.getString(2));
+			c.close();
+			db.close();
+			return new DevicePair(computerId, computerName, deviceId, psk);
+		}
 	}
 	
 	/**
@@ -130,5 +154,27 @@ public class Pairing implements LogTag {
 		}
 		pairingDB.addPairing(computerId, computerName, deviceId, psk);
 		return new DevicePair(computerId, computerName, deviceId, psk);
+	}
+	
+	public DevicePair findDevicePair(String computerId) {
+		try {
+			return findDevicePair(UUID.fromString(computerId));
+		} catch(NullPointerException e) {
+			Log.e(TAG, "Incorrectly formatted uuid", e);
+		} catch(IllegalArgumentException e) {
+			Log.e(TAG, "Incorrectly formatted uuid", e);
+		}
+		return null;
+	}
+	
+	public DevicePair findDevicePair(UUID computerId) {
+		try {
+			return pairingDB.findPairing(computerId);
+		} catch (IOException e) {
+			Log.e(TAG, "Couldn't find device pairing", e);
+		} catch (NullPointerException e) {
+			Log.e(TAG, "Couldn't find device pairing", e);
+		}
+		return null;
 	}
 }
