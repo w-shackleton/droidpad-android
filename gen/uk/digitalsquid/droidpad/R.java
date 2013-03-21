@@ -121,6 +121,9 @@ public final class R {
         public static final int layout_slide_desc=0x7f06000b;
         public static final int morehelp=0x7f060003;
         public static final int mouse=0x7f060033;
+        public static final int onlySecureConnectionOff=0x7f060044;
+        public static final int onlySecureConnectionOn=0x7f060043;
+        public static final int onlysecureconnection=0x7f060042;
         public static final int orientationOff=0x7f06001e;
         public static final int orientationOn=0x7f06001d;
         public static final int orientationTitle=0x7f06001c;
@@ -146,13 +149,13 @@ public final class R {
         public static final int updateSummary=0x7f06001b;
         public static final int updateTitle=0x7f060019;
         public static final int welcome=0x7f060035;
-        public static final int wifi_connectToPhone=0x7f060048;
-        public static final int wifi_connecting=0x7f060045;
-        public static final int wifi_disabled=0x7f060042;
-        public static final int wifi_disabling=0x7f060043;
-        public static final int wifi_disconnected=0x7f060046;
-        public static final int wifi_enabling=0x7f060044;
-        public static final int wifi_scanning=0x7f060047;
+        public static final int wifi_connectToPhone=0x7f06004b;
+        public static final int wifi_connecting=0x7f060048;
+        public static final int wifi_disabled=0x7f060045;
+        public static final int wifi_disabling=0x7f060046;
+        public static final int wifi_disconnected=0x7f060049;
+        public static final int wifi_enabling=0x7f060047;
+        public static final int wifi_scanning=0x7f06004a;
     }
     public static final class style {
         public static final int fullscreen=0x7f080002;

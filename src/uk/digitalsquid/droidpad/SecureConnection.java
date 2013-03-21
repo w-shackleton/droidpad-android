@@ -27,7 +27,6 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.security.Security;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.spongycastle.crypto.tls.PSKTlsClient;
@@ -52,10 +51,6 @@ import android.util.Log;
  *
  */
 public class SecureConnection extends AsyncTask<ConnectionInfo, Progress, Void> implements LogTag {
-	
-	static {
-	    Security.addProvider(new org.spongycastle.jce.provider.BouncyCastleProvider());
-	}
 	
 	public static final int STATE_CONNECTED = 1;
 	public static final int STATE_WAITING = 2;
@@ -99,7 +94,7 @@ public class SecureConnection extends AsyncTask<ConnectionInfo, Progress, Void> 
 	@Override
 	protected Void doInBackground(ConnectionInfo... infos) {
 		info = infos[0];
-		ServerSocket serverSocket = createServerSocket(info.port);
+		ServerSocket serverSocket = createServerSocket(info.securePort);
 		if(serverSocket == null) return null;
 		Log.i(TAG, "Created ServerSocket");
 		

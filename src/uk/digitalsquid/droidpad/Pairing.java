@@ -167,6 +167,11 @@ public class Pairing implements LogTag {
 		return null;
 	}
 	
+	/**
+	 * finds a device pair in the DB. Returns <code>null</code> if no pair found.
+	 * @param computerId
+	 * @return
+	 */
 	public DevicePair findDevicePair(UUID computerId) {
 		try {
 			return pairingDB.findPairing(computerId);

@@ -44,4 +44,10 @@
 	
 	<string name="authfaileddescription">The computer trying to connect to this device hasn\'t been paired yet.
 	    If the device has been paired correctly then it is possible that someone is interfering with the communications between this device and the computer.</string>
+	
+	<string name="onlysecureconnection">Only Secure Connections</string>
+	
+	<string name="onlySecureConnectionOn">Only secure connections are allowed</string>
+	
+	<string name="onlySecureConnectionOff">Both secure and insecure connections are allowed</string>
 </resources>
