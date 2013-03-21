@@ -21,6 +21,7 @@ public class BinarySerialiser implements LogTag {
 	static final int HEADER_FLAG_STOP = 0x4;
 	
 	static final byte[] HEADER_BYTES = "DPAD".getBytes();
+	static final byte[] INFO_HEADER_BYTES = "DINF".getBytes();
 
 	public static final void writeBinary(DataOutputStream out, AnalogueData analogue, Layout layout) throws IOException {
 		writeHeader(out, analogue, layout);
@@ -96,6 +97,24 @@ public class BinarySerialiser implements LogTag {
 		out.writeFloat(reservedX);
 		out.writeFloat(reservedY);
 		out.writeFloat(reservedZ);
+		out.flush();
+	}
+	
+	public static final void writeConnectionInfo(DataOutputStream out, int mode, int rawDevs, int axes, int buttons) throws IOException {
+		out.write(INFO_HEADER_BYTES);
+		out.writeInt(mode);
+		out.writeInt(rawDevs);
+		out.writeInt(axes);
+		out.writeInt(buttons);
+		// 32 bytes reserved
+		out.writeInt(0);
+		out.writeInt(0);
+		out.writeInt(0);
+		out.writeInt(0);
+		out.writeInt(0);
+		out.writeInt(0);
+		out.writeInt(0);
+		out.writeInt(0);
 		out.flush();
 	}
 }

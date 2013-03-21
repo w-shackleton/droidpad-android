@@ -39,4 +39,9 @@
 	<string name="pairsuccesstitle">Pairing successful</string>
 	
 	<string name="pairsuccessdescription">The new device %s was successfully paired to this computer.</string>
+	
+	<string name="authfailedtitle">Authentication failed</string>
+	
+	<string name="authfaileddescription">The computer trying to connect to this device hasn\'t been paired yet.
+	    If the device has been paired correctly then it is possible that someone is interfering with the communications between this device and the computer.</string>
 </resources>

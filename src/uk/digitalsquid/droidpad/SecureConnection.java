@@ -16,26 +16,46 @@
 
 package uk.digitalsquid.droidpad;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.Closeable;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.security.Security;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
-import uk.digitalsquid.droidpad.Connection.Progress;
+import org.spongycastle.crypto.tls.PSKTlsClient;
+import org.spongycastle.crypto.tls.TlsProtocolHandler;
+
+import uk.digitalsquid.droidpad.SecureConnection.Progress;
 import uk.digitalsquid.droidpad.buttons.AnalogueData;
 import uk.digitalsquid.droidpad.buttons.Button;
 import uk.digitalsquid.droidpad.buttons.Item;
 import uk.digitalsquid.droidpad.buttons.Slider;
 import uk.digitalsquid.droidpad.serialise.BinarySerialiser;
-import uk.digitalsquid.droidpad.serialise.ClassicSerialiser;
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
 
-public class Connection extends AsyncTask<ConnectionInfo, Progress, Void> implements LogTag {
+/**
+ * This is an improved version of the {@link Connection} class. It enforces encryption to be used,
+ * operates on a different port and only uses the new (binary) protocol. The old
+ * {@link Connection} class is to be phased out in the future.
+ * @author william
+ *
+ */
+public class SecureConnection extends AsyncTask<ConnectionInfo, Progress, Void> implements LogTag {
+	
+	static {
+	    Security.addProvider(new org.spongycastle.jce.provider.BouncyCastleProvider());
+	}
 	
 	public static final int STATE_CONNECTED = 1;
 	public static final int STATE_WAITING = 2;
@@ -56,7 +76,19 @@ public class Connection extends AsyncTask<ConnectionInfo, Progress, Void> implem
 	private ConnectionInfo info;
 	private boolean idling = true;
 	
-	private char[] inputTmpBuffer = new char[1024];
+	/**
+	 * A message from the client
+	 * @author william
+	 *
+	 */
+	static class ClientMessage {
+		public static final int CMD_STOP = 1;
+		int what;
+		public ClientMessage(int what) {
+			this.what = what;
+		}
+	}
+	private ConcurrentLinkedQueue<ClientMessage> clientMessages;
 	
 	@Override
 	protected void onPreExecute() {
@@ -106,10 +138,11 @@ public class Connection extends AsyncTask<ConnectionInfo, Progress, Void> implem
 	 * @return <code>false</code> if the thread should end now, <code>true</code>
 	 * if another session should be accepted.
 	 */
-	@SuppressWarnings("resource")
+	@SuppressLint("NewApi")
 	private boolean acceptSession(ServerSocket serverSocket) {
 		idling = true;
 		Socket socket = acceptConnection(serverSocket);
+		TlsProtocolHandler protocol = null;
 		if(socket == null) return true;
 		Log.i(TAG, "Socket connection created");
 		
@@ -122,14 +155,30 @@ public class Connection extends AsyncTask<ConnectionInfo, Progress, Void> implem
 		
 		BufferedOutputStream bufferedOutput = null;
 		DataOutputStream dataOutput = null;
-		InputStreamReader inputReader = null;
+		InputStream innerInput = null;
 		try {
-			bufferedOutput = new BufferedOutputStream(socket.getOutputStream());
+			// We are always encrypting data here
+			protocol = new TlsProtocolHandler(socket.getInputStream(), socket.getOutputStream());
+			PSKTlsClient tlsClient = new PSKTlsClient(info.identity);
+			try {
+				protocol.connect(tlsClient);
+			} catch(IOException e) {
+				// Failed to complete handshake
+				Log.e(TAG, "Failed to complete handshake");
+				info.callbacks.broadcastAlert(ConnectionCallbacks.ALERT_AUTH_FAILED);
+				closeConnections(socket, protocol, dataOutput, bufferedOutput);
+				return true;
+			}
+			
+			OutputStream innerOutput = protocol.getOutputStream();
+			innerInput = protocol.getInputStream();
+			
+			bufferedOutput = new BufferedOutputStream(innerOutput);
 			dataOutput = new DataOutputStream(bufferedOutput);
-			inputReader = new InputStreamReader(socket.getInputStream());
+			
 		} catch (IOException e) {
 			Log.e(TAG, "Failed to initialise IO streams", e);
-			closeConnections(socket, inputReader, dataOutput, bufferedOutput);
+			closeConnections(socket, protocol, dataOutput, bufferedOutput);
 			return true; // true means we want another connection
 		}
 		
@@ -154,12 +203,10 @@ public class Connection extends AsyncTask<ConnectionInfo, Progress, Void> implem
 		}
 		
 		try {
-			bufferedOutput.write(
-					String.format("<MODE>%s</MODE><MODESPEC>%d,%d,%d</MODESPEC><SUPPORTSBINARY>\n",
-					info.spec.getModeString(), numRawDevs, numAxes, numButtons).getBytes());
+			BinarySerialiser.writeConnectionInfo(dataOutput, info.spec.getMode(), numRawDevs, numAxes, numButtons);
 		} catch (IOException e) {
 			Log.e(TAG, "Error sending info to computer", e);
-			closeConnections(socket, inputReader, dataOutput, bufferedOutput);
+			closeConnections(socket, protocol, dataOutput, bufferedOutput);
 			return true; // true means we want another connection
 		}
 		
@@ -167,9 +214,15 @@ public class Connection extends AsyncTask<ConnectionInfo, Progress, Void> implem
 		
 		publishProgress(new Progress(STATE_CONNECTED, socket.getInetAddress().getHostAddress()));
 		
+		// Start client response listener
+		// Android AsyncTask version weirdness
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			responseListener.executeOnExecutor(THREAD_POOL_EXECUTOR, innerInput);
+		else
+			responseListener.execute(innerInput);
+		
 		// Begin looping
 		idling = false;
-		boolean sendBinary = false;
 		while(!isCancelled()) {
 			AnalogueData analogue = new AnalogueData(
 					info.callbacks.getAccelerometerValues(),
@@ -177,54 +230,73 @@ public class Connection extends AsyncTask<ConnectionInfo, Progress, Void> implem
 					info.callbacks.getWorldRotation(),
 					info.reverseX, info.reverseY);
 			try {
-				if(sendBinary) {
-					BinarySerialiser.writeBinary(dataOutput, analogue, info.callbacks.getScreenData());
-				} else {
-					bufferedOutput.write(ClassicSerialiser.formatLine(analogue, info.callbacks.getScreenData()).getBytes());
-					bufferedOutput.flush();
-				}
+				BinarySerialiser.writeBinary(dataOutput, analogue, info.callbacks.getScreenData());
 				
 				// Reset button press overrides
 				info.callbacks.getScreenData().resetOverrides();
 				
 				safeSleep((long)(info.interval * 1000L));
 				
-				if(inputReader.ready()) {
-					int bytes = inputReader.read(inputTmpBuffer);
-					if(bytes > 0) {
-						String st = String.valueOf(inputTmpBuffer, 0, bytes);
-						if(st.startsWith("<STOP>")) {
-							publishProgress(new Progress(STATE_WAITING, ""));
-							closeConnections(socket, inputReader, dataOutput, bufferedOutput);
-							return false;
-						} else if(st.startsWith("<BINARY>"))
-							sendBinary = true;
+				ClientMessage msg = null;
+				if((msg = clientMessages.poll()) != null) {
+					switch(msg.what) {
+					case ClientMessage.CMD_STOP:
+						publishProgress(new Progress(STATE_WAITING, ""));
+						closeConnections(socket, protocol, dataOutput, bufferedOutput);
+						return false;
 					}
 				}
 				
 			} catch (IOException e) {
 				Log.w(TAG, "Lost connection with computer", e);
-				closeConnections(socket, inputReader, dataOutput, bufferedOutput);
+				closeConnections(socket, protocol, dataOutput, bufferedOutput);
 				publishProgress(new Progress(STATE_CONNECTION_LOST, ""));
 				return true; // true means we want another connection
 			}
 		}
 		// If we get to here, user must have cancelled the loop
 		try {
-			if(sendBinary) {
-				BinarySerialiser.writeStopCommand(dataOutput);
-			} else {
-				bufferedOutput.write(ClassicSerialiser.writeStopCommand().getBytes());
-				bufferedOutput.flush();
-			}
+			BinarySerialiser.writeStopCommand(dataOutput);
 			publishProgress(new Progress(STATE_WAITING, ""));
 		} catch(IOException e) {
 			Log.w(TAG, "Failed to send stop message to server", e);
 		}
-		closeConnections(socket, inputReader, dataOutput, bufferedOutput);
+		closeConnections(socket, protocol, dataOutput, bufferedOutput);
 		
 		return false;
 	}
+	
+	private AsyncTask<InputStream, Void, Void> responseListener = new AsyncTask<InputStream, Void, Void>() {
+		@Override
+		protected Void doInBackground(InputStream... params) {
+			InputStream input = params[0];
+			if(input == null) {
+				Log.e(TAG, "responseListener InputStream was null");
+				return null;
+			}
+			BufferedInputStream buf = new BufferedInputStream(input);
+			DataInputStream data = new DataInputStream(buf);
+			byte[] header = new byte[4];
+			while(!isCancelled()) {
+				try {
+					data.read(header, 0, 4);
+				} catch (IOException e) {
+					Log.w(TAG, "Failed to read header from input stream.", e);
+					continue;
+				}
+				if(header.equals("DCMD".getBytes())) {
+					try {
+						int command = data.readInt();
+						if(clientMessages != null)
+							clientMessages.add(new ClientMessage(command));
+					} catch (IOException e) {
+					Log.w(TAG, "Failed to read command from input stream.", e);
+					}
+				}
+			}
+			return null;
+		}
+	};
 	
 	private Socket acceptConnection(ServerSocket serverSocket) {
 		int fb = 1;
@@ -252,10 +324,11 @@ public class Connection extends AsyncTask<ConnectionInfo, Progress, Void> implem
 		} catch (InterruptedException e) { }
 	}
 	
-	private void closeConnections(Socket socket, Closeable... closeables) {
+	private void closeConnections(Socket socket, TlsProtocolHandler proto, Closeable... closeables) {
 		closeConnections(closeables);
 		try {
-			socket.close();
+			if(proto != null) proto.close();
+			if(socket != null) socket.close();
 		} catch (IOException e) {
 			Log.w(TAG, "Failed to close socket", e);
 		}

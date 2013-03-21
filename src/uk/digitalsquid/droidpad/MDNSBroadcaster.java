@@ -18,6 +18,8 @@ package uk.digitalsquid.droidpad;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
@@ -60,7 +62,12 @@ public class MDNSBroadcaster extends Thread implements LogTag {
 			}
 		}
 		
-        dpAnnounce = ServiceInfo.create(REMOTE_TYPE, devName, port, name);
+		Map<String, String> props = new HashMap<String, String>();
+		props.put("name", name);
+		Log.v(TAG, "Setting up broadcast with " + devName + ", " + name);
+        dpAnnounce = ServiceInfo.create(REMOTE_TYPE, devName, port, 0, 0, props);
+        dpAnnounce.getTextBytes();
+        dpAnnounce.getPropertyString("");
         boolean registered = false;
         while(!registered) {
 			if(stopping) {

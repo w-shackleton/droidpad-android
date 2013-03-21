@@ -94,6 +94,8 @@ public final class R {
         public static final int about3=0x7f060002;
         public static final int about_title=0x7f06002c;
         public static final int app_name=0x7f060025;
+        public static final int authfaileddescription=0x7f060041;
+        public static final int authfailedtitle=0x7f060040;
         public static final int axesfloatOff=0x7f060021;
         public static final int axesfloatOn=0x7f060020;
         public static final int axesfloatTitle=0x7f06001f;
@@ -144,13 +146,13 @@ public final class R {
         public static final int updateSummary=0x7f06001b;
         public static final int updateTitle=0x7f060019;
         public static final int welcome=0x7f060035;
-        public static final int wifi_connectToPhone=0x7f060046;
-        public static final int wifi_connecting=0x7f060043;
-        public static final int wifi_disabled=0x7f060040;
-        public static final int wifi_disabling=0x7f060041;
-        public static final int wifi_disconnected=0x7f060044;
-        public static final int wifi_enabling=0x7f060042;
-        public static final int wifi_scanning=0x7f060045;
+        public static final int wifi_connectToPhone=0x7f060048;
+        public static final int wifi_connecting=0x7f060045;
+        public static final int wifi_disabled=0x7f060042;
+        public static final int wifi_disabling=0x7f060043;
+        public static final int wifi_disconnected=0x7f060046;
+        public static final int wifi_enabling=0x7f060044;
+        public static final int wifi_scanning=0x7f060047;
     }
     public static final class style {
         public static final int fullscreen=0x7f080002;

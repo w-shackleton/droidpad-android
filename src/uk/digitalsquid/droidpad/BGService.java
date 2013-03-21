@@ -18,9 +18,9 @@ package uk.digitalsquid.droidpad;
 
 import java.net.InetAddress;
 
-import uk.digitalsquid.droidpad.Connection.ConnectionInfo;
 import uk.digitalsquid.droidpad.buttons.Layout;
 import uk.digitalsquid.droidpad.buttons.ModeSpec;
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -34,6 +34,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.MulticastLock;
 import android.net.wifi.WifiManager.WifiLock;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
@@ -51,8 +52,10 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 	public static final String MODE_SPEC = "uk.digitalsquid.droidpad.BGService.ModeSpec";
 	
 	public static final String INTENT_STATUSUPDATE = "uk.digitalsquid.droidpad.BGService.Status";
+	public static final String INTENT_ALERT = "uk.digitalsquid.droidpad.BGService.Alert";
 	public static final String INTENT_EXTRA_STATE = "uk.digitalsquid.droidpad.BGService.Status.State";
 	public static final String INTENT_EXTRA_IP = "uk.digitalsquid.droidpad.BGService.Status.Ip";
+	public static final String INTENT_EXTRA_ALERT_TYPE = "uk.digitalsquid.droidpad.BGService.Alert.Type";
 	public static final int STATE_CONNECTED = 1;
 	public static final int STATE_WAITING = 2;
 	public static final int STATE_CONNECTION_LOST = 3;
@@ -172,6 +175,7 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 		}
 	}
 	
+	@SuppressLint("NewApi")
 	private synchronized ModeSpec createNewConnection(ModeSpec newSpec) {
 		wifiLock.acquire();
 		multicastLock.acquire();
@@ -224,7 +228,10 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 		connectionInfo.reverseY = prefs.getBoolean("reverse-y", false);
 		
 		connection = new Connection();
-		connection.execute(connectionInfo);
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			connection.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, connectionInfo);
+		else
+			connection.execute(connectionInfo);
 		
 		Log.i(TAG, "Starting new connection");
 		
@@ -355,6 +362,13 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
     	this.connectedPc = connectedPc;
     	broadcastState();
     }
+
+	@Override
+	public void broadcastAlert(int type) {
+		Intent intent = new Intent(INTENT_ALERT);
+		intent.putExtra(INTENT_EXTRA_ALERT_TYPE, type);
+		sendBroadcast(intent);
+	}
     
     public int getState() {
     	return state;
