@@ -151,6 +151,7 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 		String deviceName = prefs.getString("devicename", Build.MODEL);
 		// In case field is set but blank
 		if(deviceName.equals("")) deviceName = Build.MODEL;
+		deviceName = "secure:" + deviceName;
 		mdns = new MDNSBroadcaster(wifiAddr,
 				deviceName.substring(0, Math.min(deviceName.length(), 40)),
 				port);

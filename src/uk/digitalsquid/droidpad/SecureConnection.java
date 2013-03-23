@@ -153,10 +153,13 @@ public class SecureConnection extends AsyncTask<ConnectionInfo, Progress, Void> 
 		InputStream innerInput = null;
 		try {
 			// We are always encrypting data here
+			Log.v(TAG, "Setting up SSL connection");
 			protocol = new TlsProtocolHandler(socket.getInputStream(), socket.getOutputStream());
 			PSKTlsClient tlsClient = new PSKTlsClient(info.identity);
 			try {
+				Log.v(TAG, "Attempting handshake");
 				protocol.connect(tlsClient);
+				Log.v(TAG, "Handshake completed");
 			} catch(IOException e) {
 				// Failed to complete handshake
 				Log.e(TAG, "Failed to complete handshake");
@@ -238,6 +241,7 @@ public class SecureConnection extends AsyncTask<ConnectionInfo, Progress, Void> 
 					case ClientMessage.CMD_STOP:
 						publishProgress(new Progress(STATE_WAITING, ""));
 						closeConnections(socket, protocol, dataOutput, bufferedOutput);
+						responseListener.cancel(true);
 						return false;
 					}
 				}
@@ -246,6 +250,7 @@ public class SecureConnection extends AsyncTask<ConnectionInfo, Progress, Void> 
 				Log.w(TAG, "Lost connection with computer", e);
 				closeConnections(socket, protocol, dataOutput, bufferedOutput);
 				publishProgress(new Progress(STATE_CONNECTION_LOST, ""));
+				responseListener.cancel(true);
 				return true; // true means we want another connection
 			}
 		}
@@ -257,6 +262,7 @@ public class SecureConnection extends AsyncTask<ConnectionInfo, Progress, Void> 
 			Log.w(TAG, "Failed to send stop message to server", e);
 		}
 		closeConnections(socket, protocol, dataOutput, bufferedOutput);
+		responseListener.cancel(true);
 		
 		return false;
 	}

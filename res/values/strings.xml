@@ -38,7 +38,7 @@
 	    
 	<string name="pairsuccesstitle">Pairing successful</string>
 	
-	<string name="pairsuccessdescription">The new device %s was successfully paired to this computer.</string>
+	<string name="pairsuccessdescription">The new device %s was successfully paired to this device.</string>
 	
 	<string name="authfailedtitle">Authentication failed</string>
 	
