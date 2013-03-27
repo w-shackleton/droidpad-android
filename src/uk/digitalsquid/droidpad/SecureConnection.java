@@ -162,7 +162,7 @@ public class SecureConnection extends AsyncTask<ConnectionInfo, Progress, Void> 
 				Log.v(TAG, "Handshake completed");
 			} catch(IOException e) {
 				// Failed to complete handshake
-				Log.e(TAG, "Failed to complete handshake");
+				Log.e(TAG, "Failed to complete handshake", e);
 				info.callbacks.broadcastAlert(ConnectionCallbacks.ALERT_AUTH_FAILED);
 				closeConnections(socket, protocol, dataOutput, bufferedOutput);
 				return true;
@@ -213,6 +213,7 @@ public class SecureConnection extends AsyncTask<ConnectionInfo, Progress, Void> 
 		publishProgress(new Progress(STATE_CONNECTED, socket.getInetAddress().getHostAddress()));
 		
 		// Start client response listener
+		ResponseListener responseListener = new ResponseListener();
 		// Android AsyncTask version weirdness
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
 			responseListener.executeOnExecutor(THREAD_POOL_EXECUTOR, innerInput);
@@ -267,7 +268,7 @@ public class SecureConnection extends AsyncTask<ConnectionInfo, Progress, Void> 
 		return false;
 	}
 	
-	private AsyncTask<InputStream, Void, Void> responseListener = new AsyncTask<InputStream, Void, Void>() {
+	class ResponseListener extends AsyncTask<InputStream, Void, Void> {
 		@Override
 		protected Void doInBackground(InputStream... params) {
 			InputStream input = params[0];

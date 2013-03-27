@@ -115,6 +115,7 @@ public class Pairing implements LogTag {
 					},
 					null, null, null);
 			if(c.getCount() < 1) return null;
+			c.moveToFirst();
 			UUID deviceId;
 			String computerName; byte[] psk;
 			computerName = c.getString(0);

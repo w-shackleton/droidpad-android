@@ -422,6 +422,7 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 		private DevicePair credentials;
 		
 		private void retrieveCredentials() {
+			if(credentials != null) return;
 			Pairing pairing = app.getPairingEngine();
 			credentials = pairing.findDevicePair(computerId);
 		}
@@ -429,6 +430,7 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 		@Override
 		public void notifyIdentityHint(byte[] psk_identity_hint) {
 			String uuid = new String(psk_identity_hint);
+			Log.v(TAG, "Identity received: " + uuid);
 			try {
 				computerId = UUID.fromString(uuid);
 			} catch(NullPointerException e) {
@@ -442,12 +444,14 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 		public byte[] getPSKIdentity() {
 			retrieveCredentials();
 			if(credentials == null) return "NOCREDS".getBytes();
+			Log.v(TAG, "Sending identity: " + credentials.getDeviceId().toString());
 			return credentials.getDeviceId().toString().getBytes();
 		}
 		
 		@Override
 		public byte[] getPSK() {
 			retrieveCredentials();
+			Log.v(TAG, "Sending PSK");
 			if(credentials == null) return new byte[] {};
 			return credentials.getPsk();
 		}
