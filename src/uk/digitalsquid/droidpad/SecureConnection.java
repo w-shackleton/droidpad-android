@@ -213,6 +213,7 @@ public class SecureConnection extends AsyncTask<ConnectionInfo, Progress, Void> 
 		publishProgress(new Progress(STATE_CONNECTED, socket.getInetAddress().getHostAddress()));
 		
 		// Start client response listener
+		clientMessages = new ConcurrentLinkedQueue<SecureConnection.ClientMessage>();
 		ResponseListener responseListener = new ResponseListener();
 		// Android AsyncTask version weirdness
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
@@ -256,6 +257,7 @@ public class SecureConnection extends AsyncTask<ConnectionInfo, Progress, Void> 
 			}
 		}
 		// If we get to here, user must have cancelled the loop
+		Log.i(TAG, "Sending stop signal over connection");
 		try {
 			BinarySerialiser.writeStopCommand(dataOutput);
 			publishProgress(new Progress(STATE_WAITING, ""));
