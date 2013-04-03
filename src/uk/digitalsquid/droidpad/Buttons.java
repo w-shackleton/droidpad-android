@@ -35,6 +35,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.WifiLock;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -118,8 +119,9 @@ public class Buttons extends Activity implements LogTag, OnClickListener
         connectionStatus.setText(R.string.connectWaiting);
         
         findViewById(R.id.softMenuButton).setOnClickListener(this);
-        if(ViewConfiguration.get(this).hasPermanentMenuKey())
-        	findViewById(R.id.softMenuButton).setVisibility(View.GONE);
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+	        if(ViewConfiguration.get(this).hasPermanentMenuKey())
+	        	findViewById(R.id.softMenuButton).setVisibility(View.GONE);
         
         // Wifi management etc.
         wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
