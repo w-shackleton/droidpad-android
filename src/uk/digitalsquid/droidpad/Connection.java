@@ -25,12 +25,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
-import uk.digitalsquid.droidpad.Connection.ConnectionInfo;
 import uk.digitalsquid.droidpad.Connection.Progress;
 import uk.digitalsquid.droidpad.buttons.AnalogueData;
 import uk.digitalsquid.droidpad.buttons.Button;
 import uk.digitalsquid.droidpad.buttons.Item;
-import uk.digitalsquid.droidpad.buttons.ModeSpec;
 import uk.digitalsquid.droidpad.buttons.Slider;
 import uk.digitalsquid.droidpad.serialise.BinarySerialiser;
 import uk.digitalsquid.droidpad.serialise.ClassicSerialiser;
@@ -42,17 +40,6 @@ public class Connection extends AsyncTask<ConnectionInfo, Progress, Void> implem
 	public static final int STATE_CONNECTED = 1;
 	public static final int STATE_WAITING = 2;
 	public static final int STATE_CONNECTION_LOST = 3;
-	
-	public static final class ConnectionInfo {
-		public int port;
-		/**
-		 * The interval between sending updates IN SECONDS
-		 */
-		public float interval;
-		public ConnectionCallbacks callbacks;
-		public ModeSpec spec;
-		public boolean reverseX, reverseY;
-	}
 	
 	public static final class Progress {
 		public int status;
@@ -80,6 +67,7 @@ public class Connection extends AsyncTask<ConnectionInfo, Progress, Void> implem
 	@Override
 	protected Void doInBackground(ConnectionInfo... infos) {
 		info = infos[0];
+		Log.i(TAG, "Normal connection being created on " + info.port);
 		ServerSocket serverSocket = createServerSocket(info.port);
 		if(serverSocket == null) return null;
 		Log.i(TAG, "Created ServerSocket");

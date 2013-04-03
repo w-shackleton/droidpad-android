@@ -2,6 +2,19 @@ BINARY SPEC
 
 Since old versions of DroidPad use a very bad text-based format, new versions still use a text-based header containing details of type and features
 
+If using binary connection info (which secure connections do), then the info is as thus:
+Info:
+* header bytes "DINF"
+* Mode type number: (int32)
+  * Joystick = 1
+  * Absolute mouse = 2
+  * Mouse = 3
+  * Slideshow = 4
+* Raw devices (int32)
+* Axes (int32)
+* Buttons (int32)
+* 32 bytes of reserved data
+
 Each packet contains a header:
 * header bytes "DPAD" - 0x4450 4144 (in network order)
 * number of elements (int32)
@@ -30,3 +43,9 @@ If a button, data 1 is a boolean value. If a slider / trackpad, Data 1 and Data 
 They represent the X and Y positions, either on the slider or accumulated trackpad movement.
 Data 1 -> X
 Data 2 -> Y
+
+
+The computer can also send messages to the device. Messages are currently of this format:
+* header bytes "DCMD"
+* command (int32)
+  * Stop = 1

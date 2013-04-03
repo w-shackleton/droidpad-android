@@ -31,6 +31,13 @@ public interface ConnectionCallbacks {
 
 	void broadcastState(int status, String connectedPc);
 	
+	public static final int ALERT_AUTH_FAILED = 1;
+	/**
+	 * Sends a one-time message to the user, such as authentication failing.
+	 * @param type
+	 */
+	void broadcastAlert(int type);
+	
 	Vec3 getAccelerometerValues();
 	Vec3 getGyroscopeValues();
 	float getWorldRotation();

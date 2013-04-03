@@ -17,10 +17,14 @@
 package uk.digitalsquid.droidpad;
 
 import java.net.InetAddress;
+import java.util.UUID;
 
-import uk.digitalsquid.droidpad.Connection.ConnectionInfo;
+import org.spongycastle.crypto.tls.TlsPSKIdentity;
+
+import uk.digitalsquid.droidpad.Pairing.DevicePair;
 import uk.digitalsquid.droidpad.buttons.Layout;
 import uk.digitalsquid.droidpad.buttons.ModeSpec;
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -34,6 +38,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.MulticastLock;
 import android.net.wifi.WifiManager.WifiLock;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
@@ -51,8 +56,10 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 	public static final String MODE_SPEC = "uk.digitalsquid.droidpad.BGService.ModeSpec";
 	
 	public static final String INTENT_STATUSUPDATE = "uk.digitalsquid.droidpad.BGService.Status";
+	public static final String INTENT_ALERT = "uk.digitalsquid.droidpad.BGService.Alert";
 	public static final String INTENT_EXTRA_STATE = "uk.digitalsquid.droidpad.BGService.Status.State";
 	public static final String INTENT_EXTRA_IP = "uk.digitalsquid.droidpad.BGService.Status.Ip";
+	public static final String INTENT_EXTRA_ALERT_TYPE = "uk.digitalsquid.droidpad.BGService.Alert.Type";
 	public static final int STATE_CONNECTED = 1;
 	public static final int STATE_WAITING = 2;
 	public static final int STATE_CONNECTION_LOST = 3;
@@ -94,6 +101,7 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 	private Calibration calibration;
 	
 	private Connection connection;
+	private SecureConnection secureConnection;
 	
 	private final Vec3 accelerometer = new Vec3();
 	/**
@@ -143,6 +151,7 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 		String deviceName = prefs.getString("devicename", Build.MODEL);
 		// In case field is set but blank
 		if(deviceName.equals("")) deviceName = Build.MODEL;
+		deviceName = "secure:" + deviceName;
 		mdns = new MDNSBroadcaster(wifiAddr,
 				deviceName.substring(0, Math.min(deviceName.length(), 40)),
 				port);
@@ -159,19 +168,18 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 	 * @return
 	 */
 	public synchronized ModeSpec onModeChosen(ModeSpec spec) {
-		if(connection != null) {
-			if(connection.attemptClose()) { // Closed idle connection successfully
-				this.spec = createNewConnection(spec);
-				return spec;
-			} else { // Connection running, user can't change spec.
-				return this.spec;
-			}
-		} else { // No existing connection
+		boolean closed = true;
+		if(connection != null) closed &= connection.attemptClose();
+		if(secureConnection != null) closed &= secureConnection.attemptClose();
+		if(closed) { // Closed idle connection successfully
 			this.spec = createNewConnection(spec);
 			return spec;
+		} else { // Connection running, user can't change spec.
+			return this.spec;
 		}
 	}
 	
+	@SuppressLint("NewApi")
 	private synchronized ModeSpec createNewConnection(ModeSpec newSpec) {
 		wifiLock.acquire();
 		multicastLock.acquire();
@@ -218,13 +226,29 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 		ConnectionInfo connectionInfo = new ConnectionInfo();
 		connectionInfo.callbacks = this;
 		connectionInfo.port = port;
+		connectionInfo.securePort = port + 1; // For the time being using p+1, until I can figure out how to
+											  // receive mDNS properties using the C mDNS library in the PC app
 		connectionInfo.spec = newSpec;
 		connectionInfo.interval = (float)interval / 1000f;
 		connectionInfo.reverseX = prefs.getBoolean("reverse-x", false);
 		connectionInfo.reverseY = prefs.getBoolean("reverse-y", false);
+		connectionInfo.identity = pskAuthenticator;
 		
-		connection = new Connection();
-		connection.execute(connectionInfo);
+		// Set up normal connection
+		if(!prefs.getBoolean("onlysecureconnection", false)) {
+			connection = new Connection();
+			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+				connection.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, connectionInfo);
+			else
+				connection.execute(connectionInfo);
+		}
+		// Set up secure connection
+		secureConnection = new SecureConnection();
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			secureConnection.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, connectionInfo);
+		else
+			secureConnection.execute(connectionInfo);
+		
 		
 		Log.i(TAG, "Starting new connection");
 		
@@ -234,7 +258,10 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 	@Override
 	public synchronized void onConnectionFinished() {
 		Log.i(TAG, "Connection finishing");
-		connection = null;
+		// Kill off any remaining threads first.
+		if(connection != null) connection.cancel(true);
+		if(secureConnection != null) secureConnection.cancel(true);
+		connection = null; secureConnection = null;
 		if(app.isServiceRequired()) {
 			// Launch again with old spec
 			Log.i(TAG, "Still required, launching new connection");
@@ -252,7 +279,9 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		app.setServiceRequired(false);
 		if(connection != null) connection.cancel(true);
+		if(secureConnection != null) secureConnection.cancel(true);
 		mdns.stopRunning();
 		Log.i(TAG, "Service stopped");
 	}
@@ -355,6 +384,13 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
     	this.connectedPc = connectedPc;
     	broadcastState();
     }
+
+	@Override
+	public void broadcastAlert(int type) {
+		Intent intent = new Intent(INTENT_ALERT);
+		intent.putExtra(INTENT_EXTRA_ALERT_TYPE, type);
+		sendBroadcast(intent);
+	}
     
     public int getState() {
     	return state;
@@ -374,4 +410,51 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 	public void setScreenData(Layout screenData) {
 		this.screenData = screenData;
 	}
+	
+	// TLS authenticator
+	private TlsPSKIdentity pskAuthenticator =  new TlsPSKIdentity() {
+		@Override
+		public void skipIdentityHint() {
+			Log.e(TAG, "skipIdentityHint called!!!11!!");
+		}
+		
+		private UUID computerId;
+		
+		private DevicePair credentials;
+		
+		private void retrieveCredentials() {
+			if(credentials != null) return;
+			Pairing pairing = app.getPairingEngine();
+			credentials = pairing.findDevicePair(computerId);
+		}
+		
+		@Override
+		public void notifyIdentityHint(byte[] psk_identity_hint) {
+			String uuid = new String(psk_identity_hint);
+			Log.v(TAG, "Identity received: " + uuid);
+			try {
+				computerId = UUID.fromString(uuid);
+			} catch(NullPointerException e) {
+				Log.e(TAG, "No PSK identity given?!?");
+			} catch(IllegalArgumentException e) {
+				Log.w(TAG, "Incorrectly formatted UUID");
+			}
+		}
+		
+		@Override
+		public byte[] getPSKIdentity() {
+			retrieveCredentials();
+			if(credentials == null) return "NOCREDS".getBytes();
+			Log.v(TAG, "Sending identity: " + credentials.getDeviceId().toString());
+			return credentials.getDeviceId().toString().getBytes();
+		}
+		
+		@Override
+		public byte[] getPSK() {
+			retrieveCredentials();
+			Log.v(TAG, "Sending PSK");
+			if(credentials == null) return new byte[] {};
+			return credentials.getPsk();
+		}
+	};
 }

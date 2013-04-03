@@ -23,9 +23,13 @@ import uk.digitalsquid.droidpad.buttons.Layout;
 import uk.digitalsquid.droidpad.buttons.ModeSpec;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -102,6 +106,7 @@ public class Buttons extends Activity implements LogTag, OnClickListener
         // Set up broadcast listening
         statusFilter = new IntentFilter();
         statusFilter.addAction(BGService.INTENT_STATUSUPDATE);
+        statusFilter.addAction(BGService.INTENT_ALERT);
         
         bview = (ButtonView) findViewById(R.id.buttonView);
         
@@ -159,7 +164,10 @@ public class Buttons extends Activity implements LogTag, OnClickListener
 	private final BroadcastReceiver statusReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			updateStatus(intent.getIntExtra(BGService.INTENT_EXTRA_STATE, BGService.STATE_WAITING));
+			if(intent.getAction().equals(BGService.INTENT_STATUSUPDATE))
+				updateStatus(intent.getIntExtra(BGService.INTENT_EXTRA_STATE, BGService.STATE_WAITING));
+			else if(intent.getAction().equals(BGService.INTENT_ALERT))
+				showAlert(intent.getIntExtra(BGService.INTENT_EXTRA_ALERT_TYPE, 0));
 		}
 	};
 	
@@ -191,6 +199,35 @@ public class Buttons extends Activity implements LogTag, OnClickListener
 			connectionStatus.setText(R.string.connected);
 			break;
 		}
+	}
+	
+	static final int DIALOG_AUTH_FAILED = 1;
+	
+	void showAlert(int type) {
+		switch(type) {
+		case ConnectionCallbacks.ALERT_AUTH_FAILED:
+			showDialog(DIALOG_AUTH_FAILED);
+			break;
+		}
+	}
+	
+	@Override
+	public Dialog onCreateDialog(int id, Bundle args) {
+		super.onCreateDialog(id, args);
+		AlertDialog.Builder builder = new Builder(this);
+		switch(id) {
+		case DIALOG_AUTH_FAILED:
+			builder.setTitle(R.string.authfailedtitle);
+			builder.setMessage(R.string.authfaileddescription);
+			builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+			return builder.create();
+		}
+		return null;
 	}
 	
 	private IntentFilter wifiFilter;
