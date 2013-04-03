@@ -52,6 +52,7 @@ public class LayoutDecoder implements LogTag {
 		
 		parser.getXMLReader().setContentHandler(doc.getContentHandler());
 		parser.getXMLReader().parse(new InputSource(stream));
+		stream.close();
 		return doc.getModeSpec();
 	}
 	
