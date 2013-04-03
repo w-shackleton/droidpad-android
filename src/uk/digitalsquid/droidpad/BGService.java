@@ -279,6 +279,7 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		app.setServiceRequired(false);
 		if(connection != null) connection.cancel(true);
 		if(secureConnection != null) secureConnection.cancel(true);
 		mdns.stopRunning();

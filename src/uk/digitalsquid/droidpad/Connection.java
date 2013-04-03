@@ -67,6 +67,7 @@ public class Connection extends AsyncTask<ConnectionInfo, Progress, Void> implem
 	@Override
 	protected Void doInBackground(ConnectionInfo... infos) {
 		info = infos[0];
+		Log.i(TAG, "Normal connection being created on " + info.port);
 		ServerSocket serverSocket = createServerSocket(info.port);
 		if(serverSocket == null) return null;
 		Log.i(TAG, "Created ServerSocket");

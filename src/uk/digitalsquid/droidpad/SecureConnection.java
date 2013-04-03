@@ -94,6 +94,7 @@ public class SecureConnection extends AsyncTask<ConnectionInfo, Progress, Void> 
 	@Override
 	protected Void doInBackground(ConnectionInfo... infos) {
 		info = infos[0];
+		Log.i(TAG, "Secure connection being created on " + info.securePort);
 		ServerSocket serverSocket = createServerSocket(info.securePort);
 		if(serverSocket == null) return null;
 		Log.i(TAG, "Created ServerSocket");
