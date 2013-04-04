@@ -22,6 +22,7 @@ public class BinarySerialiser implements LogTag {
 	
 	static final byte[] HEADER_BYTES = "DPAD".getBytes();
 	static final byte[] INFO_HEADER_BYTES = "DINF".getBytes();
+	public static final byte[] CMD_HEADER_BYTES = "DCMD".getBytes();
 
 	public static final void writeBinary(DataOutputStream out, AnalogueData analogue, Layout layout) throws IOException {
 		writeHeader(out, analogue, layout);

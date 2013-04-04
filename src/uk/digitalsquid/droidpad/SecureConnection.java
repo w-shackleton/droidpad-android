@@ -16,7 +16,6 @@
 
 package uk.digitalsquid.droidpad;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import java.io.DataInputStream;
@@ -27,6 +26,7 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.spongycastle.crypto.tls.PSKTlsClient;
@@ -38,6 +38,7 @@ import uk.digitalsquid.droidpad.buttons.Button;
 import uk.digitalsquid.droidpad.buttons.Item;
 import uk.digitalsquid.droidpad.buttons.Slider;
 import uk.digitalsquid.droidpad.serialise.BinarySerialiser;
+import uk.digitalsquid.ext.Base64;
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -242,6 +243,7 @@ public class SecureConnection extends AsyncTask<ConnectionInfo, Progress, Void> 
 				if((msg = clientMessages.poll()) != null) {
 					switch(msg.what) {
 					case ClientMessage.CMD_STOP:
+						Log.i(TAG, "Received STOP message from computer");
 						publishProgress(new Progress(STATE_WAITING, ""));
 						closeConnections(socket, protocol, dataOutput, bufferedOutput);
 						responseListener.cancel(true);
@@ -265,7 +267,8 @@ public class SecureConnection extends AsyncTask<ConnectionInfo, Progress, Void> 
 		} catch(IOException e) {
 			Log.w(TAG, "Failed to send stop message to server", e);
 		}
-		closeConnections(socket, protocol, dataOutput, bufferedOutput);
+			
+		closeConnections(socket, protocol);
 		responseListener.cancel(true);
 		
 		return false;
@@ -279,26 +282,32 @@ public class SecureConnection extends AsyncTask<ConnectionInfo, Progress, Void> 
 				Log.e(TAG, "responseListener InputStream was null");
 				return null;
 			}
-			BufferedInputStream buf = new BufferedInputStream(input);
-			DataInputStream data = new DataInputStream(buf);
+			Log.i(TAG, "Starting to listen for responses");
+			DataInputStream data = new DataInputStream(input);
 			byte[] header = new byte[4];
 			while(!isCancelled()) {
 				try {
-					data.read(header, 0, 4);
+					int read = data.read(header, 0, 4);
+					if(read == 0) continue;
+					if(read < 0) break;
 				} catch (IOException e) {
-					Log.w(TAG, "Failed to read header from input stream.", e);
-					continue;
+					Log.w(TAG, "Reading connection was closed");
+					break;
 				}
-				if(header.equals("DCMD".getBytes())) {
+				if(Arrays.equals(BinarySerialiser.CMD_HEADER_BYTES, header)) {
 					try {
 						int command = data.readInt();
+						Log.w(TAG, "Command response message received");
 						if(clientMessages != null)
 							clientMessages.add(new ClientMessage(command));
 					} catch (IOException e) {
-					Log.w(TAG, "Failed to read command from input stream.", e);
+						Log.w(TAG, "Failed to read command from input stream.", e);
 					}
+				} else {
+					Log.w(TAG, "Nonsense response header received: " + Base64.encodeBytes(header));
 				}
 			}
+			Log.i(TAG, "Stopped listening for responses");
 			return null;
 		}
 	};
@@ -330,13 +339,13 @@ public class SecureConnection extends AsyncTask<ConnectionInfo, Progress, Void> 
 	}
 	
 	private void closeConnections(Socket socket, TlsProtocolHandler proto, Closeable... closeables) {
-		closeConnections(closeables);
 		try {
 			if(proto != null) proto.close();
 			if(socket != null) socket.close();
 		} catch (IOException e) {
-			Log.w(TAG, "Failed to close socket", e);
+			Log.d(TAG, "Failed to close socket", e);
 		}
+		closeConnections(closeables);
 	}
 	
 	private void closeConnections(Closeable... closeables) {
@@ -344,7 +353,7 @@ public class SecureConnection extends AsyncTask<ConnectionInfo, Progress, Void> 
 			try {
 				if(c != null) c.close();
 			} catch (IOException e) {
-				Log.w(TAG, "Failed to close closeable", e);
+				Log.d(TAG, "Failed to close closeable", e);
 			}
 		}
 	}
