@@ -45,6 +45,11 @@ public class Button extends Item {
 		this.text = text;
 		this.textSize = textSize == 0 ?  TEXT_SIZE : textSize;
 	}
+	public Button(float x, float y, float sx, float sy, boolean free, String text, int textSize) {
+		super(x, y, sx, sy, free);
+		this.text = text;
+		this.textSize = textSize == 0 ?  TEXT_SIZE : textSize;
+	}
 
 	@Override
 	public void drawInArea(Canvas c, RectF area, PointF centre, boolean landscape) {

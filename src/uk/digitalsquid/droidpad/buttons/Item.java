@@ -181,7 +181,13 @@ public abstract class Item implements Serializable {
 	}
 	
 	public static class ScreenInfo {
+		/**
+		 * The width and height of the entire screen
+		 */
 		public float width, height;
+		/**
+		 * The width and height of one grid item
+		 */
 		public float gridWidth, gridHeight;
 		
 		public boolean landscape;
@@ -212,14 +218,23 @@ public abstract class Item implements Serializable {
 	 * Describes the position of an onscreen button.
 	 * Is either grid-based, or positioned absolutely.
 	 */
-	public static abstract class Position {
+	public static abstract class Position implements Serializable {
+		private static final long serialVersionUID = -7465262293417889805L;
 		private Position() { }
 		
 		public abstract RectF computeArea(ScreenInfo info);
 		public abstract PointF computeCentre(ScreenInfo info);
+		
+		protected abstract void transposeAxes(int gridX, int gridY);
 	}
 	
+	/**
+	 * A position which is locked to the grid
+	 * @author william
+	 *
+	 */
 	public static class GridPosition extends Position {
+		private static final long serialVersionUID = 9207230734790003508L;
 		/**
 		 * The x-coordinate, grid based
 		 */
@@ -249,12 +264,27 @@ public abstract class Item implements Serializable {
 		
 		@Override
 		public final PointF computeCentre(ScreenInfo info) {
-			return new PointF((x + sx / 2) * info.gridWidth,
-					(y + sy / 2) * info.gridHeight);
+			return new PointF(((float)x + (float)sx / 2) * info.gridWidth,
+					((float)y + (float)sy / 2) * info.gridHeight);
+		}
+
+		@Override
+		protected void transposeAxes(int gridX, int gridY) {
+			// TODO: THIS ISN'T WORKING (I think)
+			int tmp = sx; sx = sy; sy = tmp;
+			int oldX = x, oldY = y;
+			x = gridY-oldY-sy-sy;
+			y = oldX;
 		}
 	}
 	
+	/**
+	 * A completely free position on the screen.
+	 * @author william
+	 *
+	 */
 	public static class FreePosition extends Position {
+		private static final long serialVersionUID = -7306582893921329366L;
 		/**
 		 * The x-coordinate, between 0 and 1
 		 */
@@ -284,8 +314,25 @@ public abstract class Item implements Serializable {
 		
 		@Override
 		public final PointF computeCentre(ScreenInfo info) {
-			return new PointF((x + sx / 2) * info.gridWidth,
-					(y + sy / 2) * info.gridHeight);
+			return new PointF((x + sx / 2) * info.width,
+					(y + sy / 2) * info.height);
 		}
+
+		@Override
+		protected void transposeAxes(int gridX, int gridY) {
+			float tmp = sx; sx = sy; sy = tmp;
+			float oldX = x, oldY = y;
+			x = 1-oldY-sy-sy;
+			y = oldX;
+		}
+	}
+	
+	/**
+	 * Converts all coordinates in vertial orientation space to ones in
+	 * horizontal orientation space. Unfortunately these are currently different
+	 * things.
+	 */
+	public void transposeAxes(int gridX, int gridY) {
+		pos.transposeAxes(gridX, gridY);
 	}
 }

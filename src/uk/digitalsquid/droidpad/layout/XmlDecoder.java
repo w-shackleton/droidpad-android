@@ -32,11 +32,10 @@ import uk.digitalsquid.droidpad.LogTag;
 import uk.digitalsquid.droidpad.buttons.Button;
 import uk.digitalsquid.droidpad.buttons.Layout;
 import uk.digitalsquid.droidpad.buttons.ModeSpec;
+import uk.digitalsquid.droidpad.buttons.Orientation;
 import uk.digitalsquid.droidpad.buttons.Slider;
-import uk.digitalsquid.droidpad.buttons.Slider.SliderType;
 import uk.digitalsquid.droidpad.buttons.ToggleButton;
 import uk.digitalsquid.droidpad.buttons.TouchPanel;
-import uk.digitalsquid.droidpad.buttons.TouchPanel.PanelType;
 import android.sax.Element;
 import android.sax.ElementListener;
 import android.sax.RootElement;
@@ -178,7 +177,7 @@ public class XmlDecoder implements LogTag {
 			slider.setElementListener(new ElementListener() {
 				
 				int x, y, width, height;
-				SliderType type;
+				Orientation type;
 				
 				@Override
 				public void start(Attributes attr) {
@@ -189,14 +188,14 @@ public class XmlDecoder implements LogTag {
 					
 					String typeName = attr.getValue("type");
 					if(typeName == null) typeName = "both";
-					if(typeName.equalsIgnoreCase("x")) type = SliderType.X;
-					if(typeName.equalsIgnoreCase("y")) type = SliderType.Y;
-					if(typeName.equalsIgnoreCase("horizontal")) type = SliderType.X;
-					if(typeName.equalsIgnoreCase("vertical")) type = SliderType.Y;
+					if(typeName.equalsIgnoreCase("x")) type = Orientation.X;
+					if(typeName.equalsIgnoreCase("y")) type = Orientation.Y;
+					if(typeName.equalsIgnoreCase("horizontal")) type = Orientation.X;
+					if(typeName.equalsIgnoreCase("vertical")) type = Orientation.Y;
 					
-					if(typeName.equalsIgnoreCase("xy")) type = SliderType.Both;
-					if(typeName.equalsIgnoreCase("both")) type = SliderType.Both;
-					if(typeName.equalsIgnoreCase("dual")) type = SliderType.Both;
+					if(typeName.equalsIgnoreCase("xy")) type = Orientation.Both;
+					if(typeName.equalsIgnoreCase("both")) type = Orientation.Both;
+					if(typeName.equalsIgnoreCase("dual")) type = Orientation.Both;
 				}
 				
 				@Override
@@ -209,7 +208,7 @@ public class XmlDecoder implements LogTag {
 			panel.setElementListener(new ElementListener() {
 				
 				int x, y, width, height;
-				PanelType type;
+				Orientation type;
 				
 				@Override
 				public void start(Attributes attr) {
@@ -220,14 +219,14 @@ public class XmlDecoder implements LogTag {
 					
 					String typeName = attr.getValue("type");
 					if(typeName == null) typeName = "both";
-					if(typeName.equalsIgnoreCase("x")) type = PanelType.X;
-					if(typeName.equalsIgnoreCase("y")) type = PanelType.Y;
-					if(typeName.equalsIgnoreCase("horizontal")) type = PanelType.X;
-					if(typeName.equalsIgnoreCase("vertical")) type = PanelType.Y;
+					if(typeName.equalsIgnoreCase("x")) type = Orientation.X;
+					if(typeName.equalsIgnoreCase("y")) type = Orientation.Y;
+					if(typeName.equalsIgnoreCase("horizontal")) type = Orientation.X;
+					if(typeName.equalsIgnoreCase("vertical")) type = Orientation.Y;
 					
-					if(typeName.equalsIgnoreCase("xy")) type = PanelType.Both;
-					if(typeName.equalsIgnoreCase("both")) type = PanelType.Both;
-					if(typeName.equalsIgnoreCase("dual")) type = PanelType.Both;
+					if(typeName.equalsIgnoreCase("xy")) type = Orientation.Both;
+					if(typeName.equalsIgnoreCase("both")) type = Orientation.Both;
+					if(typeName.equalsIgnoreCase("dual")) type = Orientation.Both;
 				}
 				
 				@Override

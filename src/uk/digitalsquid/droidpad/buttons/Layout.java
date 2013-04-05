@@ -170,4 +170,29 @@ public class Layout extends LinkedList<Item> implements ButtonPresses, Serializa
 		}
 		getUiCallbacks().refreshScreen();
 	}
+	
+	/**
+	 * Indicates if the layout forces the orientation of the screen
+	 */
+	private boolean orientationForced = false;
+	/**
+	 * If the orientation is forced (see orientationForced), this bool is
+	 * <code>true</code> if the orientation is horizontal.
+	 */
+	private boolean forcedOrientation;
+	
+	public boolean isOrientationForced() {
+		return orientationForced;
+	}
+	public boolean isForcedOrientationHorizontal() {
+		return forcedOrientation;
+	}
+	public void forceVerticalOrientation() {
+		orientationForced = true;
+		forcedOrientation = false;
+	}
+	public void forceHorizontalOrientation() {
+		orientationForced = true;
+		forcedOrientation = true;
+	}
 }

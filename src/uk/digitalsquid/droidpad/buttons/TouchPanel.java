@@ -27,12 +27,6 @@ public class TouchPanel extends Item implements LogTag {
 	
 	private static final long serialVersionUID = -8300732746587169324L;
 
-	public static enum PanelType {
-		X,
-		Y,
-		Both
-	}
-	
 	static final int SLIDER_TOT = 16384;
 	
 	static final int SLIDER_GAP = 16;
@@ -49,7 +43,7 @@ public class TouchPanel extends Item implements LogTag {
 	 */
 	static final float CLICK_TIME = 100f / 1000f;
 	
-	public final PanelType type;
+	public final Orientation type;
 	
 	/**
 	 * Axis X direction thing
@@ -68,8 +62,13 @@ public class TouchPanel extends Item implements LogTag {
 	
 	private long startTime;
 
-	public TouchPanel(int x, int y, int sx, int sy, PanelType type) {
+	public TouchPanel(int x, int y, int sx, int sy, Orientation type) {
 		super(x, y, sx, sy);
+		this.type = type;
+	}
+	
+	public TouchPanel(float x, float y, float sx, float sy, boolean free, Orientation type) {
+		super(x, y, sx, sy, free);
 		this.type = type;
 	}
 
@@ -110,14 +109,14 @@ public class TouchPanel extends Item implements LogTag {
 		final float tempXw = area.width() - (2 * SLIDER_GAP);
 		final float tempYw = area.height() - (2 * SLIDER_GAP);
 		
-		if(type == PanelType.X || type == PanelType.Both) {
+		if(type == Orientation.X || type == Orientation.Both) {
 			tmpAx = ((float)(x - centre.x) / tempXw * 2f * SLIDER_TOT);
 			if(tmpAx < -SLIDER_TOT)
 				tmpAx = -SLIDER_TOT;
 			else if(tmpAx > SLIDER_TOT)
 				tmpAx = SLIDER_TOT;
 		}
-		if(type == PanelType.Y || type == PanelType.Both) {
+		if(type == Orientation.Y || type == Orientation.Both) {
 			tmpAy = ((float)(y - centre.y) / tempYw * 2 * SLIDER_TOT);
 			if(tmpAy < -SLIDER_TOT)
 				tmpAy = -SLIDER_TOT;

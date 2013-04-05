@@ -79,6 +79,8 @@ public class ButtonView extends View implements LogTag, UICallbacks
         }
         
         landscape = mode.isLandscape();
+        if(layout.isOrientationForced())
+        	landscape = layout.isForcedOrientationHorizontal();
 		
 		parent.sendEvent(layout);
 	}

@@ -34,6 +34,10 @@ public class ToggleButton extends Button implements LogTag {
 		super(x, y, sx, sy, text, textSize);
 	}
 	
+	public ToggleButton(float x, float y, float sx, float sy, boolean free, String text, int textSize) {
+		super(x, y, sx, sy, free, text, textSize);
+	}
+	
 	@Override
 	public void drawInArea(Canvas c, RectF area, PointF centre, boolean landscape) {
 		super.drawInArea(c, area, centre, landscape);
