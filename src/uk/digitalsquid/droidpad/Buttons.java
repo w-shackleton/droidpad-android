@@ -29,6 +29,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.ActivityInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.WifiLock;
 import android.os.Bundle;
@@ -92,6 +93,8 @@ public class Buttons extends Activity implements LogTag, OnClickListener
         	finish();
         	return;
         }
+        if(mode.getLayout().isActivityHorizontal())
+        	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         
         fadeIn = AnimationUtils.loadAnimation(this, R.anim.fadein);
         fadeOut = AnimationUtils.loadAnimation(this, R.anim.fadeout_delay);

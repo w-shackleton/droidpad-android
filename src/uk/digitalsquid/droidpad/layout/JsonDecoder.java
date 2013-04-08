@@ -18,6 +18,7 @@ package uk.digitalsquid.droidpad.layout;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -66,8 +67,7 @@ public class JsonDecoder implements LogTag {
 		int editorHeight = root.optInt("height", 405);
 		boolean horizontal = editorWidth > editorHeight;
 		Layout layout = new Layout(title, description, gridX, gridY);
-		if(horizontal) layout.forceHorizontalOrientation();
-		else layout.forceVerticalOrientation();
+		layout.setActivityHorizontal(horizontal);
 		result.setLayout(layout);
 		
 		JSONArray items = root.getJSONArray("items");
@@ -82,6 +82,7 @@ public class JsonDecoder implements LogTag {
 			float height = (float)item.optDouble("height", 1);
 			int textSize = item.optInt("textSize", 20);
 			String text = item.optString("text");
+			if(text.equals("")) text = String.format(Locale.getDefault(), "%d", i+1);
 			
 			Orientation orientation = Orientation.Both;
 			String orientationType = item.optString("orientation", "both");
@@ -99,7 +100,6 @@ public class JsonDecoder implements LogTag {
 			} else if(type.equals("panel")) {
 				component = new TouchPanel(x, y, width, height, !gridSnap, orientation);
 			}
-			if(horizontal) component.transposeAxes(gridX, gridY);
 			if(component != null) layout.add(component);
 		}
 		

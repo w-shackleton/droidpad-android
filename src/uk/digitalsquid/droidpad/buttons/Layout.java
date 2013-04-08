@@ -171,28 +171,17 @@ public class Layout extends LinkedList<Item> implements ButtonPresses, Serializa
 		getUiCallbacks().refreshScreen();
 	}
 	
-	/**
-	 * Indicates if the layout forces the orientation of the screen
-	 */
-	private boolean orientationForced = false;
-	/**
-	 * If the orientation is forced (see orientationForced), this bool is
-	 * <code>true</code> if the orientation is horizontal.
-	 */
-	private boolean forcedOrientation;
+	private boolean activityHorizontal = false;
 	
-	public boolean isOrientationForced() {
-		return orientationForced;
+	/**
+	 * If <code>true</code>, then the whole activity will be set to horizontal.
+	 * This is different to just drawing the widgets sideways.
+	 */
+	public boolean isActivityHorizontal() {
+		return activityHorizontal;
 	}
-	public boolean isForcedOrientationHorizontal() {
-		return forcedOrientation;
-	}
-	public void forceVerticalOrientation() {
-		orientationForced = true;
-		forcedOrientation = false;
-	}
-	public void forceHorizontalOrientation() {
-		orientationForced = true;
-		forcedOrientation = true;
+	
+	public void setActivityHorizontal(boolean horizontal) {
+		activityHorizontal = horizontal;
 	}
 }
