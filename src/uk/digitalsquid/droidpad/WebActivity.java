@@ -1,5 +1,6 @@
 package uk.digitalsquid.droidpad;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -24,6 +25,7 @@ public class WebActivity extends Activity {
 		setContentView(R.layout.web_activity);
 		wv = (WebView) findViewById(R.id.webView);
 		wv.setWebViewClient(new WebViewClient() {
+			@SuppressLint("DefaultLocale")
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView wv, String url) {
 				super.shouldOverrideUrlLoading(wv, url);

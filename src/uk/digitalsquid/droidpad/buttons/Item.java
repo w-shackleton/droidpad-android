@@ -128,7 +128,7 @@ public abstract class Item implements Serializable {
 	protected abstract void drawInArea(Canvas c, RectF area, PointF centre, boolean landscape);
 	
 	private void drawInternal(Canvas c, RectF area, PointF centre, boolean landscape) {
-		c.drawRoundRect(area, 10, 10, isSelected() ? bpS : bp);
+		c.drawRoundRect(area, 10, 10, selected ? bpS : bp);
 	}
 	
 	public boolean isSelected() {

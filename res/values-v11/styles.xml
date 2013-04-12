@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="main" parent="@android:style/Theme.NoTitleBar">
+        <item name="android:windowActionBar">true</item>
     </style>
     
     <style name="fullscreen" parent="@android:style/Theme.NoTitleBar.Fullscreen">
+        <item name="android:windowActionBar">false</item>
     </style>
     <style name="light" parent="android:Theme.Light"></style>
     
