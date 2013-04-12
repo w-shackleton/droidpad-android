@@ -170,4 +170,18 @@ public class Layout extends LinkedList<Item> implements ButtonPresses, Serializa
 		}
 		getUiCallbacks().refreshScreen();
 	}
+	
+	private boolean activityHorizontal = false;
+	
+	/**
+	 * If <code>true</code>, then the whole activity will be set to horizontal.
+	 * This is different to just drawing the widgets sideways.
+	 */
+	public boolean isActivityHorizontal() {
+		return activityHorizontal;
+	}
+	
+	public void setActivityHorizontal(boolean horizontal) {
+		activityHorizontal = horizontal;
+	}
 }

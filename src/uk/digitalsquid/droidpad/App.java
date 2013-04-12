@@ -23,12 +23,11 @@ import uk.digitalsquid.droidpad.buttons.Button;
 import uk.digitalsquid.droidpad.buttons.Item;
 import uk.digitalsquid.droidpad.buttons.Layout;
 import uk.digitalsquid.droidpad.buttons.ModeSpec;
+import uk.digitalsquid.droidpad.buttons.Orientation;
 import uk.digitalsquid.droidpad.buttons.Slider;
-import uk.digitalsquid.droidpad.buttons.Slider.SliderType;
 import uk.digitalsquid.droidpad.buttons.ToggleButton;
 import uk.digitalsquid.droidpad.buttons.TouchPanel;
-import uk.digitalsquid.droidpad.buttons.TouchPanel.PanelType;
-import uk.digitalsquid.droidpad.xml.Scanner;
+import uk.digitalsquid.droidpad.layout.Scanner;
 import android.app.Application;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -68,8 +67,8 @@ public class App extends Application {
 		}));
 		ret.add(new Layout(new Item[] {
 				new Button(1, 0, 2, 1, "1", 30),
-				new Slider(1, 1, 2, 2, SliderType.Both),
-				new Slider(0, 1, 1, 2, SliderType.Y),
+				new Slider(1, 1, 2, 2, Orientation.Both),
+				new Slider(0, 1, 1, 2, Orientation.Y),
 				new Button(3, 0, 1, 1, "2", 30),
 				new Button(0, 0, 1, 1, "3", 30),
 				new Button(3, 1, 1, 2, "4", 30),
@@ -83,7 +82,7 @@ public class App extends Application {
 				new Button(3, 4, 1, 1, "11", 30),
 		}));
 		ret.add(new Layout(new Item[] {
-				new Slider(0, 1, 4, 3, SliderType.Both),
+				new Slider(0, 1, 4, 3, Orientation.Both),
 				
 				new Button(0, 4, 1, 1, "1", 30),
 				new Button(1, 4, 2, 1, "2", 30),
@@ -95,7 +94,7 @@ public class App extends Application {
 				new Button(3, 0, 1, 1, "7", 30),
 		}));
 		ret.add(new Layout(new Item[] {
-				new Slider(0, 1, 4, 3, SliderType.Both),
+				new Slider(0, 1, 4, 3, Orientation.Both),
 				
 				new Button(0, 4, 1, 1, "1", 30),
 				new Button(1, 4, 2, 1, "2", 30),
@@ -107,12 +106,12 @@ public class App extends Application {
 				new ToggleButton(3, 0, 1, 1, "7", 30),
 		}));
 		ret.add(new Layout(new Item[] {
-				new Slider(1, 1, 2, 2, SliderType.Both),
+				new Slider(1, 1, 2, 2, Orientation.Both),
 				
-				new Slider(1, 0, 2, 1, SliderType.X),
-				new Slider(0, 1, 1, 2, SliderType.Y),
-				new Slider(1, 3, 2, 1, SliderType.X),
-				new Slider(3, 1, 1, 2, SliderType.Y),
+				new Slider(1, 0, 2, 1, Orientation.X),
+				new Slider(0, 1, 1, 2, Orientation.Y),
+				new Slider(1, 3, 2, 1, Orientation.X),
+				new Slider(3, 1, 1, 2, Orientation.Y),
 				
 				new Button(0, 3, 1, 1, "1", 30),
 				new Button(3, 3, 1, 1, "2", 30),
@@ -132,14 +131,14 @@ public class App extends Application {
 		ret.add(new Layout(R.string.layout_mouse_simple, R.string.layout_mouse_simple_desc, 5, 5, new Item[] {
 				new Button(0, 0, 2, 5, "Left"),
 				new Button(2, 0, 1, 2, "Middle"),
-				new TouchPanel(2, 2, 1, 3, PanelType.Y),
+				new TouchPanel(2, 2, 1, 3, Orientation.Y),
 				new Button(3, 0, 2, 5, "Right"),
 		}));
 		ret.add(new Layout(R.string.layout_mouse_adv, R.string.layout_mouse_adv_desc, Layout.EXTRA_MOUSE_TRACKPAD, 5, 8, new Item[] {
-				new TouchPanel(0, 0, 5, 5, PanelType.Both),
+				new TouchPanel(0, 0, 5, 5, Orientation.Both),
 				new Button(0, 5, 2, 3, "Left"),
 				new Button(2, 5, 1, 1, "Middle"),
-				new TouchPanel(2, 6, 1, 2, PanelType.Y),
+				new TouchPanel(2, 6, 1, 2, Orientation.Y),
 				new Button(3, 5, 2, 3, "Right"),
 		}));
 		
@@ -147,7 +146,7 @@ public class App extends Application {
 		if(isGyroSupported()) ret.add(new Layout(R.string.layout_mouse_abs, R.string.layout_mouse_abs_desc, Layout.EXTRA_MOUSE_ABSOLUTE, 5, 5, new Item[] {
 				new Button(0, 0, 2, 5, "Left"),
 				new Button(2, 0, 1, 2, "Middle"),
-				new TouchPanel(2, 2, 1, 3, PanelType.Y),
+				new TouchPanel(2, 2, 1, 3, Orientation.Y),
 				new Button(3, 0, 2, 4, "Right"),
 				new Button(3, 4, 2, 1, "Reset").setResetButton(true),
 		}));

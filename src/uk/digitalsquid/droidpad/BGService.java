@@ -206,7 +206,8 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 		
 		if(needsAccel) {
 			Sensor downwardsDirection = null;
-			downwardsDirection = sm.getDefaultSensor(Sensor.TYPE_GRAVITY);
+			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD)
+				downwardsDirection = sm.getDefaultSensor(Sensor.TYPE_GRAVITY);
 			if(downwardsDirection == null) // Use accel
 				downwardsDirection = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 			

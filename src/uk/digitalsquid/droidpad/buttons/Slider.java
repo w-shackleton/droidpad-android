@@ -17,26 +17,20 @@
 package uk.digitalsquid.droidpad.buttons;
 
 import android.graphics.Canvas;
-import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.RectF;
 
 public class Slider extends Item {
 	
 	private static final long serialVersionUID = -7180651801411890289L;
 
-	public static enum SliderType {
-		X,
-		Y,
-		Both
-	}
-	
 	public static final int SLIDER_TOT = 16384;
 	public static final int SLIDER_CUTOFF = 700;
 	
 	public static final int SLIDER_GAP = 16;
 	public static final int SLIDER_SIZE = 10;
 	
-	public final SliderType type;
+	public final Orientation type;
 	
 	/**
 	 * Axis X direction thing
@@ -49,23 +43,28 @@ public class Slider extends Item {
 	
 	private float tmpAx, tmpAy;
 
-	public Slider(int x, int y, int sx, int sy, SliderType type) {
+	public Slider(int x, int y, int sx, int sy, Orientation type) {
 		super(x, y, sx, sy);
 		this.type = type;
 	}
 
+	public Slider(float x, float y, float sx, float sy, boolean free, Orientation type) {
+		super(x, y, sx, sy, free);
+		this.type = type;
+	}
+
 	@Override
-	public void drawInArea(Canvas c, RectF area, Point centre, boolean landscape) {
+	public void drawInArea(Canvas c, RectF area, PointF centre, boolean landscape) {
 		float tempXw = area.width() - (2 * SLIDER_GAP);
 		float tempYw = area.height() - (2 * SLIDER_GAP);
 
 		float posOnScreenX = ((float)ax / (float)SLIDER_TOT * tempXw / 2f) + centre.x;
 		float posOnScreenY = ((float)ay / (float)SLIDER_TOT * tempYw / 2) + centre.y;
 
-		if(type == SliderType.X || type == SliderType.Both)
+		if(type == Orientation.X || type == Orientation.Both)
 			c.drawLine(posOnScreenX, area.top, posOnScreenX, area.bottom, pGrayBG);
 		
-		if(type == SliderType.Y || type == SliderType.Both)
+		if(type == Orientation.Y || type == Orientation.Both)
 			c.drawLine(area.left, posOnScreenY, area.right, posOnScreenY, pGrayBG);
 		
 		c.drawCircle(posOnScreenX, posOnScreenY, SLIDER_SIZE, pText);
@@ -109,13 +108,13 @@ public class Slider extends Item {
 	}
 
 	@Override
-	public void onMouseOn(float x, float y) {
-		Point centre = computeCentre();
-		RectF area = computeArea();
+	public void onMouseOn(ScreenInfo info, float x, float y) {
+		PointF centre = pos.computeCentre(info);
+		RectF area = pos.computeArea(info);
 		float tempXw = area.width() - (2 * SLIDER_GAP);
 		float tempYw = area.height() - (2 * SLIDER_GAP);
 		
-		if(type == SliderType.X || type == SliderType.Both)
+		if(type == Orientation.X || type == Orientation.Both)
 		{
 			tmpAx = ((float)(x - centre.x) / tempXw * 2f * SLIDER_TOT);
 			if(tmpAx < -SLIDER_TOT)
@@ -124,7 +123,7 @@ public class Slider extends Item {
 				tmpAx = SLIDER_TOT;
 			ax = (int) tmpAx;
 		}
-		if(type == SliderType.Y || type == SliderType.Both)
+		if(type == Orientation.Y || type == Orientation.Both)
 		{
 			tmpAy = ((y - centre.y) / tempYw * 2 * SLIDER_TOT);
 			if(tmpAy < -SLIDER_TOT)
