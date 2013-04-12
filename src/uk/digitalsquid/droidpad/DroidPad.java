@@ -117,6 +117,35 @@ public class DroidPad extends TabActivity implements OnClickListener, OnItemClic
 		slideList.setAdapter(slideModes);
 		slideList.setOnItemClickListener(this);
 		
+		if(getIntent().getData() != null) {
+			Uri uri = getIntent().getData();
+			Log.i(TAG, "Received data with URI:");
+			Log.i(TAG, "Host="+uri.getHost());
+			if(uri.getHost().equals("droidpad-pair.digitalsquid.co.uk")) {
+				// Correct URI, so add new pairing
+				try {
+					String computerId = uri.getQueryParameter("computerId");
+					String computerName = uri.getQueryParameter("computerName");
+					String deviceId = uri.getQueryParameter("deviceId");
+					String psk = uri.getQueryParameter("psk");
+					
+					DevicePair newPair = app.getPairingEngine().pairNewDevice(computerId, computerName, deviceId, psk);
+					tmpDeviceName = newPair.getComputerName();
+					showDialog(DIALOG_PAIRSUCCESS);
+				} catch(UnsupportedOperationException e) {
+					Log.w(TAG, "Failed to decode device pair URI", e);
+					showDialog(DIALOG_PAIRFAILED);
+				} catch (IllegalArgumentException e) {
+					Log.e(TAG, "Failed to decode barcode content", e);
+					showDialog(DIALOG_PAIRFAILED);
+				} catch (IOException e) {
+					Log.e(TAG, "Failed to save new pairing content to DB", e);
+					// TODO: Show a different dialog?
+					showDialog(DIALOG_PAIRFAILED);
+				}
+			}
+		}
+		
 		// TODO: Remove in release
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(app);
 		if(prefs.getInt("firstTime", 1) == 1) {

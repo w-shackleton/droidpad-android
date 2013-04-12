@@ -5,8 +5,6 @@
     <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true"/>
 	
 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
-	<!-- <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"></uses-permission>  -->
-	<!-- <uses-permission android:name="android.permission.ADD_SYSTEM_SERVICE"></uses-permission>  -->
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
 	<uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
 	<uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
@@ -22,6 +20,12 @@
 		    <intent-filter>
 		        <action android:name="android.intent.action.MAIN"/>
 		        <category android:name="android.intent.category.LAUNCHER"/>
+		    </intent-filter>
+		    <intent-filter>
+		        <action android:name="android.intent.action.VIEW"></action>
+		        <category android:name="android.intent.category.DEFAULT"></category>
+		        <category android:name="android.intent.category.BROWSABLE"></category>
+		        <data android:scheme="http" android:host="droidpad-pair.digitalsquid.co.uk"></data>
 		    </intent-filter>
 		</activity>
 		<activity android:name="WebActivity" android:theme="@style/light"></activity>

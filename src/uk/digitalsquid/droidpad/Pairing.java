@@ -157,6 +157,23 @@ public class Pairing implements LogTag {
 		return new DevicePair(computerId, computerName, deviceId, psk);
 	}
 	
+	public DevicePair pairNewDevice(String computerIdString, String computerNameB64, String deviceIdString, String psk64) throws IOException, IllegalArgumentException {
+		UUID computerId, deviceId;
+		String computerName; byte[] psk;
+		try {
+			computerId = UUID.fromString(computerIdString);
+			computerName = new String(Base64.decode(computerNameB64, Base64.URL_SAFE));
+			deviceId = UUID.fromString(deviceIdString);
+			psk = Base64.decode(psk64, Base64.URL_SAFE);
+		} catch (IllegalArgumentException e) {
+			throw new IllegalArgumentException("Incorrect format for pairing string", e);
+		} catch (IOException e) {
+			throw new IllegalArgumentException("Incorrect format for pairing string", e);
+		}
+		pairingDB.addPairing(computerId, computerName, deviceId, psk);
+		return new DevicePair(computerId, computerName, deviceId, psk);
+	}
+	
 	public DevicePair findDevicePair(String computerId) {
 		try {
 			return findDevicePair(UUID.fromString(computerId));
