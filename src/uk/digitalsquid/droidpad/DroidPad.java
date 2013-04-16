@@ -317,7 +317,7 @@ public class DroidPad extends TabActivity implements OnClickListener, OnItemClic
     			}
     			break;
     		case R.id.pairnewdevice:
-    			Toast.makeText(this, "Please scan the barcode created by the software on your computer.", Toast.LENGTH_LONG);
+    			Toast.makeText(this, "Please scan the barcode created by the software on your computer.", Toast.LENGTH_LONG).show();
     			IntentIntegrator barcodeIntegrator = new IntentIntegrator(this);
     			barcodeIntegrator.setMessageByID(R.string.pairdevicemessage);
     			barcodeIntegrator.initiateScan();
