@@ -15,4 +15,9 @@ public final class ConnectionInfo {
 	public boolean reverseX, reverseY;
 	
 	public TlsPSKIdentity identity;
+	
+	/**
+	 * If <code>true</code>, insecure connections should only be made locally (for USB).
+	 */
+	public boolean onlyBindLocalInsecure;
 }

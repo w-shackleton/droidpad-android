@@ -18,7 +18,7 @@
 	
 	<string name="welcome">If you have used DroidPad before, please update the software running on your computer to the 2.0 version of DroidPad.</string>
 	
-	<string name="customlayouthelp">Custom Layout Help</string>
+	<string name="customlayouthelp">Design custom layouts</string>
 	
 	<string name="enable_dev_mode">Enable USB (Development) Mode</string>
 	
@@ -45,10 +45,9 @@
 	<string name="authfaileddescription">DroidPad now secures the connections between the computer and the phone / tablet.
 	    To make sure the communications are secure, please select the \'Pair New Device\' option from the \'File\' menu on the computer.
 	    This only has to be done once and ensures secure communications.</string>
+	    
+	<string name="editlayouttitle">Designing Layouts</string>
 	
-	<string name="onlysecureconnection">Only Secure Connections</string>
-	
-	<string name="onlySecureConnectionOn">Only secure connections are allowed</string>
-	
-	<string name="onlySecureConnectionOff">Both secure and insecure connections are allowed</string>
+	<string name="editlayoutdescription">To design new layouts for DroidPad, please visit digitalsquid.co.uk/droidpad/layout-editor
+	    on your computer, or click the link from within the computer software.</string>
 </resources>

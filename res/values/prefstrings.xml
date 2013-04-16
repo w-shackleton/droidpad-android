@@ -31,4 +31,12 @@
 <string name="deviceName">Device Name</string>
 <string name="deviceNameDesc">Identify this device from other devices</string>
 <string name="enableUsbDebugRequest">Please enable the &#8216;USB Debugging&#8217; option.</string>
+
+	
+	<string name="onlysecureconnection">Only Secure Connections</string>
+	<string name="onlySecureConnectionOn">Only secure connections are allowed</string>
+	<string name="onlySecureConnectionOff">Both secure and insecure connections are allowed</string>
+	<string name="preferinsecureconnection">Prefer Insecure Connections</string>
+	<string name="preferinsecureconnectionOn">Insecure connections are preferred</string>
+	<string name="preferinsecureconnectionOff">Secure connections are preferred instead (recommended)</string>
 </resources>

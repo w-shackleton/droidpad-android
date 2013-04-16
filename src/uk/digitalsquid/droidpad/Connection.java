@@ -21,6 +21,7 @@ import java.io.Closeable;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -68,7 +69,7 @@ public class Connection extends AsyncTask<ConnectionInfo, Progress, Void> implem
 	protected Void doInBackground(ConnectionInfo... infos) {
 		info = infos[0];
 		Log.i(TAG, "Normal connection being created on " + info.port);
-		ServerSocket serverSocket = createServerSocket(info.port);
+		ServerSocket serverSocket = createServerSocket(info.port, info.onlyBindLocalInsecure);
 		if(serverSocket == null) return null;
 		Log.i(TAG, "Created ServerSocket");
 		
@@ -85,11 +86,15 @@ public class Connection extends AsyncTask<ConnectionInfo, Progress, Void> implem
 		return null;
 	}
 	
-	private ServerSocket createServerSocket(int port) {
+	private ServerSocket createServerSocket(int port, boolean onlyLocal) {
 		ServerSocket ss = null;
 		while(!isCancelled()) {
 			try {
-				ss = new ServerSocket(port);
+				if(onlyLocal) {
+					Log.i(TAG, "Insecure connection only being created on local addresses");
+					ss = new ServerSocket(port, 50, InetAddress.getByName("localhost"));
+				} else 
+					ss = new ServerSocket(port);
 				ss.setSoTimeout(4000);
 				return ss;
 			} catch (IOException e) {

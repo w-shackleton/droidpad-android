@@ -24,6 +24,7 @@
                 android:key="portnumber" android:persistent="true" android:defaultValue="3141" android:dialogIcon="@drawable/icon" android:summary="@string/PortSummary" android:title="@string/PortTitle" android:dialogTitle="@string/PortTitle" android:dialogMessage="@string/PortMessage"/><EditTextPreference
                 android:persistent="true" android:dialogIcon="@drawable/icon" android:key="updateinterval" android:defaultValue="20" android:summary="@string/updateSummary" android:dialogTitle="@string/updateTitle" android:dialogMessage="@string/updateMessage" android:title="@string/updateTitle"/>
                 <CheckBoxPreference android:title="@string/onlysecureconnection" android:key="onlysecureconnection" android:summaryOn="@string/onlySecureConnectionOn" android:summaryOff="@string/onlySecureConnectionOff"/>
+                <CheckBoxPreference android:title="@string/preferinsecureconnection" android:key="preferinsecureconnection" android:summaryOn="@string/preferinsecureconnectionOn" android:summaryOff="@string/preferinsecureconnectionOff"/>
         
 
         

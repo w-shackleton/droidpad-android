@@ -151,7 +151,9 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 		String deviceName = prefs.getString("devicename", Build.MODEL);
 		// In case field is set but blank
 		if(deviceName.equals("")) deviceName = Build.MODEL;
-		deviceName = "secure:" + deviceName;
+		
+		if(!prefs.getBoolean("preferinsecureconnection", false))
+			deviceName = "secure:" + deviceName;
 		mdns = new MDNSBroadcaster(wifiAddr,
 				deviceName.substring(0, Math.min(deviceName.length(), 40)),
 				port);
@@ -234,15 +236,14 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 		connectionInfo.reverseX = prefs.getBoolean("reverse-x", false);
 		connectionInfo.reverseY = prefs.getBoolean("reverse-y", false);
 		connectionInfo.identity = pskAuthenticator;
+		connectionInfo.onlyBindLocalInsecure = prefs.getBoolean("onlysecureconnection", false);
 		
 		// Set up normal connection
-		if(!prefs.getBoolean("onlysecureconnection", false)) {
-			connection = new Connection();
-			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-				connection.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, connectionInfo);
-			else
-				connection.execute(connectionInfo);
-		}
+		connection = new Connection();
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			connection.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, connectionInfo);
+		else
+			connection.execute(connectionInfo);
 		// Set up secure connection
 		secureConnection = new SecureConnection();
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)

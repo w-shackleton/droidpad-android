@@ -157,6 +157,7 @@ public class DroidPad extends TabActivity implements OnClickListener, OnItemClic
 	static final int DIALOG_UPGRADE = 1;
 	static final int DIALOG_PAIRFAILED = 2;
 	static final int DIALOG_PAIRSUCCESS = 3;
+	static final int DIALOG_EDITLAYOUT = 4;
 	
 	@Override
 	public Dialog onCreateDialog(int id) {
@@ -185,6 +186,16 @@ public class DroidPad extends TabActivity implements OnClickListener, OnItemClic
 		case DIALOG_PAIRFAILED:
 			builder.setTitle(R.string.pairfailedtitle);
 			builder.setMessage(R.string.pairfaileddescription);
+			builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+			return builder.create();
+		case DIALOG_EDITLAYOUT:
+			builder.setTitle(R.string.editlayouttitle);
+			builder.setMessage(R.string.editlayoutdescription);
 			builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
@@ -320,12 +331,7 @@ public class DroidPad extends TabActivity implements OnClickListener, OnItemClic
     			startActivity(i);
     			break;
     		case R.id.customlayouthelp:
-    			i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://digitalsquid.co.uk/droidpad/custom-layout"));
-    			try {
-    				startActivity(i);
-    			} catch (ActivityNotFoundException a) {
-    				Toast.makeText(getBaseContext(), "Could not launch Browser.", Toast.LENGTH_SHORT).show();
-    			}
+    			showDialog(DIALOG_EDITLAYOUT);
     			break;
     		case R.id.gettingstarted:
     			i = new Intent(this, WebActivity.class);
