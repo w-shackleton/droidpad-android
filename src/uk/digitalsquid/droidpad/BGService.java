@@ -90,6 +90,11 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 	
 	private WifiLock wifiLock;
 	private MulticastLock multicastLock;
+	/**
+	 * If <code>true</code>, {@link WifiLock} and {@link MulticastLock} are
+	 * currently locked.
+	 */
+	private boolean locksLocked;
 	private InetAddress wifiAddr;
 	private MDNSBroadcaster mdns;
 	
@@ -146,6 +151,7 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 		if(wifiInfo != null) wifiAddr = Buttons.intToInetAddress(wifiInfo.getIpAddress());
 		wifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL, TAG);
 		multicastLock = wm.createMulticastLock(TAG);
+		locksLocked = false;
 			
 		// Start mDNS broadcaster
 		String deviceName = prefs.getString("devicename", Build.MODEL);
@@ -183,8 +189,11 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 	
 	@SuppressLint("NewApi")
 	private synchronized ModeSpec createNewConnection(ModeSpec newSpec) {
-		wifiLock.acquire();
-		multicastLock.acquire();
+		if(!locksLocked) {
+			wifiLock.acquire();
+			multicastLock.acquire();
+			locksLocked = true;
+		}
 		
 		// Load basic preferences (MINIMAL)
 		int interval = 20;
@@ -272,8 +281,11 @@ public class BGService extends Service implements ConnectionCallbacks, LogTag {
 			Log.i(TAG, "Not required, stopping service");
 			this.stopSelf();
 		}
-		wifiLock.release();
-		multicastLock.release();
+		if(locksLocked) {
+			wifiLock.release();
+			multicastLock.release();
+			locksLocked = false;
+		}
 		
 		sm.unregisterListener(sensorEvents);
 	}
