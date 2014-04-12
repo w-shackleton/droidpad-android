@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="about1">DroidPad - use an Android device as a joystick, mouse or slideshow remote on Windows and Linux.</string>
+    <string name="about2">Once you have downloaded &amp; set up DroidPad on your computer, select a mode and connect via Wifi or USB</string>
+    <string name="about3"></string>
+    <string name="morehelp">More Help</string>
+    
+</resources>

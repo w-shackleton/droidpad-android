@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="layout_mouse_simple">Mouse using device tilting</string>
+    <string name="layout_mouse_simple_desc">Control the mouse by tilting the phone and pressing buttons.</string>
+    <string name="layout_mouse_adv">Mouse using a trackpad</string>
+    <string name="layout_mouse_adv_desc">Control the mouse using an onscreen trackpad.</string>
+    <string name="layout_mouse_abs">Mouse by pointing</string>
+    <string name="layout_mouse_abs_desc">Control the mouse by pointing the phone at the screen.</string>
+    <string name="layout_slide">Slideshow presenter</string>
+    <string name="layout_slide_desc">Easily advance and control a slideshow presentation on a computer.</string>
+    
+</resources>

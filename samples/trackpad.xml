@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<layout
+	mode="trackpad"
+	title="Custom trackpad mode"
+	description="Sample layout for editing"
+	width="4"
+	height="4">
+	<button x="0" y="0" width="2" height="2" textSize="18">
+		Left
+	</button>
+	<button x="2" y="0" width="2" height="2" textSize="16">
+		Right
+	</button>
+
+	<!-- This panel is where finger movements are done -->
+	<panel x="0" y="2" width="4" height="2" type="both" />
+</layout>

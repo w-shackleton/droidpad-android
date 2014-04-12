@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="main" parent="@android:style/Theme.NoTitleBar">
+    </style>
+    
+    <style name="fullscreen" parent="@android:style/Theme.NoTitleBar.Fullscreen">
+    </style>
+    <style name="light" parent="android:Theme.Light"></style>
+    
+</resources>

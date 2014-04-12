@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry exported="true" kind="lib" path="lib/sc-light-jdk15on-1.47.0.2.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/droidpad-android.secure/lib/sc-light-jdk15on-1.47.0.2-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/scprov-jdk15on-1.47.0.2.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/droidpad-android.secure/lib/scprov-jdk15on-1.47.0.2-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="bin/classes"/>
+</classpath>

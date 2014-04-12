@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="pModesCat">Modes</string>
+<string name="pOtherCat">Other</string>
+<string name="pAdvancedCat">Advanced</string>
+
+<string name="revXTitle">Reverse Horizontally</string>
+<string name="revXSummary">Reverse the X axis</string>
+<string name="revYTitle">Reverse Vertically</string>
+<string name="revYSummary">Reverse the Y axis</string>
+
+<string name="screenBrightOn">Button screen will be dimmed</string>
+<string name="screenBrightOff">Button screen will be bright</string>
+<string name="screenBright">Screen Brightness</string>
+
+<string name="PortTitle">Port Number</string>
+<string name="PortMessage">Default = 3141</string>
+<string name="PortSummary">Change the port on which DroidPad operates (default=3141)</string>
+
+<string name="updateTitle">Update Interval</string>
+<string name="updateMessage">Updates per second, usually around 20</string>
+<string name="updateSummary">The amount of updates sent per second. High values decrease performance</string>
+
+<string name="orientationTitle">Horizontal Layout</string>
+<string name="orientationOn">Buttons will appear horizontal</string>
+<string name="orientationOff">Buttons will not appear horizontal</string>
+
+<string name="axesfloatTitle">Return axes to center</string>
+<string name="axesfloatOn">On-screen axes will float back to the centre</string>
+<string name="axesfloatOff">On-screen axes will not float back to the centre</string>
+<string name="deviceName">Device Name</string>
+<string name="deviceNameDesc">Identify this device from other devices</string>
+<string name="enableUsbDebugRequest">Please enable the &#8216;USB Debugging&#8217; option.</string>
+
+	
+	<string name="onlysecureconnection">Only Secure Connections</string>
+	<string name="onlySecureConnectionOn">Only secure connections are allowed</string>
+	<string name="onlySecureConnectionOff">Both secure and insecure connections are allowed</string>
+	<string name="preferinsecureconnection">Prefer Insecure Connections</string>
+	<string name="preferinsecureconnectionOn">Insecure connections are preferred</string>
+	<string name="preferinsecureconnectionOff">Secure connections are preferred instead (recommended)</string>
+</resources>

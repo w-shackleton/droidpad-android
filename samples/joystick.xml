@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<layout
+	mode="joystick"
+	title="Test layout"
+	description="Sample layout for editing"
+	width="6"
+	height="7">
+	<!-- Buttons can be added by creating new entries below.
+	     The order that the buttons appear in decides the
+	     order that they appear as joystick buttons -->
+	<button x="0" y="0" width="6" height="2" textSize="30">
+		A
+	</button>
+	<button x="0" y="2" width="3" height="2" textSize="30">
+		B
+	</button>
+	<button x="3" y="2" width="3" height="2" textSize="30">
+		C
+	</button>
+
+	<slider x="0" y="4" width="6" height="2" type="both" />
+
+	<slider x="0" y="6" width="4" height="1" type="x" />
+
+	<toggle x="4" y="6" width="2" height="1" textSize="13">
+		Flight mode
+	</toggle>
+</layout>
