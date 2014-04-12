@@ -1,4 +1,4 @@
-droidpad-android
-================
+DroidPad - Android
+==================
 
 DroidPad Android application
